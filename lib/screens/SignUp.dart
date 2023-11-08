@@ -12,6 +12,10 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool? isChecked = false;
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController rePassowrdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: fullNameController,
                   hintText: "Full Name",
                   fieldicon:
                       Icon(Icons.person, color: Color(0XFF939199), size: 17),
@@ -70,6 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: emailController,
                   hintText: "e-email address",
                   fieldicon:
                       Icon(Icons.email, color: Color(0XFF939199), size: 15),
@@ -84,6 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: passwordController,
                   hintText: "Password",
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),
@@ -98,6 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: rePassowrdController,
                   hintText: "Re-Password",
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),

@@ -12,6 +12,9 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   bool? isChecked = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +58,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: emailController,
                   hintText: "e-mail address",
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),
@@ -69,6 +73,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  controller: passwordController,
                   hintText: "Password",
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),
