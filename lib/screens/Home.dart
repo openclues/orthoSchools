@@ -29,13 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: appdrawer.NavigationDrawer(),
-      body: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(children: [
-          SearchBarWidget(),
-          SizedBox(height: 15), // Add space between widgets
-          PostWidget(),
-        ]),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(10),
+          child: Column(children: [
+            SearchBarWidget(),
+            SizedBox(height: 15), // Add space between widgets
+            PostWidget(),
+          ]),
+        ),
       ), //container colmun center insdie it search bar and post
     );
   }
