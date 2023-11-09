@@ -50,89 +50,86 @@ class NavigationDrawer extends StatelessWidget {
           //searchBar
           TextField(
             decoration: InputDecoration(
-                hintText: 'What are you searching for?',
-                suffixIcon: Icon(Icons.search)),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(15, 20, 15, 0),
-            title: Text('Home'),
-            subtitle: Divider(
-              thickness: 1,
-            ),
-          ),
-          ExpansionTile(
-            initiallyExpanded: false,
-            title: Text('COURSES'),
-            // subtitle: Divider(
-            //   thickness: 1,
-            // ),
-            trailing: Icon(Icons.add), // Your trailing icon
-            children: [
-              Text('COURSES OFFERED'),
-              Divider(
-                thickness: 1,
+              hintText: 'What are you searching for?',
+              suffixIcon: Icon(Icons.search),
+              enabledBorder: const UnderlineInputBorder(
+                borderSide:
+                    BorderSide(color: Color.fromARGB(255, 205, 205, 205)),
               ),
-              Text('MY COURSES'),
-            ],
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-            title: Text('FOLLOWING'),
-            subtitle: Divider(
-              thickness: 1,
             ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Column(children: [
+            NavigationTextBar(
+              text: 'HOME',
+              onTap: () {
+                // Your onTap function
+              },
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            NavigationTextBar(
+              text: 'SPACES',
+              onTap: () {
+                // Your onTap function
+              },
+            ),
+            ExpansionTile(
+              tilePadding: EdgeInsets.all(0),
+              initiallyExpanded: false,
+              title: Text(
+                'COURSES',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+
+              trailing: Icon(Icons.add), // Your trailing icon
+              children: [
+                NavigationTextBar(
+                  text: 'Courses offered',
+                  onTap: () {
+                    // Your onTap function
+                  },
+                ),
+                NavigationTextBar(
+                  text: 'My courses',
+                  onTap: () {
+                    // Your onTap function
+                  },
+                ),
+              ],
+            ),
+            NavigationTextBar(
+              text: 'FOLLOWING',
+              onTap: () {
+                // Your onTap function
+              },
+            ),
+          ]),
+
+          Text('Spaces', style: TextStyle(fontWeight: FontWeight.bold)),
+          SizedBox(
+            height: 5,
+          ),
+          SpacesCard(
+            title: 'Medical Space',
+            subtitle: '50 member',
+            urlImage: 'assets/images/spacePhoto.png',
+          ),
+          SpacesCard(
+            title: 'Computer Sapce',
+            subtitle: '55 member',
+            urlImage: 'assets/images/spacePhoto.png',
           ),
 
-          Text('Spaces'),
-          Container(
-            decoration: BoxDecoration(
-              color: Color(0XFFE9E9E9), // Background color for the ListTile
-              borderRadius: BorderRadius.circular(
-                  12), // Adjust the radius for rounded corners
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              leading: Image.asset(
-                'assets/images/spacePhoto.png',
-                width: 35,
-              ),
-              title: Text('FOLLOWING'),
-              subtitle: Text('50 member'),
-            ),
+          SpacesCard(
+            title: 'Art Space',
+            subtitle: '22 member',
+            urlImage: 'assets/images/spacePhoto.png',
           ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-              color: Color(0XFFE9E9E9), // Background color for the ListTile
-              borderRadius: BorderRadius.circular(
-                  12), // Adjust the radius for rounded corners
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              leading: Image.asset(
-                'assets/images/spacePhoto.png',
-                width: 35,
-              ),
-              title: Text('FOLLOWING'),
-              subtitle: Text('50 member'),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Color(0XFFE9E9E9), // Background color for the ListTile
-              borderRadius: BorderRadius.circular(
-                  12), // Adjust the radius for rounded corners
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              leading: Image.asset(
-                'assets/images/spacePhoto.png',
-                width: 35,
-              ),
-              title: Text('FOLLOWING'),
-              subtitle: Text('50 member'),
-            ),
-          ),
+
           Divider(
             thickness: 1,
           ),
@@ -158,6 +155,69 @@ class NavigationDrawer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SpacesCard extends StatelessWidget {
+  final String? title;
+  final String? subtitle;
+  final String? urlImage;
+
+  SpacesCard({this.title, this.subtitle, this.urlImage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Color(0XFFE9E9E9), // Background color for the ListTile
+        borderRadius:
+            BorderRadius.circular(12), // Adjust the radius for rounded corners
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+        leading: Image.asset(
+          urlImage!,
+          width: 43,
+        ),
+        title: Text(
+          title!,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(subtitle!),
+      ),
+    );
+  }
+}
+
+class NavigationTextBar extends StatelessWidget {
+  final String? text;
+  final Function()? onTap;
+
+  const NavigationTextBar({
+    this.text,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.topLeft,
+          child: InkWell(
+            onTap: onTap,
+            child: Text(
+              text!,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Divider(
+          thickness: 1,
+        ),
+      ],
     );
   }
 }
