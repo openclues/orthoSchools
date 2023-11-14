@@ -1,7 +1,9 @@
-import 'package:azsoon/screens/SignIn.dart';
-import 'package:azsoon/screens/SignUp.dart';
+import 'package:azsoon/Auth/SignIn.dart';
+import 'package:azsoon/Auth/SignUp.dart';
+import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:azsoon/screens/Home.dart';
+import 'package:azsoon/screens/SplashScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,8 +22,10 @@ class MyApp extends StatelessWidget {
           // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           // useMaterial3: true,
           ),
-      home: HomeScreen(),
+      home: CreateProfileScreen(),
+      // SplashScreen(),
       routes: {
+        'home': (context) => HomeScreen(),
         'signUp': (context) => SignUpScreen(),
         'signIn': (context) => SignInScreen(),
       },

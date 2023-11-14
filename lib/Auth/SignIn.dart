@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/TextField.dart';
 import '../widgets/Button.dart';
 import '../widgets/Label.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -58,6 +65,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  textfiledColor: Color(0XFFF5F6F8),
                   controller: emailController,
                   hintText: "e-mail address",
                   fieldicon:
@@ -73,6 +81,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  textfiledColor: Color(0XFFF5F6F8),
                   controller: passwordController,
                   hintText: "Password",
                   fieldicon:
@@ -107,8 +116,12 @@ class _SignInScreenState extends State<SignInScreen> {
               ],
             ),
             CustomButton(
+              height: 43,
               buttonText: 'Sign In',
               buttonColor: Color(0XFF3D6CE7),
+              onpress: () {
+                checkRequiredData(context);
+              },
             ),
             SizedBox(
               height: 30,
@@ -140,5 +153,63 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+
+//checking for empty fileds
+  Future<void> checkRequiredData(BuildContext context) async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      Fluttertoast.showToast(
+          msg: 'please fill out all fields',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+          textColor: Colors.black,
+          fontSize: 16.0);
+      return;
+    }
+    completeLogiIn(
+        emailController.text.trim(), passwordController.text.trim(), context);
+  }
+
+  static Future<void> completeLogiIn(
+      String userEmail, userPassword, BuildContext context) async {
+    ProgressDialog pr = new ProgressDialog(context,
+        type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
+
+    try {
+      var response =
+          await http.post(Uri.parse('https://reqres.in/api/register'),
+              body: ({
+                'email': userEmail,
+                'password': userPassword,
+              }));
+      if (response.statusCode == 200) {
+        await pr.show();
+        final databody = jsonDecode(response.body);
+        print(databody['token']); //the token i need to save
+
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setString('login',
+            databody['token']); // i saved the token as string named login
+        await pref.setString('email', userEmail);
+        await pref.setString('password', userPassword);
+        await pr.hide();
+        //i should navigate to homescreen
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (route) => false);
+      } else {
+        // staus code 403 unauthorized
+        //go to login screen
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.clear();
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => SignInScreen()),
+            (route) => false);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

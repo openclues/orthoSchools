@@ -21,6 +21,7 @@ class SearchBarWidget extends StatelessWidget {
             title: TextField(
               decoration: InputDecoration(
                 suffixIcon: MaterialButton(
+                  //height: 15.0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

@@ -3,15 +3,24 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String? buttonText;
   final Color? buttonColor;
-  const CustomButton({this.buttonText, this.buttonColor});
+  final Function()? onpress;
+  final double? width;
+  final double? height;
+  const CustomButton(
+      {this.buttonText,
+      this.buttonColor,
+      this.onpress,
+      this.width,
+      this.height});
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      height: 43,
+      height: height,
+      minWidth: width,
       color: buttonColor,
       textColor: Colors.white,
-      onPressed: () {},
+      onPressed: onpress,
       child: Text(buttonText!),
     );
   }
