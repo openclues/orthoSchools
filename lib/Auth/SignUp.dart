@@ -67,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: firstNameController,
                   hintText: "First Name",
@@ -83,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5.0,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: lastNameController,
                   hintText: "last Name",
@@ -99,6 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: emailController,
                   hintText: "e-email address",
@@ -115,6 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: phoneController,
                   hintText: "phone number",
@@ -131,6 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: passwordController,
                   hintText: "Password",
@@ -147,6 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: rePassowrdController,
                   hintText: "Re-Password",

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 ///button decoraiton
 ///
 
+//////Constants style
+
 const kLoginRegisterTexFieldtStyle =
     TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 

@@ -65,6 +65,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: emailController,
                   hintText: "e-mail address",
@@ -81,6 +82,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 CustomTextField(
+                  borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: passwordController,
                   hintText: "Password",

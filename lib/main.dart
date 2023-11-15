@@ -22,12 +22,13 @@ class MyApp extends StatelessWidget {
           // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           // useMaterial3: true,
           ),
-      home: CreateProfileScreen(),
-      // SplashScreen(),
+      home: SplashScreen(),
+      //  CreateProfileScreen(),
       routes: {
         'home': (context) => HomeScreen(),
         'signUp': (context) => SignUpScreen(),
         'signIn': (context) => SignInScreen(),
+        'createProfile': (context) => CreateProfileScreen(),
       },
     );
   }

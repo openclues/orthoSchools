@@ -6,31 +6,41 @@ class CustomTextField extends StatelessWidget {
   final Icon? fieldicon;
   final Color? textfiledColor;
   final TextEditingController? controller;
+  final Color borderColor;
 
   const CustomTextField(
-      {this.hintText, this.fieldicon, this.controller, this.textfiledColor});
+      {super.key,
+      this.hintText,
+      this.fieldicon,
+      this.controller,
+      this.textfiledColor,
+      required this.borderColor});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: fieldicon,
-        hintText: hintText,
-        hintStyle: TextStyle(color: Color(0XFF939199)),
-        contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-        filled: true,
-        fillColor: textfiledColor,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11.0),
-          borderSide: BorderSide(
-            color: Color(0XFFF5F6F8),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          prefixIcon: fieldicon,
+          hintText: hintText,
+          hintStyle: TextStyle(color: Color(0XFF939199)),
+          contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+          filled: true,
+          fillColor: textfiledColor,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11.0),
+            borderSide: BorderSide(
+              color: Color(0XFFF5F6F8),
+            ),
           ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Color(0XFFF5F6F8),
-          ), // Change color here
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: borderColor,
+            ),
+            borderRadius: BorderRadius.circular(11.0),
+          ),
         ),
       ),
     );

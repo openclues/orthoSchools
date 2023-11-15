@@ -20,6 +20,10 @@ class CustomButton extends StatelessWidget {
       minWidth: width,
       color: buttonColor,
       textColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.circular(8.0), // Default radius is set to 8.0
+      ),
       onPressed: onpress,
       child: Text(buttonText!),
     );

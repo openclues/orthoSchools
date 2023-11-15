@@ -35,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(color: Colors.white),
       child: Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.blue,
