@@ -20,7 +20,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePassowrdController = TextEditingController();
 
@@ -60,47 +59,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 30.0,
                 ),
-                CustomLabel(
-                  labelText: 'First Name',
+                Row(
+                  children: [
+                    CustomTextField(
+                      labelText: 'First Name',
+                      borderColor: Color(0XFFF5F6F8),
+                      textfiledColor: Color(0XFFF5F6F8),
+                      controller: firstNameController,
+                      hintText: "First Name",
+                      fieldicon: Icon(Icons.person,
+                          color: Color(0XFF939199), size: 17),
+                    ),
+                    CustomTextField(
+                      labelText: 'Last Name',
+                      borderColor: Color(0XFFF5F6F8),
+                      textfiledColor: Color(0XFFF5F6F8),
+                      controller: lastNameController,
+                      hintText: "last Name",
+                      fieldicon: Icon(Icons.person,
+                          color: Color(0XFF939199), size: 17),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 5,
-                ),
+                // CustomTextField(
+                //   labelText: 'First Name',
+                //   borderColor: Color(0XFFF5F6F8),
+                //   textfiledColor: Color(0XFFF5F6F8),
+                //   controller: firstNameController,
+                //   hintText: "First Name",
+                //   fieldicon:
+                //       Icon(Icons.person, color: Color(0XFF939199), size: 17),
+                // ),
+                // CustomTextField(
+                //   labelText: 'Last Name',
+                //   borderColor: Color(0XFFF5F6F8),
+                //   textfiledColor: Color(0XFFF5F6F8),
+                //   controller: lastNameController,
+                //   hintText: "last Name",
+                //   fieldicon:
+                //       Icon(Icons.person, color: Color(0XFF939199), size: 17),
+                // ),
                 CustomTextField(
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
-                  controller: firstNameController,
-                  hintText: "First Name",
-                  fieldicon:
-                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
-                  labelText: 'First Name',
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                CustomTextField(
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
-                  controller: lastNameController,
-                  hintText: "last Name",
-                  fieldicon:
-                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
                   labelText: 'Email',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                CustomTextField(
                   borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: emailController,
@@ -108,33 +108,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fieldicon:
                       Icon(Icons.email, color: Color(0XFF939199), size: 15),
                 ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
-                  labelText: 'Phone Number',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
                 CustomTextField(
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
-                  controller: phoneController,
-                  hintText: "phone number",
-                  fieldicon:
-                      Icon(Icons.email, color: Color(0XFF939199), size: 15),
-                ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
                   labelText: 'Password',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                CustomTextField(
                   borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: passwordController,
@@ -142,16 +117,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),
                 ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
-                  labelText: 'Re-Password',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
                 CustomTextField(
+                  labelText: 'Re-Passowrd',
                   borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: rePassowrdController,
@@ -231,7 +198,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> registerUser(BuildContext context) async {
     if (firstNameController.text.isEmpty ||
         lastNameController.text.isEmpty ||
-        phoneController.text.isEmpty ||
         emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         rePassowrdController.text.isEmpty) {
@@ -268,12 +234,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     //no prpblem with the entered data
     Map<String, dynamic> data = {
-      'firstName': firstNameController.text.trim(),
-      'lastName': lastNameController.text.trim(),
       'email': emailController.text.trim(),
-      'phone': phoneController.text.trim(),
+      // 'phone': phoneController.text.trim(),
       'password': passwordController.text.trim(),
-      'confirmedPassword': rePassowrdController.text.trim(),
+      // 'confirmedPassword': rePassowrdController.text.trim(),
+      'first_name': firstNameController.text.trim(),
+      'last_name': lastNameController.text.trim(),
     };
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
@@ -281,15 +247,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       pr.show();
       var response = await http.post(
-        Uri.parse('https://reqres.in/api/register'),
+        Uri.parse('https://orthoschools.com/register/'),
         body: data,
       );
+      print("=============================${response.body}");
+      //could be : ============================={"email":["user with this email already exists."]}
       pr.hide();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         Map<String, dynamic> responseData = json.decode(response.body);
 
         if (responseData.containsKey('token')) {
+          print(responseData.containsKey('token'));
           Fluttertoast.showToast(
             msg: 'Registration successful!',
             toastLength: Toast.LENGTH_SHORT,

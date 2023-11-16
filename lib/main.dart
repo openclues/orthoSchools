@@ -23,6 +23,8 @@ class MyApp extends StatelessWidget {
           // useMaterial3: true,
           ),
       home: SplashScreen(),
+      //SignUpScreen(),
+
       //  CreateProfileScreen(),
       routes: {
         'home': (context) => HomeScreen(),

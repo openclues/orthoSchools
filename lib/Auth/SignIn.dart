@@ -58,13 +58,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   height: 30.0,
                 ),
-                CustomLabel(
-                  labelText: 'Email',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
                 CustomTextField(
+                  labelText: 'Email',
                   borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: emailController,
@@ -72,16 +67,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   fieldicon:
                       Icon(Icons.lock, color: Color(0XFF939199), size: 15),
                 ),
-                SizedBox(
-                  height: 30.0,
-                ),
-                CustomLabel(
-                  labelText: 'Password',
-                ),
-                SizedBox(
-                  height: 5,
-                ),
                 CustomTextField(
+                  labelText: 'Password',
                   borderColor: Color(0XFFF5F6F8),
                   textfiledColor: Color(0XFFF5F6F8),
                   controller: passwordController,
@@ -180,20 +167,21 @@ class _SignInScreenState extends State<SignInScreen> {
         type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
 
     try {
-      var response =
-          await http.post(Uri.parse('https://reqres.in/api/register'),
-              body: ({
-                'email': userEmail,
-                'password': userPassword,
-              }));
+      var response = await http.post(
+          Uri.parse('https://orthoschools.com/auth/token/login/'),
+          body: ({
+            'password': userPassword,
+            'email': userEmail,
+          }));
       if (response.statusCode == 200) {
         await pr.show();
         final databody = jsonDecode(response.body);
-        print(databody['token']); //the token i need to save
+        print("=====================${response.body}");
+        print(databody['auth_token']); //the token i need to save
 
         SharedPreferences pref = await SharedPreferences.getInstance();
         await pref.setString('login',
-            databody['token']); // i saved the token as string named login
+            databody['auth_token']); // i saved the token as string named login
         await pref.setString('email', userEmail);
         await pref.setString('password', userPassword);
         await pr.hide();

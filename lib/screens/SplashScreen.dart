@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Common.dart';
 import 'Home.dart';
 import '../Auth/SignIn.dart'; //on bording
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,12 +36,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      child: Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.blue,
-        ),
-      ),
-    );
+        decoration: BoxDecoration(color: Colors.white),
+        child: Center(
+          child: Image.asset(
+            'assets/images/Square.png',
+            width: 90,
+          ),
+          // Lottie.asset('assets/json-files/loaderOrthoschools.json'),
+          //CircularProgressIndicator( //image instead
+          //   backgroundColor: Colors.blue,
+          // ),
+        ));
   }
 }

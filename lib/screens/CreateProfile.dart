@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:azsoon/Core/common-methods.dart';
+import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +10,8 @@ import '../widgets/Button.dart';
 import '../widgets/TextField.dart';
 import '../widgets/Button.dart';
 import 'package:text_area/text_area.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
+import 'package:http/http.dart' as http;
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
@@ -16,9 +21,12 @@ class CreateProfileScreen extends StatefulWidget {
 }
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
-  TextEditingController myTextController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailtController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController workplaceController = TextEditingController();
+
   bool isToggleOn = false;
 
   var reasonValidation = true;
@@ -34,11 +42,11 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void initState() {
     super.initState();
-    myTextController.addListener(() {
-      setState(() {
-        reasonValidation = myTextController.text.isEmpty;
-      });
-    });
+    // bioController.addListener(() {
+    //   setState(() {
+    //     reasonValidation = bioController.text.isEmpty;
+    //   });
+    // });
   }
 
   @override
@@ -185,6 +193,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(children: [
                   CustomTextField(
+                    labelText: 'Name',
                     borderColor: Color(0xFFCFD6FF),
                     controller: userNameController,
                     hintText: 'name',
@@ -194,6 +203,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   ),
 
                   CustomTextField(
+                    labelText: 'Email',
                     borderColor: Color(0xFFCFD6FF),
                     controller: emailtController,
                     hintText: 'email address',
@@ -201,7 +211,24 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         Icon(Icons.email, color: Color(0XFF939199), size: 15),
                     textfiledColor: Colors.white,
                   ),
-
+                  CustomTextField(
+                    labelText: 'Phone',
+                    borderColor: Color(0xFFCFD6FF),
+                    controller: emailtController,
+                    hintText: 'phone number',
+                    textfiledColor: Colors.white,
+                    fieldicon:
+                        Icon(Icons.phone, color: Color(0XFF939199), size: 15),
+                  ),
+                  CustomTextField(
+                    labelText: 'Place Of Work',
+                    borderColor: Color(0xFFCFD6FF),
+                    controller: workplaceController,
+                    hintText: 'work place',
+                    fieldicon:
+                        Icon(Icons.work, color: Color(0XFF939199), size: 17),
+                    textfiledColor: Colors.white,
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -216,7 +243,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       iconSize: 35,
                       padding:
                           EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                      hint: Text('title'),
+                      hint: Text('specialty'),
                       isExpanded: true,
                       value: selectedDropValue,
                       items: dropdwonItems.map((String value) {
@@ -239,7 +266,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   TextArea(
                     borderRadius: 10,
                     borderColor: const Color(0xFFCFD6FF),
-                    textEditingController: myTextController,
+                    textEditingController: bioController,
                     // suffixIcon: Icons.attach_file_rounded,
                     onSuffixIconPressed: () => {},
                     validation: reasonValidation,
@@ -253,7 +280,15 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     height: 40,
                     buttonText: 'Save',
                     buttonColor: Color(0XFF21A2C4),
-                    onpress: () {},
+                    onpress: () async {
+                      //take data and patch it
+                      await createProfile(
+                          bioController.text,
+                          selectedProfileImage.toString(),
+                          selectedBannerImage.toString(),
+                          selectedDropValue!,
+                          workplaceController.text);
+                    },
                   ),
                   SizedBox(
                     height: 25,
@@ -271,101 +306,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       ),
                       onTap: () {
                         //skip and go to home page
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                            (route) => false);
                       },
                     ),
                   ),
-                  // PopupMenuButton<int>(
-                  //   icon: Icon(Icons.more_vert), // Initial icon
-                  //   onSelected: (value) {
-                  //     // Handle item selection
-                  //     switch (value) {
-                  //       case 1:
-                  //         // Handle the first item tap
-                  //         print('Item 1 tapped');
-                  //         break;
-                  //       case 2:
-                  //         // Handle the second item tap
-                  //         print('Item 2 tapped');
-                  //         break;
-                  //     }
-                  //   },
-                  //   itemBuilder: (BuildContext context) => [
-                  //     PopupMenuItem<int>(
-                  //       value: 1,
-                  //       child: CircleAvatar(
-                  //         radius: 20,
-                  //         backgroundColor: Colors.blue,
-                  //         child: Icon(Icons.edit, color: Colors.white),
-                  //       ),
-                  //     ),
-                  //     PopupMenuItem<int>(
-                  //       value: 2,
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.only(left: 8.0),
-                  //         child: CircleAvatar(
-                  //           radius: 20,
-                  //           backgroundColor: Colors.red,
-                  //           child: Icon(Icons.delete, color: Colors.white),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-
-                  // Column(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     ElevatedButton(
-                  //       style: ElevatedButton.styleFrom(
-                  //         shape: CircleBorder(),
-                  //         padding: EdgeInsets.all(15.0),
-                  //       ),
-                  //       onPressed: () {
-                  //         setState(() {
-                  //           isToggleOn = !isToggleOn;
-                  //         });
-                  //       },
-                  //       child: Icon(
-                  //         Icons.more_vert,
-                  //         size: 20,
-                  //       ),
-                  //     ),
-                  //     SizedBox(height: 20),
-                  //     if (isToggleOn)
-                  //       Column(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: [
-                  //           ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               shape: CircleBorder(),
-                  //               padding: EdgeInsets.all(15.0),
-                  //             ),
-                  //             onPressed: () {
-                  //               picBannerImageFromCamera();
-                  //             },
-                  //             child: Icon(
-                  //               Icons.camera_alt,
-                  //               size: 15,
-                  //             ),
-                  //           ),
-                  //           SizedBox(width: 10),
-                  //           ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               shape: CircleBorder(),
-                  //               padding: EdgeInsets.all(15.0),
-                  //             ),
-                  //             onPressed: () {
-                  //               picBannerImageFromGallery();
-                  //             },
-                  //             child: Icon(
-                  //               Icons.photo,
-                  //               size: 15,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //   ],
-                  // ),
                 ]),
               ),
             ],
@@ -411,5 +358,52 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     setState(() {
       selectedProfileImage = File(returnedProfileImage!.path);
     });
+  }
+
+  //saving profile data patch
+  Future<void> createProfile(String bio, String profileImage, String banner,
+      String specialty, String placeOfWork) async {
+    ProgressDialog pr = new ProgressDialog(context,
+        type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
+
+    String? authToken = await CommonMethods.getAuthToken();
+    print("=============================${authToken}");
+    try {
+      pr.show();
+      var response = await http.patch(
+        Uri.parse('https://orthoschools.com/profile/create'),
+        body: {
+          "bio": bio,
+          "profileImage": profileImage,
+          "place_of_work": placeOfWork,
+          "speciality": specialty,
+          "cover": banner,
+        },
+        headers: {
+          'auth_token': authToken!,
+        },
+      );
+      print("=============================${response.body}");
+      pr.hide();
+
+      if (response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData.containsKey('token')) {
+          print(responseData.containsKey('token'));
+          //go to home after he press save or skip
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+              (route) => false);
+        } else {
+          print("==========================================no token");
+        }
+      } else {
+        print("==========================================${response.body}");
+      }
+    } catch (e) {
+      pr.hide();
+      print(e.toString());
+    }
   }
 }
