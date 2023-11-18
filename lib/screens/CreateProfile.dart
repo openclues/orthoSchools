@@ -214,7 +214,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   CustomTextField(
                     labelText: 'Phone',
                     borderColor: Color(0xFFCFD6FF),
-                    controller: emailtController,
+                    controller: phoneController,
                     hintText: 'phone number',
                     textfiledColor: Colors.white,
                     fieldicon:
@@ -284,8 +284,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       //take data and patch it
                       await createProfile(
                           bioController.text,
-                          selectedProfileImage.toString(),
-                          selectedBannerImage.toString(),
+                          selectedProfileImage!,
+                          selectedBannerImage!,
                           selectedDropValue!,
                           workplaceController.text);
                     },
@@ -361,45 +361,99 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   //saving profile data patch
-  Future<void> createProfile(String bio, String profileImage, String banner,
+  // Future<void> createProfile(String bio, String profileImage, String banner,
+  //     String specialty, String placeOfWork) async {
+  //   ProgressDialog pr = new ProgressDialog(context,
+  //       type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
+
+  //   String? authToken = await CommonMethods.getAuthToken();
+  //   print("=============================${authToken}");
+  //   try {
+  //     pr.show();
+  //     var response = await http.patch(
+  //       Uri.parse('https://orthoschools.com/profile/create'),
+  //       body: {
+  //         "bio": bio,
+  //         "profileImage": profileImage,
+  //         "place_of_work": placeOfWork,
+  //         "speciality": specialty,
+  //         "cover": banner,
+  //       },
+  //       headers: {"Authorization": "Token $authToken"},
+  //     );
+  //     print("=============================${response.body}");
+  //     pr.hide();
+
+  //     if (response.statusCode == 201) {
+  //       Map<String, dynamic> responseData = json.decode(response.body);
+
+  //       if (responseData.containsKey('token')) {
+  //         print(responseData.containsKey('token'));
+  //         //go to home after he press save or skip
+  //         Navigator.of(context).pushAndRemoveUntil(
+  //             MaterialPageRoute(builder: (context) => HomeScreen()),
+  //             (route) => false);
+  //       } else {
+  //         print("==========================================no token");
+  //       }
+  //     } else {
+  //       print("==========================================${response.body}");
+  //     }
+  //   } catch (e) {
+  //     pr.hide();
+  //     print(e.toString());
+  //   }
+  // }
+
+  Future<void> createProfile(String bio, File profileImage, File banner,
       String specialty, String placeOfWork) async {
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
 
     String? authToken = await CommonMethods.getAuthToken();
     print("=============================${authToken}");
+
     try {
       pr.show();
-      var response = await http.patch(
-        Uri.parse('https://orthoschools.com/profile/create'),
-        body: {
-          "bio": bio,
-          "profileImage": profileImage,
-          "place_of_work": placeOfWork,
-          "speciality": specialty,
-          "cover": banner,
-        },
-        headers: {
-          'auth_token': authToken!,
-        },
-      );
-      print("=============================${response.body}");
-      pr.hide();
+      var request = http.MultipartRequest(
+          'PATCH', Uri.parse('https://orthoschools.com/profile/create'));
 
-      if (response.statusCode == 201) {
-        Map<String, dynamic> responseData = json.decode(response.body);
+      // text fields
+      request.fields['bio'] = bio;
+      request.fields['place_of_work'] = placeOfWork;
+      request.fields['speciality'] = specialty;
 
-        if (responseData.containsKey('token')) {
-          print(responseData.containsKey('token'));
-          //go to home after he press save or skip
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-              (route) => false);
-        } else {
-          print("==========================================no token");
-        }
+      // file fields
+      request.files.add(http.MultipartFile(
+          'profileImage',
+          http.ByteStream(Stream.castFrom(profileImage.openRead())),
+          await profileImage.length(),
+          filename: 'profileImage.jpg'));
+      request.files.add(http.MultipartFile(
+          'cover',
+          http.ByteStream(Stream.castFrom(banner.openRead())),
+          await banner.length(),
+          filename: 'cover.jpg'));
+
+      //auth header
+      request.headers['Authorization'] = 'Token $authToken';
+
+      //here i am sending the request
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        pr.hide();
+        //printing response
+        print(await response.stream.bytesToString());
+        //go to home after done
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (route) => false,
+        );
       } else {
-        print("==========================================${response.body}");
+        pr.hide();
+        print(
+            "==========================================${response.reasonPhrase}");
       }
     } catch (e) {
       pr.hide();

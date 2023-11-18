@@ -59,46 +59,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 30.0,
                 ),
-                Row(
-                  children: [
-                    CustomTextField(
-                      labelText: 'First Name',
-                      borderColor: Color(0XFFF5F6F8),
-                      textfiledColor: Color(0XFFF5F6F8),
-                      controller: firstNameController,
-                      hintText: "First Name",
-                      fieldicon: Icon(Icons.person,
-                          color: Color(0XFF939199), size: 17),
-                    ),
-                    CustomTextField(
-                      labelText: 'Last Name',
-                      borderColor: Color(0XFFF5F6F8),
-                      textfiledColor: Color(0XFFF5F6F8),
-                      controller: lastNameController,
-                      hintText: "last Name",
-                      fieldicon: Icon(Icons.person,
-                          color: Color(0XFF939199), size: 17),
-                    ),
-                  ],
+                CustomTextField(
+                  labelText: 'First Name',
+                  borderColor: Color(0XFFF5F6F8),
+                  textfiledColor: Color(0XFFF5F6F8),
+                  controller: firstNameController,
+                  hintText: "First Name",
+                  fieldicon:
+                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
                 ),
-                // CustomTextField(
-                //   labelText: 'First Name',
-                //   borderColor: Color(0XFFF5F6F8),
-                //   textfiledColor: Color(0XFFF5F6F8),
-                //   controller: firstNameController,
-                //   hintText: "First Name",
-                //   fieldicon:
-                //       Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                // ),
-                // CustomTextField(
-                //   labelText: 'Last Name',
-                //   borderColor: Color(0XFFF5F6F8),
-                //   textfiledColor: Color(0XFFF5F6F8),
-                //   controller: lastNameController,
-                //   hintText: "last Name",
-                //   fieldicon:
-                //       Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                // ),
+                CustomTextField(
+                  labelText: 'Last Name',
+                  borderColor: Color(0XFFF5F6F8),
+                  textfiledColor: Color(0XFFF5F6F8),
+                  controller: lastNameController,
+                  hintText: "last Name",
+                  fieldicon:
+                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
+                ),
                 CustomTextField(
                   labelText: 'Email',
                   borderColor: Color(0XFFF5F6F8),
@@ -235,9 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     //no prpblem with the entered data
     Map<String, dynamic> data = {
       'email': emailController.text.trim(),
-      // 'phone': phoneController.text.trim(),
       'password': passwordController.text.trim(),
-      // 'confirmedPassword': rePassowrdController.text.trim(),
       'first_name': firstNameController.text.trim(),
       'last_name': lastNameController.text.trim(),
     };
