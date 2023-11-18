@@ -189,7 +189,19 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => HomeScreen()),
             (route) => false);
+      } else if (response.statusCode == 400) {
+        print(response.statusCode);
+        Fluttertoast.showToast(
+            msg: 'passwords or emai address is not correct',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+            textColor: Colors.black,
+            fontSize: 16.0);
+        return;
       } else {
+        print(response.statusCode);
         // staus code 403 unauthorized
         //go to login screen
         SharedPreferences pref = await SharedPreferences.getInstance();

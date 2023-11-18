@@ -179,6 +179,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       },
                       child: CircleAvatar(
                         radius: 50,
+                        child: selectedProfileImage == null
+                            ? Center(
+                                child: Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.grey[800],
+                              ))
+                            : null,
                         backgroundColor:
                             selectedProfileImage == null ? Colors.grey : null,
                         backgroundImage: selectedProfileImage != null
@@ -278,7 +285,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   CustomButton(
                     width: screenWidth,
                     height: 40,
-                    buttonText: 'Save',
+                    buttonText: 'Confirm',
                     buttonColor: Color(0XFF21A2C4),
                     onpress: () async {
                       //take data and patch it

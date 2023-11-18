@@ -189,6 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           fontSize: 16.0);
       return;
     } else if (passwordController.text.length < 8) {
+      //add it to constants
       Fluttertoast.showToast(
           msg: 'password must be 8 char or more',
           toastLength: Toast.LENGTH_SHORT,
@@ -227,7 +228,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         body: data,
       );
       print("=============================${response.body}");
-      //could be : ============================={"email":["user with this email already exists."]}
+
       pr.hide();
 
       if (response.statusCode == 201) {
@@ -251,7 +252,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
             gravity: ToastGravity.CENTER,
           );
         }
+      } else if (response.statusCode == 400) {
+        //could be : ============================={"email":["user with this email already exists."]}
+        Fluttertoast.showToast(
+            msg: 'user with this email already exists',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+            textColor: Colors.black,
+            fontSize: 16.0);
+        return;
       } else {
+        print(response.statusCode);
         Fluttertoast.showToast(
           msg: 'request faild',
           toastLength: Toast.LENGTH_SHORT,
