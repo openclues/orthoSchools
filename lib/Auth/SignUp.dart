@@ -7,6 +7,7 @@ import '../widgets/Label.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -36,12 +37,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Center(
                   child: Container(
                     child: Image.asset(
-                      'assets/images/Certification.png',
+                      'assets/images/logo.png',
                       fit: BoxFit.contain,
                       width: 250.0,
-                      height: 250.0,
+                      height: 100.0,
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: 40,
                 ),
                 Text(
                   'Create an Account',
@@ -57,55 +61,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: const Color.fromARGB(255, 109, 109, 109)),
                 ),
                 SizedBox(
-                  height: 30.0,
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        obscureText: false,
+                        labelText: 'First Name',
+                        borderColor: Color.fromARGB(255, 176, 176, 176),
+                        textfiledColor: Colors.white,
+                        controller: firstNameController,
+                        hintText: "First Name",
+                      ),
+                    ),
+                    SizedBox(width: 16), // Adjust the spacing between fields
+                    Expanded(
+                      child: CustomTextField(
+                        obscureText: false,
+                        labelText: 'Last Name',
+                        borderColor: Color.fromARGB(255, 176, 176, 176),
+                        textfiledColor: Colors.white,
+                        controller: lastNameController,
+                        hintText: "Last Name",
+                      ),
+                    ),
+                  ],
                 ),
                 CustomTextField(
-                  labelText: 'First Name',
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
-                  controller: firstNameController,
-                  hintText: "First Name",
-                  fieldicon:
-                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                ),
-                CustomTextField(
-                  labelText: 'Last Name',
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
-                  controller: lastNameController,
-                  hintText: "last Name",
-                  fieldicon:
-                      Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                ),
-                CustomTextField(
+                  obscureText: false,
                   labelText: 'Email',
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
+                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  textfiledColor: Colors.white,
                   controller: emailController,
                   hintText: "e-email address",
-                  fieldicon:
-                      Icon(Icons.email, color: Color(0XFF939199), size: 15),
                 ),
                 CustomTextField(
+                  obscureText: false,
                   labelText: 'Password',
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
+                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  textfiledColor: Colors.white,
                   controller: passwordController,
                   hintText: "Password",
-                  fieldicon:
-                      Icon(Icons.lock, color: Color(0XFF939199), size: 15),
                 ),
                 CustomTextField(
+                  obscureText: false,
                   labelText: 'Re-Passowrd',
-                  borderColor: Color(0XFFF5F6F8),
-                  textfiledColor: Color(0XFFF5F6F8),
+                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  textfiledColor: Colors.white,
                   controller: rePassowrdController,
                   hintText: "Re-Password",
-                  fieldicon:
-                      Icon(Icons.lock, color: Color(0XFF939199), size: 15),
-                ),
-                SizedBox(
-                  height: 20.0,
                 ),
                 CheckboxListTile(
                   contentPadding: EdgeInsets.all(0),
@@ -131,12 +137,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     });
                   },
                 ),
+                SizedBox(
+                  height: 3.0,
+                ),
               ],
             ),
             CustomButton(
-              height: 43,
-              buttonText: 'Sign Up',
-              buttonColor: Color(0XFF3D6CE7),
+              height: 47,
+              buttonText: 'Sign up',
+              buttonColor: Color(0XFF2F7EDB),
               onpress: () {
                 registerUser(context);
               },
@@ -153,14 +162,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Already in eduker ?  ',
+                      text: 'have an account?  ',
                       style: TextStyle(color: Colors.grey),
                     ),
                     TextSpan(
                       text: 'Sign In',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Color(0XFF3D6CE7),
+                        color: Color(0XFF2F7EDB),
                       ),
                     ),
                   ],
@@ -232,45 +241,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
       pr.hide();
 
       if (response.statusCode == 201) {
-        Map<String, dynamic> responseData = json.decode(response.body);
+        await pr.show();
+        final databody = jsonDecode(response.body);
+        print("=====================${response.body}");
+        print(databody['auth_token']); //the token i need to save
 
-        if (responseData.containsKey('token')) {
-          print(responseData.containsKey('token'));
-          Fluttertoast.showToast(
-            msg: 'Registration successful!',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-          );
-          //go to create profiel page and in this page if he presses skip go to home and if he  presses save that mena he uploaded data and typed text in his profiel so use provider to get this data in his profile page
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => CreateProfileScreen()),
-              (route) => false);
-        } else {
-          Fluttertoast.showToast(
-            msg: 'registration faild',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-          );
-        }
-      } else if (response.statusCode == 400) {
-        //could be : ============================={"email":["user with this email already exists."]}
-        Fluttertoast.showToast(
-            msg: 'user with this email already exists',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: const Color.fromARGB(255, 166, 221, 247),
-            textColor: Colors.black,
-            fontSize: 16.0);
-        return;
-      } else {
-        print(response.statusCode);
-        Fluttertoast.showToast(
-          msg: 'request faild',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setString('login',
+            databody['auth_token']); // i saved the token as string named login
+        await pref.setString(
+          'email',
+          emailController.text.trim(),
         );
+        await pr.hide();
+        print(response.statusCode);
+        Map<String, dynamic> responseData = json.decode(response.body);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => CreateProfileScreen()),
+            (route) => false);
+        // if (responseData.containsKey('token')) {
+        //   print(responseData.containsKey('token'));
+        //   Fluttertoast.showToast(
+        //     msg: 'Registration successful!',
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.CENTER,
+        //   );
+
+        // } else {
+        //   Fluttertoast.showToast(
+        //     msg: 'registration faild',
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.CENTER,
+        //   );
+        // }
+      } else if (response.statusCode == 400) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        // print(response.statusCode);
+        //could be : ============================={"email":["user with this email already exists."]}
+        // ============================={"password":["The password is too similar to the email."]}
+        if (responseData.containsKey('email')) {
+          Fluttertoast.showToast(
+              msg: 'user with this email already exists',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+              textColor: Colors.black,
+              fontSize: 16.0);
+          return;
+        } else if (responseData.containsKey('password')) {
+          Fluttertoast.showToast(
+              msg: 'password is too similar to the email',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+              textColor: Colors.black,
+              fontSize: 16.0);
+          return;
+        }
       }
+      //else {
+      //   print(response.statusCode);
+      //   Fluttertoast.showToast(
+      //     msg: 'request faild',
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //   );
+      // }
     } catch (e) {
       pr.hide();
       print(e.toString());

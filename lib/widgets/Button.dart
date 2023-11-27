@@ -22,10 +22,13 @@ class CustomButton extends StatelessWidget {
       textColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius:
-            BorderRadius.circular(8.0), // Default radius is set to 8.0
+            BorderRadius.circular(50.0), // Default radius is set to 8.0
       ),
       onPressed: onpress,
-      child: Text(buttonText!),
+      child: Text(
+        buttonText!,
+        style: TextStyle(fontSize: 18.0),
+      ),
     );
   }
 }

@@ -5,38 +5,47 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final String? labelText;
   final Icon? fieldicon;
+  final IconButton? iconButton;
   final Color? textfiledColor;
   final TextEditingController? controller;
   final Color borderColor;
+  final bool obscureText;
 
   const CustomTextField(
       {super.key,
       this.hintText,
       this.labelText,
       this.fieldicon,
+      this.iconButton,
       this.controller,
       this.textfiledColor,
+      required this.obscureText,
       required this.borderColor});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: Column(
         children: [
           Align(
             alignment: Alignment.topLeft,
             child: Text(
               labelText!,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 71, 71, 71)),
             ),
           ),
           SizedBox(
             height: 4,
           ),
           TextField(
+            obscureText: obscureText,
             controller: controller,
             decoration: InputDecoration(
+              suffixIcon: iconButton,
               prefixIcon: fieldicon,
               hintText: hintText,
               hintStyle: TextStyle(color: Color(0XFF939199)),

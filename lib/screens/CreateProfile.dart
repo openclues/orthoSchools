@@ -200,6 +200,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(children: [
                   CustomTextField(
+                    obscureText: false,
                     labelText: 'Name',
                     borderColor: Color(0xFFCFD6FF),
                     controller: userNameController,
@@ -210,6 +211,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   ),
 
                   CustomTextField(
+                    obscureText: false,
                     labelText: 'Email',
                     borderColor: Color(0xFFCFD6FF),
                     controller: emailtController,
@@ -219,6 +221,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     textfiledColor: Colors.white,
                   ),
                   CustomTextField(
+                    obscureText: false,
                     labelText: 'Phone',
                     borderColor: Color(0xFFCFD6FF),
                     controller: phoneController,
@@ -228,6 +231,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         Icon(Icons.phone, color: Color(0XFF939199), size: 15),
                   ),
                   CustomTextField(
+                    obscureText: false,
                     labelText: 'Place Of Work',
                     borderColor: Color(0xFFCFD6FF),
                     controller: workplaceController,
