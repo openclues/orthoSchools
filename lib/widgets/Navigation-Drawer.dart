@@ -49,12 +49,25 @@ class NavigationDrawer extends StatelessWidget {
         children: [
           //searchBar
           TextField(
+            // controller: controller,
             decoration: InputDecoration(
-              hintText: 'What are you searching for?',
               suffixIcon: Icon(Icons.search),
-              enabledBorder: const UnderlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromARGB(255, 205, 205, 205)),
+              hintText: 'search...',
+              hintStyle: TextStyle(color: Color(0XFF939199)),
+              contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: BorderSide(
+                  color: Color(0XFF2F7EDB),
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0XFF2F7EDB),
+                ),
+                borderRadius: BorderRadius.circular(25.0),
               ),
             ),
           ),
@@ -102,37 +115,37 @@ class NavigationDrawer extends StatelessWidget {
               ],
             ),
             NavigationTextBar(
-              text: 'FOLLOWING',
+              text: 'My Blog',
               onTap: () {
                 // Your onTap function
               },
             ),
           ]),
 
-          Text('Spaces', style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(
-            height: 5,
-          ),
-          SpacesCard(
-            title: 'Medical Space',
-            subtitle: '50 member',
-            urlImage: 'assets/images/spacePhoto.png',
-          ),
-          SpacesCard(
-            title: 'Computer Sapce',
-            subtitle: '55 member',
-            urlImage: 'assets/images/spacePhoto.png',
-          ),
+          // Text('Spaces', style: TextStyle(fontWeight: FontWeight.bold)),
+          // SizedBox(
+          //   height: 5,
+          // ),
+          // SpacesCard(
+          //   title: 'Medical Space',
+          //   subtitle: '50 member',
+          //   urlImage: 'assets/images/spacePhoto.png',
+          // ),
+          // SpacesCard(
+          //   title: 'Computer Sapce',
+          //   subtitle: '55 member',
+          //   urlImage: 'assets/images/spacePhoto.png',
+          // ),
 
-          SpacesCard(
-            title: 'Art Space',
-            subtitle: '22 member',
-            urlImage: 'assets/images/spacePhoto.png',
-          ),
+          // SpacesCard(
+          //   title: 'Art Space',
+          //   subtitle: '22 member',
+          //   urlImage: 'assets/images/spacePhoto.png',
+          // ),
 
-          Divider(
-            thickness: 1,
-          ),
+          // Divider(
+          //   thickness: 1,
+          // ),
           BottomNavItems(
             itemtitle: 'Profile',
             itemIcon: Icons.person,

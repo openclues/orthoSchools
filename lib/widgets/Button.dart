@@ -6,9 +6,13 @@ class CustomButton extends StatelessWidget {
   final Function()? onpress;
   final double? width;
   final double? height;
+  final Color? borderColor;
+  final Color? textColor;
   const CustomButton(
       {this.buttonText,
       this.buttonColor,
+      this.borderColor,
+      this.textColor,
       this.onpress,
       this.width,
       this.height});
@@ -19,10 +23,13 @@ class CustomButton extends StatelessWidget {
       height: height,
       minWidth: width,
       color: buttonColor,
-      textColor: Colors.white,
+      textColor: textColor ?? Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(50.0), // Default radius is set to 8.0
+        borderRadius: BorderRadius.circular(50.0),
+        side: BorderSide(
+          color:
+              borderColor ?? Color(0XFF2F7EDB), // Use default if not provided
+        ),
       ),
       onPressed: onpress,
       child: Text(

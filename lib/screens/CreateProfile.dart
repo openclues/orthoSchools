@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:azsoon/Core/common-methods.dart';
 import 'package:azsoon/screens/Home.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +12,7 @@ import '../widgets/Button.dart';
 import 'package:text_area/text_area.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:http/http.dart' as http;
+import '../widgets/App-bar.dart' as appBar;
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
@@ -22,68 +23,51 @@ class CreateProfileScreen extends StatefulWidget {
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
   TextEditingController bioController = TextEditingController();
-  TextEditingController userNameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController emailtController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController workplaceController = TextEditingController();
+  TextEditingController studyInController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController dateOfBirsthController = TextEditingController();
+  TextEditingController fileNameController = TextEditingController();
 
   bool isToggleOn = false;
+  int selectedRadio = 0;
+  String? titleVlaue;
 
   var reasonValidation = true;
   File? selectedBannerImage;
   File? selectedProfileImage;
+  List<Certificate>? _certificates = [];
 
-  String? selectedDropValue;
-  List<String> dropdwonItems = [
-    'dPHD',
-    'drPHD',
-    'drPH',
-  ];
-
-  void initState() {
-    super.initState();
-    // bioController.addListener(() {
-    //   setState(() {
-    //     reasonValidation = bioController.text.isEmpty;
-    //   });
-    // });
-  }
+  // String? selectedDropValue;
+  // List<String> dropdwonItems = [
+  //   'dPHD',
+  //   'drPHD',
+  //   'drPH',
+  // ];
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        ///////////////////only for testing
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Color(0XFF005F7E),
-              ))
-        ],
-
-        ///////////////////only for testing
-        title: Text(
-          'Start by creating your profile !',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-      ),
+      backgroundColor: Color.fromARGB(255, 230, 230, 230),
+      appBar: appBar.AppBarWidget(),
       body: SingleChildScrollView(
         child: Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          // color: Color.fromARGB(255, 230, 230, 230),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //banner image container
               Container(
                 width: screenWidth,
                 height: screenHeight / 4,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
                   color: selectedBannerImage == null ? Colors.grey : null,
                   image: selectedBannerImage != null
                       ? DecorationImage(
@@ -166,165 +150,473 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        picProfileImageFromGallery();
-                        //open the image for preview and have a button change image gallery and or take one (camera)
-                      },
-                      child: CircleAvatar(
-                        radius: 50,
-                        child: selectedProfileImage == null
-                            ? Center(
-                                child: Icon(
-                                Icons.camera_alt_outlined,
-                                color: Colors.grey[800],
-                              ))
-                            : null,
-                        backgroundColor:
-                            selectedProfileImage == null ? Colors.grey : null,
-                        backgroundImage: selectedProfileImage != null
-                            ? FileImage(selectedProfileImage!)
-                            : null,
-                      ),
-                    ),
-                  ),
+              //basic informaiton
+              SizedBox(height: 15),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(children: [
-                  CustomTextField(
-                    obscureText: false,
-                    labelText: 'Name',
-                    borderColor: Color(0xFFCFD6FF),
-                    controller: userNameController,
-                    hintText: 'name',
-                    fieldicon:
-                        Icon(Icons.person, color: Color(0XFF939199), size: 17),
-                    textfiledColor: Colors.white,
-                  ),
-
-                  CustomTextField(
-                    obscureText: false,
-                    labelText: 'Email',
-                    borderColor: Color(0xFFCFD6FF),
-                    controller: emailtController,
-                    hintText: 'email address',
-                    fieldicon:
-                        Icon(Icons.email, color: Color(0XFF939199), size: 15),
-                    textfiledColor: Colors.white,
-                  ),
-                  CustomTextField(
-                    obscureText: false,
-                    labelText: 'Phone',
-                    borderColor: Color(0xFFCFD6FF),
-                    controller: phoneController,
-                    hintText: 'phone number',
-                    textfiledColor: Colors.white,
-                    fieldicon:
-                        Icon(Icons.phone, color: Color(0XFF939199), size: 15),
-                  ),
-                  CustomTextField(
-                    obscureText: false,
-                    labelText: 'Place Of Work',
-                    borderColor: Color(0xFFCFD6FF),
-                    controller: workplaceController,
-                    hintText: 'work place',
-                    fieldicon:
-                        Icon(Icons.work, color: Color(0XFF939199), size: 17),
-                    textfiledColor: Colors.white,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xFFCFD6FF),
-                      ), // Set the border color here
-                      borderRadius: BorderRadius.circular(11.0),
-                      color: Colors.white,
-                    ),
-                    child: DropdownButton<String>(
-                      underline: Container(),
-                      // itemHeight: 50,
-                      iconSize: 35,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                      hint: Text('specialty'),
-                      isExpanded: true,
-                      value: selectedDropValue,
-                      items: dropdwonItems.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newvalue) {
-                        setState(() {
-                          selectedDropValue = newvalue;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 25,
-                  ),
-                  TextArea(
-                    borderRadius: 10,
-                    borderColor: const Color(0xFFCFD6FF),
-                    textEditingController: bioController,
-                    // suffixIcon: Icons.attach_file_rounded,
-                    onSuffixIconPressed: () => {},
-                    validation: reasonValidation,
-                    // errorText: 'Please type a reason!',
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  CustomButton(
-                    width: screenWidth,
-                    height: 40,
-                    buttonText: 'Confirm',
-                    buttonColor: Color(0XFF21A2C4),
-                    onpress: () async {
-                      //take data and patch it
-                      await createProfile(
-                          bioController.text,
-                          selectedProfileImage!,
-                          selectedBannerImage!,
-                          selectedDropValue!,
-                          workplaceController.text);
-                    },
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  //widget file uplad
                   Align(
-                    alignment: Alignment.bottomRight,
-                    child: InkWell(
+                      alignment: Alignment.bottomLeft,
                       child: Text(
-                        'Skip',
+                        "Basic Information",
                         style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w300,
-                            decoration: TextDecoration.underline),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 71, 71, 71)),
+                      )),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          picProfileImageFromGallery();
+                          //open the image for preview and have a button change image gallery and or take one (camera)
+                        },
+                        child: CircleAvatar(
+                          radius: 70,
+                          child: selectedProfileImage == null
+                              ? Center(
+                                  child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: Colors.grey[800],
+                                ))
+                              : null,
+                          backgroundColor:
+                              selectedProfileImage == null ? Colors.grey : null,
+                          backgroundImage: selectedProfileImage != null
+                              ? FileImage(selectedProfileImage!)
+                              : null,
+                        ),
                       ),
-                      onTap: () {
-                        //skip and go to home page
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()),
-                            (route) => false);
-                      },
                     ),
+                  ),
+                  //radio buttons
+                  SizedBox(height: 15),
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Title',
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 71, 71, 71)),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CustomRadio(
+                        label: 'Doctor',
+                        value: 1,
+                        groupValue: selectedRadio,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadio = value as int;
+                            titleVlaue = 'Dr';
+                          });
+                        },
+                      ),
+                      CustomRadio(
+                        label: 'Prof',
+                        value: 2,
+                        groupValue: selectedRadio,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadio = value as int;
+                            titleVlaue = 'Prof';
+                          });
+                        },
+                      ),
+                      CustomRadio(
+                        label: 'Non',
+                        value: 3,
+                        groupValue: selectedRadio,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRadio = value as int;
+                            titleVlaue = 'Non';
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'First Name',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              controller: firstNameController,
+                              hintText: "",
+                            ),
+                          ),
+                          SizedBox(
+                              width: 16), // Adjust the spacing between fields
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'Last Name',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              controller: lastNameController,
+                              hintText: "",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'Phone Number',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              controller: phoneController,
+                              hintText: "",
+                            ),
+                          ),
+                          SizedBox(
+                              width: 16), // Adjust the spacing between fields
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'Date Of Birth',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              controller: dateOfBirsthController,
+                              hintText: "",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'Location',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              // controller: phoneController,
+                              hintText: "",
+                            ),
+                          ),
+                          SizedBox(
+                              width: 16), // Adjust the spacing between fields
+                          Expanded(
+                            child: CustomTextField(
+                              obscureText: false,
+                              labelText: 'City',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              controller: cityController,
+                              hintText: "",
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       color: Color(0xFFCFD6FF),
+                      //     ), // Set the border color here
+                      //     borderRadius: BorderRadius.circular(11.0),
+                      //     color: Colors.white,
+                      //   ),
+                      //   child: DropdownButton<String>(
+                      //     underline: Container(),
+                      //     // itemHeight: 50,
+                      //     iconSize: 35,
+                      //     padding:
+                      //         EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+                      //     hint: Text('specialty'),
+                      //     isExpanded: true,
+                      //     value: selectedDropValue,
+                      //     items: dropdwonItems.map((String value) {
+                      //       return DropdownMenuItem<String>(
+                      //         value: value,
+                      //         child: Text(value),
+                      //       );
+                      //     }).toList(),
+                      //     onChanged: (newvalue) {
+                      //       setState(() {
+                      //         selectedDropValue = newvalue;
+                      //       });
+                      //     },
+                      //   ),
+                      // ),
+                    ],
                   ),
                 ]),
+              ),
+              SizedBox(height: 15),
+              //ABOUT me
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Column(children: [
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        "About Me",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 71, 71, 71)),
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          'Bio',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromARGB(255, 71, 71, 71)),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      TextArea(
+                        borderRadius: 10,
+                        borderColor: Color.fromARGB(255, 176, 176, 176),
+                        textEditingController: bioController,
+                        // suffixIcon: Icons.attach_file_rounded,
+                        onSuffixIconPressed: () => {},
+                        validation: reasonValidation,
+                        // errorText: 'Please type a reason!',
+                      )
+                    ],
+                  ),
+                  CustomTextField(
+                    obscureText: false,
+                    labelText: 'Works At',
+                    borderColor: Color.fromARGB(255, 176, 176, 176),
+                    textfiledColor: Colors.white,
+                    controller: workplaceController,
+                    hintText: '',
+                  ),
+                  CustomTextField(
+                    obscureText: false,
+                    labelText: 'Study In',
+                    borderColor: Color.fromARGB(255, 176, 176, 176),
+                    controller: studyInController,
+                    hintText: '',
+                    textfiledColor: Colors.white,
+                  ),
+                ]),
+              ),
+              SizedBox(height: 15),
+              //security
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Column(children: [
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        "Security",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 71, 71, 71)),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          obscureText: false,
+                          labelText: 'Change Passowrd',
+                          borderColor: Color.fromARGB(255, 176, 176, 176),
+                          textfiledColor: Colors.white,
+                          // controller:  ,
+                          hintText: "Old Passowrd",
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: CustomTextField(
+                          obscureText: false,
+                          labelText: '',
+                          borderColor: Color.fromARGB(255, 176, 176, 176),
+                          textfiledColor: Colors.white,
+                          // controller:  ,
+                          hintText: "New Password",
+                        ),
+                      ),
+                    ],
+                  ),
+                  CustomTextField(
+                    obscureText: false,
+                    labelText: 'My Email',
+                    borderColor: Color.fromARGB(255, 176, 176, 176),
+                    controller: emailtController,
+                    hintText: '',
+                    textfiledColor: Colors.white,
+                  ),
+                ]),
+              ),
+              SizedBox(height: 15),
+              //my certificate
+              Container(
+                width: screenWidth,
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Column(children: [
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        "My Certificate",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 71, 71, 71)),
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: screenHeight * 0.1,
+                    child: ListView.builder(
+                      itemCount: _certificates!.length,
+                      itemBuilder: (context, index) {
+                        Certificate certificate = _certificates![index];
+
+                        return ListTile(
+                          trailing: TextButton(
+                            onPressed: () {
+                              // Add logic to remove the certificate.
+                            },
+                            child: Text('remove'),
+                          ),
+                          leading: Icon(Icons.file_copy),
+                          title: Text(certificate.title),
+                          subtitle:
+                              Text(certificate.file?.files.single.name ?? ''),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  CustomButton(
+                    buttonColor: Colors.white,
+                    textColor: Color(0XFF2F7EDB),
+                    buttonText: 'Add Certificate',
+                    height: 35,
+                    onpress: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20))),
+                          context: context,
+                          builder: (BuildContext context) {
+                            String fileName = "";
+                            return Container(
+                              padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: Wrap(
+                                  children: [
+                                    CustomTextField(
+                                      obscureText: false,
+                                      labelText: '',
+                                      borderColor: Color(0xFFCFD6FF),
+                                      controller: fileNameController,
+                                      hintText: 'file name',
+                                      textfiledColor: Colors.white,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: CustomButton(
+                                            buttonColor: Color(0XFF2F7EDB),
+                                            buttonText: 'Add',
+                                            height: 30,
+                                            onpress: () async {
+                                              FilePickerResult? result =
+                                                  await _pickFiles();
+                                              if (result != null) {
+                                                setState(() {
+                                                  String fileName =
+                                                      fileNameController.text;
+                                                  _certificates!
+                                                      .add(Certificate(
+                                                    title: fileName,
+                                                    file: result,
+                                                  ));
+                                                });
+                                                fileNameController.clear();
+                                                Navigator.pop(
+                                                    context); // Close the bottom sheet
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        // Align(
+                                        //   alignment: Alignment.bottomLeft,
+                                        //   child: CustomButton(
+                                        //     buttonColor: Colors.white,
+                                        //     textColor: Color(0XFF2F7EDB),
+                                        //     buttonText: 'choose file',
+                                        //     height: 30,
+                                        //     onpress: _pickFiles,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                  ),
+                ]),
+              ),
+              SizedBox(height: 15),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: CustomButton(
+                  buttonColor: Color(0XFF2F7EDB),
+                  buttonText: 'Update My Information',
+                  height: 40,
+                  onpress: () {},
+                ),
               ),
             ],
           ),
@@ -371,12 +663,28 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     });
   }
 
+  Future<FilePickerResult?> _pickFiles() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        withData: true,
+        allowMultiple: true,
+      );
+
+      return result;
+    } catch (e) {
+      print('Error picking files: $e');
+      return null;
+    }
+  }
+
   //saving profile data patch
+
   // Future<void> createProfile(String bio, String profileImage, String banner,
   //     String specialty, String placeOfWork) async {
   //   ProgressDialog pr = new ProgressDialog(context,
   //       type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
-
   //   String? authToken = await CommonMethods.getAuthToken();
   //   print("=============================${authToken}");
   //   try {
@@ -394,10 +702,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   //     );
   //     print("=============================${response.body}");
   //     pr.hide();
-
   //     if (response.statusCode == 201) {
   //       Map<String, dynamic> responseData = json.decode(response.body);
-
   //       if (responseData.containsKey('token')) {
   //         print(responseData.containsKey('token'));
   //         //go to home after he press save or skip
@@ -471,4 +777,56 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       print(e.toString());
     }
   }
+}
+
+class CustomRadio extends StatelessWidget {
+  final String label;
+  final int value;
+  final int groupValue;
+  final ValueChanged<int>? onChanged;
+
+  const CustomRadio({
+    required this.label,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onChanged?.call(value);
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(0, 10, 10, 15),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+        decoration: BoxDecoration(
+          color: groupValue == value ? Colors.blue : Colors.transparent,
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
+            color: groupValue == value
+                ? Colors.blue
+                : const Color.fromARGB(255, 176, 176, 176),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: groupValue == value ? Colors.white : Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Certificate {
+  final String title;
+  final FilePickerResult? file;
+
+  Certificate({
+    required this.title,
+    required this.file,
+  });
 }

@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final Color borderColor;
   final bool obscureText;
+  final int? maxLines;
 
   const CustomTextField(
       {super.key,
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
       this.controller,
       this.textfiledColor,
       required this.obscureText,
+      this.maxLines = 1,
       required this.borderColor});
 
   @override
@@ -33,8 +35,8 @@ class CustomTextField extends StatelessWidget {
             child: Text(
               labelText!,
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
                   color: Color.fromARGB(255, 71, 71, 71)),
             ),
           ),
@@ -42,6 +44,7 @@ class CustomTextField extends StatelessWidget {
             height: 4,
           ),
           TextField(
+            maxLines: maxLines,
             obscureText: obscureText,
             controller: controller,
             decoration: InputDecoration(
@@ -49,7 +52,8 @@ class CustomTextField extends StatelessWidget {
               prefixIcon: fieldicon,
               hintText: hintText,
               hintStyle: TextStyle(color: Color(0XFF939199)),
-              contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 17, horizontal: 10),
               filled: true,
               fillColor: textfiledColor,
               border: OutlineInputBorder(
