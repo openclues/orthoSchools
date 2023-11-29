@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -48,4 +50,28 @@ class CommonMethods {
   // static Future<void> signUp(String userEmail, userPassword) {}
 
   // static Future<void> createProfile(String userEmail, ) {}
+
+  static Future<Map<String, dynamic>> getUserInfo(String authToken) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://orthoschools.com/user/info'),
+        headers: {
+          'Authorization': 'Token $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data;
+      } else {
+        // If the server did not return a 200 OK response, throw an exception.
+        throw Exception('Failed to load user info');
+      }
+    } catch (e) {
+      // Handle potential exceptions, such as network errors.
+      print('Error: $e');
+      rethrow;
+    }
+  }
 }

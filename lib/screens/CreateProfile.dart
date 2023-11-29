@@ -13,6 +13,7 @@ import 'package:text_area/text_area.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/App-bar.dart' as appBar;
+import 'package:csc_picker/csc_picker.dart';
 
 class CreateProfileScreen extends StatefulWidget {
   const CreateProfileScreen({super.key});
@@ -35,7 +36,12 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   bool isToggleOn = false;
   int selectedRadio = 0;
-  String? titleVlaue;
+  String? titleVlaueSpeciality;
+  String? selectedCountry;
+  String? selectedState;
+  String? selectedCity;
+
+  List<String> cities = [];
 
   var reasonValidation = true;
   File? selectedBannerImage;
@@ -55,7 +61,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 230, 230, 230),
-      appBar: appBar.AppBarWidget(),
+      // appBar: appBar.AppBarWidget(),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
@@ -216,7 +222,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedRadio = value as int;
-                            titleVlaue = 'Dr';
+                            titleVlaueSpeciality = 'Dr';
                           });
                         },
                       ),
@@ -227,7 +233,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedRadio = value as int;
-                            titleVlaue = 'Prof';
+                            titleVlaueSpeciality = 'Prof';
                           });
                         },
                       ),
@@ -238,7 +244,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedRadio = value as int;
-                            titleVlaue = 'Non';
+                            titleVlaueSpeciality = 'Non';
                           });
                         },
                       ),
@@ -328,7 +334,37 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           ),
                         ],
                       ),
+                      /////////////////////////////////////////////////
+                      CSCPicker(
+                        layout: Layout.vertical,
+                        // flagState: CountryFlag.DISABLE,
+                        onCountryChanged: (country) {
+                          setState(() {
+                            selectedCountry = country;
+                          });
+                        },
+                        onStateChanged: (state) {
+                          setState(() {
+                            selectedState = state;
+                          });
+                        },
+                        onCityChanged: (city) {
+                          setState(() {
+                            selectedCity = city;
+                          });
+                        },
+                        countryDropdownLabel: "Country",
+                        stateDropdownLabel: "State",
+                        cityDropdownLabel: "City",
+                        //dropdownDialogRadius: 30,
+                        //searchBarRadius: 30,
+                      ),
 
+                      SizedBox(height: 16),
+
+                      // Dropdown for selecting a city based on the selected country
+
+                      ////////////////////////////
                       // Container(
                       //   decoration: BoxDecoration(
                       //     border: Border.all(
@@ -615,7 +651,20 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   buttonColor: Color(0XFF2F7EDB),
                   buttonText: 'Update My Information',
                   height: 40,
-                  onpress: () {},
+                  onpress: () async {
+                    await createProfile(
+                      bioController.text,
+                      selectedProfileImage,
+                      workplaceController.text,
+                      titleVlaueSpeciality,
+                      selectedBannerImage,
+                      fileNameController.text,
+                      lastNameController.text,
+                      emailtController.text,
+                      phoneController.text,
+                      '${selectedCountry} / ${selectedState} / ${selectedCity}',
+                    );
+                  },
                 ),
               ),
             ],
@@ -722,59 +771,89 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   //   }
   // }
 
-  Future<void> createProfile(String bio, File profileImage, File banner,
-      String specialty, String placeOfWork) async {
+  Future<void> createProfile(
+      String? bio,
+      File? profileImage,
+      String? placeOfWork,
+      String? specialty,
+      File? banner,
+      String? firstName,
+      String? lastName,
+      String? email,
+      String? phone,
+      String? address) async {
+    print({
+      bio,
+      profileImage,
+      banner,
+      specialty,
+      placeOfWork,
+      firstName,
+      lastName,
+      email,
+      phone,
+      address
+    });
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: false, showLogs: true);
 
     String? authToken = await CommonMethods.getAuthToken();
     print("=============================${authToken}");
 
-    try {
-      pr.show();
-      var request = http.MultipartRequest(
-          'PATCH', Uri.parse('https://orthoschools.com/profile/create'));
+    pr.show();
+    var request = http.MultipartRequest(
+        'PATCH', Uri.parse('https://orthoschools.com/profile/update/'));
 
-      // text fields
-      request.fields['bio'] = bio;
-      request.fields['place_of_work'] = placeOfWork;
-      request.fields['speciality'] = specialty;
+    // text fields
+    request.fields['bio'] = bio ?? "";
+    request.fields['place_of_work'] = placeOfWork ?? "";
+    request.fields['speciality'] = specialty ?? ""; //radio butoon value string
+    request.fields['first_name'] = firstName ?? "";
+    request.fields['last_name'] = lastName ?? "";
+    request.fields['email'] = email ?? "";
+    request.fields['phone'] = phone ?? "";
+    request.fields['address'] = address ?? "";
 
-      // file fields
+    // file fields
+    if (profileImage != null) {
       request.files.add(http.MultipartFile(
           'profileImage',
           http.ByteStream(Stream.castFrom(profileImage.openRead())),
           await profileImage.length(),
           filename: 'profileImage.jpg'));
+    }
+    if (banner != null) {
       request.files.add(http.MultipartFile(
           'cover',
           http.ByteStream(Stream.castFrom(banner.openRead())),
           await banner.length(),
           filename: 'cover.jpg'));
+    }
 
-      //auth header
-      request.headers['Authorization'] = 'Token $authToken';
+    //auth header
+    request.headers['Authorization'] = 'Token $authToken';
 
-      //here i am sending the request
-      var response = await request.send();
+    // request.headers['Content-Type'] = 'application/json';
 
-      if (response.statusCode == 200) {
-        pr.hide();
-        //printing response
-        print(await response.stream.bytesToString());
-        //go to home after done
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false,
-        );
-      } else {
-        pr.hide();
-        print(
-            "==========================================${response.reasonPhrase}");
-      }
-    } catch (e) {
+    //here i am sending the request
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("=============================${response.statusCode}");
       pr.hide();
-      print(e.toString());
+      //printing response
+      print(await response.stream.bytesToString());
+      //go to home after done
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        //show snackkbar info updted succfuly
+        (route) => false,
+      );
+    } else {
+      print("=============================${response.statusCode}");
+      pr.hide();
+      print(
+          "==========================================${response.reasonPhrase}======================");
     }
   }
 }

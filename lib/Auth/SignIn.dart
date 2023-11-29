@@ -225,6 +225,7 @@ class _SignInScreenState extends State<SignInScreen> {
             databody['auth_token']); // i saved the token as string named login
         await pref.setString('email', userEmail);
         await pref.setString('password', userPassword);
+        //request the endoint get user data
         await pr.hide();
         //i should navigate to homescreen
         Navigator.of(context).pushAndRemoveUntil(

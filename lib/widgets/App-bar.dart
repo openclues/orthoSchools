@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:azsoon/Core/common-methods.dart';
 import 'package:azsoon/screens/SplashScreen.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
+import '../model/userinfoClass.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
+  // final User user;
   const AppBarWidget({super.key});
 
   @override

@@ -4,6 +4,7 @@ import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:azsoon/screens/SplashScreen.dart';
+import './model/userinfoClass.dart';
 
 void main() {
   runApp(const MyApp());

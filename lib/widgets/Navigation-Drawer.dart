@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../model/userinfoClass.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({super.key});

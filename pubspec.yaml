@@ -46,6 +46,8 @@ dependencies:
   flutter_native_splash: ^2.3.5
   lottie: ^2.7.0
   custom_pop_up_menu: ^1.2.4
+  csc_picker: ^0.2.7
+ 
 
 dev_dependencies:
   flutter_test:

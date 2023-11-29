@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:azsoon/Auth/SignIn.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
+import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
 import '../widgets/TextField.dart';
 import '../widgets/Button.dart';
@@ -241,23 +243,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
       pr.hide();
 
       if (response.statusCode == 201) {
-        await pr.show();
-        final databody = jsonDecode(response.body);
-        print("=====================${response.body}");
-        print(databody['auth_token']); //the token i need to save
+        // await pr.show();
+        // final databody = jsonDecode(response.body);
+        // print("=====================${response.body}");
+        // print(databody['auth_token']); //the token i need to save
 
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        await pref.setString('login',
-            databody['auth_token']); // i saved the token as string named login
-        await pref.setString(
-          'email',
-          emailController.text.trim(),
-        );
-        await pr.hide();
-        print(response.statusCode);
-        Map<String, dynamic> responseData = json.decode(response.body);
+        // SharedPreferences pref = await SharedPreferences.getInstance();
+        // await pref.setString('login',
+        //     databody['auth_token']); // i saved the token as string named login
+        // await pref.setString(
+        //   'email',
+        //   emailController.text.trim(),
+        // );
+        // await pr.hide();
+        // print(response.statusCode);
+        // Map<String, dynamic> responseData = json.decode(response.body);
+        //show snackbar account created successfully
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => CreateProfileScreen()),
+            MaterialPageRoute(builder: (context) => SignInScreen()),
             (route) => false);
         // if (responseData.containsKey('token')) {
         //   print(responseData.containsKey('token'));
