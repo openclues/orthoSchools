@@ -5,11 +5,11 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
-Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
+MoreInfo MoreInfoFromJson(String str) => MoreInfo.fromJson(json.decode(str));
 
-String welcomeToJson(Welcome data) => json.encode(data.toJson());
+String MoreInfoToJson(MoreInfo data) => json.encode(data.toJson());
 
-class Welcome {
+class MoreInfo {
   final int id;
   final User user;
   final dynamic bio;
@@ -19,7 +19,7 @@ class Welcome {
   final dynamic speciality;
   final dynamic selfie;
 
-  Welcome({
+  MoreInfo({
     required this.id,
     required this.user,
     required this.bio,
@@ -30,7 +30,7 @@ class Welcome {
     required this.selfie,
   });
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+  factory MoreInfo.fromJson(Map<String, dynamic> json) => MoreInfo(
         id: json["id"],
         user: User.fromJson(json["user"]),
         bio: json["bio"],

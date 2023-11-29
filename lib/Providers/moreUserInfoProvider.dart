@@ -2,22 +2,22 @@ import 'package:azsoon/Core/common-methods.dart';
 import 'package:azsoon/model/user-info.dart';
 import 'package:flutter/material.dart';
 
-class UserProvider with ChangeNotifier {
-  late User _user;
+class MoreInfoUserProvider with ChangeNotifier {
+  late MoreInfo _moreInfo;
 
-  User get user => _user;
+  MoreInfo get user => _moreInfo;
 
-  void setUser(User user) {
-    _user = user;
+  void setMoreInfoUser(MoreInfo moreInfo) {
+    _moreInfo = moreInfo;
     notifyListeners();
   }
 
   Future<void> refreshUser(String authToken) async {
     try {
-      final User refreshedUser = await CommonMethods.getUserInfo(authToken);
+      final MoreInfo refreshedUser = await CommonMethods.getMoreInfo(authToken);
 
       // Update the user data
-      _user = refreshedUser;
+      _moreInfo = refreshedUser;
 
       // Notify listeners that the data has changed
       notifyListeners();

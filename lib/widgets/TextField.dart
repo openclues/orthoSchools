@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final Color borderColor;
   final bool obscureText;
   final int? maxLines;
+  // final String? intialValue;
 
   const CustomTextField(
       {super.key,
@@ -18,6 +19,7 @@ class CustomTextField extends StatelessWidget {
       this.labelText,
       this.fieldicon,
       this.iconButton,
+      // this.intialValue,
       this.controller,
       this.textfiledColor,
       required this.obscureText,
@@ -44,10 +46,13 @@ class CustomTextField extends StatelessWidget {
             height: 4,
           ),
           TextField(
+            //was TextField
             maxLines: maxLines,
             obscureText: obscureText,
             controller: controller,
+
             decoration: InputDecoration(
+              // labelText: intialValue,
               suffixIcon: iconButton,
               prefixIcon: fieldicon,
               hintText: hintText,

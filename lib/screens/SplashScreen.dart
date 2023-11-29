@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/model/userinfoClass.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -114,35 +115,43 @@ class _SplashScreenState extends State<SplashScreen> {
   //     }
   //   });
   // }
+  late UserProvider userProvider;
+  late MoreInfoUserProvider moreInfoUserProvider;
 
   @override
   void initState() {
     super.initState();
+
+    // Access the UserProvider
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context, listen: false);
+
+    // Your existing code to check if the user is logged in
     Timer(Duration(seconds: 2), () async {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? val = pref.getString('login');
 
       if (val != null) {
+        // Fetch user data
         String? authToken = await CommonMethods.getAuthToken();
-
         try {
-          final User user = await CommonMethods.getUserInfo(authToken!);
+          User user = await CommonMethods.getUserInfo(authToken!);
+          MoreInfo moreInfo = await CommonMethods.getMoreInfo(authToken!);
+          userProvider.setUser(user);
+          moreInfoUserProvider.setMoreInfoUser(moreInfo);
+          await userProvider.refreshUser(authToken);
 
-          // Set the user information in UserProvider
-          Provider.of<UserProvider>(context, listen: false).setUser(user);
-
+          // Navigate to the home screen or wherever you want
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         } catch (e) {
-          // Handle errors
           print('Error fetching user info: $e');
         }
       } else {
-        // Delete login
+        // Navigate to the login screen or wherever you want
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SignInScreen()),

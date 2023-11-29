@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:azsoon/Core/common-methods.dart';
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
+import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   bool isToggleOn = false;
   int selectedRadio = 0;
-  String? titleVlaueSpeciality;
+  String titleVlaueSpeciality = '';
   String? selectedCountry;
   String? selectedState;
   String? selectedCity;
@@ -57,11 +59,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 230, 230, 230),
-      // appBar: appBar.AppBarWidget(),
+      appBar: appBar.AppBarWidget(),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
@@ -262,8 +266,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                               labelText: 'First Name',
                               borderColor: Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
-                              controller: firstNameController,
+                              controller: fileNameController,
                               hintText: "",
+                              // intialValue: userProvider.user.firstName,
                             ),
                           ),
                           SizedBox(
@@ -276,6 +281,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                               textfiledColor: Colors.white,
                               controller: lastNameController,
                               hintText: "",
+                              // intialValue: userProvider.user.lastName,
                             ),
                           ),
                         ],
@@ -664,6 +670,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       phoneController.text,
                       '${selectedCountry} / ${selectedState} / ${selectedCity}',
                     );
+                    String? authToken = await CommonMethods.getAuthToken();
+                    // After updating the profile, refresh the user information
+                    await userProvider.refreshUser(authToken!);
                   },
                 ),
               ),
@@ -873,6 +882,9 @@ class CustomRadio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    MoreInfoUserProvider moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context);
     return InkWell(
       onTap: () {
         onChanged?.call(value);

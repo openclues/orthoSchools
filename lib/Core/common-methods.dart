@@ -105,4 +105,32 @@ class CommonMethods {
       rethrow;
     }
   }
+
+  static Future<MoreInfo> getMoreInfo(String authToken) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://orthoschools.com/user/info'),
+        headers: {
+          'Authorization': 'Token $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON
+        final Map<String, dynamic> data = json.decode(response.body);
+        print(data);
+
+        // Create a MoreInfo object from the parsed data
+        MoreInfo moreInfo = MoreInfo.fromJson(data);
+        return moreInfo;
+      } else {
+        // If the server did not return a 200 OK response, throw an exception.
+        throw Exception('Failed to load user info');
+      }
+    } catch (e) {
+      // Handle potential exceptions, such as network errors.
+      print('Error: $e');
+      rethrow;
+    }
+  }
 }

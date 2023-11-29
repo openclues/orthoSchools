@@ -1,7 +1,10 @@
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
+import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:azsoon/Core/common-methods.dart';
 import 'package:azsoon/screens/SplashScreen.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
+import 'package:provider/provider.dart';
 import '../model/userinfoClass.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
@@ -20,6 +23,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    MoreInfoUserProvider moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context);
+
     return AppBar(
       iconTheme: IconThemeData(color: Colors.white),
       elevation: 0,
@@ -74,7 +81,9 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                         leading: CircleAvatar(
                           radius: 20,
                         ),
-                        title: Text('Dr.Anhaf'),
+                        title: Text(
+                            "${moreInfoUserProvider.user.speciality}  ${userProvider.user.firstName}"),
+                        // subtitle: Text(moreInfoUserProvider.user.speciality),
                       ),
                       //user image avatar and name
                       popUpMenuItem(

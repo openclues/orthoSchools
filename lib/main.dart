@@ -1,6 +1,7 @@
 import 'package:azsoon/Auth/SignIn.dart';
 import 'package:azsoon/Auth/SignUp.dart';
 import 'package:azsoon/Providers/DrawerNavProvider.dart';
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:azsoon/screens/Home.dart';
@@ -15,6 +16,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => MoreInfoUserProvider()),
         ChangeNotifierProvider(create: (context) => DrawerProvider()),
       ],
       child: const MyApp(),

@@ -1,4 +1,7 @@
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
+import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'Navigation-Drawer.dart';
 
 class PostWidget extends StatefulWidget {
@@ -12,6 +15,9 @@ class _PostWidgetState extends State<PostWidget> {
   DateTime time = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+    MoreInfoUserProvider moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context);
     return Container(
       decoration: BoxDecoration(
         // boxShadow: ,
@@ -22,7 +28,8 @@ class _PostWidgetState extends State<PostWidget> {
       child: Column(children: [
         ListTile(
           leading: Image.asset('assets/images/profilePhoto.png'),
-          title: Text('dr.Ahnaf aljajaH DDS. Msc'),
+          title: Text(
+              "${moreInfoUserProvider.user.speciality}  ${userProvider.user.firstName}"),
           subtitle: Text(
             "${time} PM",
             style: TextStyle(color: Colors.grey),
