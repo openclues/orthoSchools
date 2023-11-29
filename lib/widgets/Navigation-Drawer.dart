@@ -1,8 +1,11 @@
+import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../model/userinfoClass.dart';
+import '../Providers/DrawerNavProvider.dart';
 
 class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({super.key});
+  // const NavigationDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,16 @@ class NavigationDrawer extends StatelessWidget {
   }
 
   Widget buildHeader(BuildContext context) {
+    DrawerProvider drawerProvider = Provider.of<DrawerProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
       ),
       child: ListTile(
         leading: Image.asset('assets/images/profilePhoto.png'),
-        title: Text('Yassine Bassou'),
-        subtitle: Text('Yassin@gamil.com'),
+        title: Text(userProvider.user.firstName),
+        subtitle: Text(userProvider.user.email),
         trailing: FloatingActionButton(
           onPressed: () {},
           child: Icon(

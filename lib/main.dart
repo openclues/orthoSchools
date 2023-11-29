@@ -1,13 +1,25 @@
 import 'package:azsoon/Auth/SignIn.dart';
 import 'package:azsoon/Auth/SignUp.dart';
+import 'package:azsoon/Providers/DrawerNavProvider.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:azsoon/screens/SplashScreen.dart';
+import 'package:provider/provider.dart';
 import './model/userinfoClass.dart';
+import './Providers/userInfoProvider.dart';
+import './widgets/Navigation-Drawer.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => DrawerProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

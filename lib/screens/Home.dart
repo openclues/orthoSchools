@@ -1,8 +1,11 @@
 import 'package:azsoon/Core/common-methods.dart';
+import 'package:azsoon/Providers/DrawerNavProvider.dart';
+import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:azsoon/screens/SplashScreen.dart';
 import 'package:azsoon/widgets/Post.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/Navigation-Drawer.dart' as appdrawer;
 import '../widgets/PostTextfiled.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +19,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late UserProvider _userProvider;
+
+  late DrawerProvider _drawerProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
+    _drawerProvider = Provider.of<DrawerProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

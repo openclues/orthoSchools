@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:azsoon/model/user-info.dart';
 
+import 'package:azsoon/model/userinfoClass.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -51,7 +53,32 @@ class CommonMethods {
 
   // static Future<void> createProfile(String userEmail, ) {}
 
-  static Future<Map<String, dynamic>> getUserInfo(String authToken) async {
+  // static Future<Map<String, dynamic>> getUserInfo(String authToken) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('https://orthoschools.com/user/info'),
+  //       headers: {
+  //         'Authorization': 'Token $authToken',
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       // If the server returns a 200 OK response, parse the JSON
+  //       final Map<String, dynamic> data = json.decode(response.body);
+  //       print(data);
+  //       return data;
+  //     } else {
+  //       // If the server did not return a 200 OK response, throw an exception.
+  //       throw Exception('Failed to load user info');
+  //     }
+  //   } catch (e) {
+  //     // Handle potential exceptions, such as network errors.
+  //     print('Error: $e');
+  //     rethrow;
+  //   }
+  // }
+
+  static Future<User> getUserInfo(String authToken) async {
     try {
       final response = await http.get(
         Uri.parse('https://orthoschools.com/user/info'),
@@ -62,8 +89,12 @@ class CommonMethods {
 
       if (response.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data;
+        final Map<String, dynamic> userData = json.decode(response.body);
+        print(userData);
+
+        // Create a User object from the parsed data
+        User user = User.fromJson(userData['user']);
+        return user;
       } else {
         // If the server did not return a 200 OK response, throw an exception.
         throw Exception('Failed to load user info');
