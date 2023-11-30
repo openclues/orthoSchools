@@ -36,6 +36,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   TextEditingController dateOfBirsthController = TextEditingController();
   TextEditingController fileNameController = TextEditingController();
 
+  TextEditingController firstNameControllerNEW = new TextEditingController();
+  TextEditingController emailControllerNEW = new TextEditingController();
+  TextEditingController lastNameControllerNEW = new TextEditingController();
+
   bool isToggleOn = false;
   int selectedRadio = 0;
   String titleVlaueSpeciality = '';
@@ -57,9 +61,18 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   //   'drPH',
   // ];
 
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   firstNameController.text =
+  // }
+
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    firstNameControllerNEW.text = userProvider.user.firstName;
+    lastNameControllerNEW.text = userProvider.user.lastName;
+    emailControllerNEW.text = userProvider.user.email;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -96,64 +109,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color.fromARGB(255, 76, 76, 76),
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(10.0),
-                            ),
+                          TextButton(
                             onPressed: () {
-                              setState(() {
-                                isToggleOn = !isToggleOn;
-                              });
+                              picBannerImageFromGallery();
                             },
-                            child: Icon(
-                              Icons.more_vert,
-                              size: 20,
+                            child: Text(
+                              'upload image',
                             ),
                           ),
-                          // SizedBox(height: 20),
-                          if (isToggleOn)
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0XFF21A2C4),
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(15.0),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      isToggleOn = !isToggleOn;
-                                    });
-                                    picBannerImageFromCamera();
-                                  },
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 15,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0XFF21A2C4),
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(15.0),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      isToggleOn = !isToggleOn;
-                                    });
-                                    picBannerImageFromGallery();
-                                  },
-                                  child: Icon(
-                                    Icons.photo,
-                                    size: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
                         ],
                       ),
                     ),
@@ -179,16 +142,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                             color: Color.fromARGB(255, 71, 71, 71)),
                       )),
                   Container(
-                    alignment: Alignment.topLeft,
+                    // alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 7),
                       child: GestureDetector(
                         onTap: () {
                           picProfileImageFromGallery();
                           //open the image for preview and have a button change image gallery and or take one (camera)
                         },
                         child: CircleAvatar(
-                          radius: 70,
+                          radius: 75,
                           child: selectedProfileImage == null
                               ? Center(
                                   child: Icon(
@@ -266,7 +229,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                               labelText: 'First Name',
                               borderColor: Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
-                              controller: fileNameController,
+                              controller: firstNameControllerNEW,
                               hintText: "",
                               // intialValue: userProvider.user.firstName,
                             ),
@@ -279,13 +242,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                               labelText: 'Last Name',
                               borderColor: Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
-                              controller: lastNameController,
+                              controller: lastNameControllerNEW,
                               hintText: "",
                               // intialValue: userProvider.user.lastName,
                             ),
                           ),
                         ],
                       ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -313,34 +277,35 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              obscureText: false,
-                              labelText: 'Location',
-                              borderColor: Color.fromARGB(255, 176, 176, 176),
-                              textfiledColor: Colors.white,
-                              // controller: phoneController,
-                              hintText: "",
-                            ),
-                          ),
-                          SizedBox(
-                              width: 16), // Adjust the spacing between fields
-                          Expanded(
-                            child: CustomTextField(
-                              obscureText: false,
-                              labelText: 'City',
-                              borderColor: Color.fromARGB(255, 176, 176, 176),
-                              textfiledColor: Colors.white,
-                              controller: cityController,
-                              hintText: "",
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Expanded(
+                      //       child: CustomTextField(
+                      //         obscureText: false,
+                      //         labelText: 'Location',
+                      //         borderColor: Color.fromARGB(255, 176, 176, 176),
+                      //         textfiledColor: Colors.white,
+                      //         // controller: phoneController,
+                      //         hintText: "",
+                      //       ),
+                      //     ),
+                      //     SizedBox(
+                      //         width: 16), // Adjust the spacing between fields
+                      //     Expanded(
+                      //       child: CustomTextField(
+                      //         obscureText: false,
+                      //         labelText: 'City',
+                      //         borderColor: Color.fromARGB(255, 176, 176, 176),
+                      //         textfiledColor: Colors.white,
+                      //         controller: cityController,
+                      //         hintText: "",
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       /////////////////////////////////////////////////
+                      SizedBox(height: 16),
                       CSCPicker(
                         layout: Layout.vertical,
                         // flagState: CountryFlag.DISABLE,
@@ -518,7 +483,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                     obscureText: false,
                     labelText: 'My Email',
                     borderColor: Color.fromARGB(255, 176, 176, 176),
-                    controller: emailtController,
+                    controller: emailControllerNEW,
                     hintText: '',
                     textfiledColor: Colors.white,
                   ),
