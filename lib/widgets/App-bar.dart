@@ -66,8 +66,16 @@ class _AppBarWidgetState extends State<AppBarWidget> {
             arrowColor: Colors.white,
             controller: popUpMenuController,
             child: CircleAvatar(
-              backgroundImage: null,
+              radius: 20,
               backgroundColor: Colors.grey,
+              backgroundImage: moreInfoUserProvider.user.profileImage != null
+                  ? NetworkImage(moreInfoUserProvider.user.profileImage)
+                  : null,
+              child: moreInfoUserProvider.user.profileImage == null
+                  ? Center(
+                      child: Image.asset('assets/images/drimage.png'),
+                    )
+                  : null, // Remove Center widget if profileImage is not null
             ),
             menuBuilder: () => ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
@@ -80,6 +88,18 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                       ListTile(
                         leading: CircleAvatar(
                           radius: 20,
+                          backgroundColor: Colors.grey,
+                          backgroundImage:
+                              moreInfoUserProvider.user.profileImage != null
+                                  ? NetworkImage(
+                                      moreInfoUserProvider.user.profileImage)
+                                  : null,
+                          child: moreInfoUserProvider.user.profileImage == null
+                              ? Center(
+                                  child:
+                                      Image.asset('assets/images/drimage.png'),
+                                )
+                              : null, // Remove Center widget if profileImage is not null
                         ),
                         title: Text(
                             "${moreInfoUserProvider.user.speciality}  ${userProvider.user.firstName}"),
@@ -91,6 +111,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                         title: 'profile',
                         icon: Icons.person,
                         ontap: () {
+                          Navigator.of(context).pushNamed('createProfile');
                           popUpMenuController.hideMenu();
                         },
                       ),
@@ -111,7 +132,15 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                         popUpMenuController: popUpMenuController,
                         title: 'log out',
                         icon: Icons.logout,
-                        ontap: () {
+                        ontap: () async {
+                          await CommonMethods.logOut();
+                          if (context.mounted) {
+                            //to make sure that the logout await is done
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => SplashScreen()),
+                                (route) => false);
+                          }
                           popUpMenuController.hideMenu();
                         },
                       ),

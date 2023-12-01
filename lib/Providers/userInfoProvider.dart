@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 
 class UserProvider with ChangeNotifier {
   late User _user;
+  String? firstname;
+
+  setFirstName(String fName) {
+    firstname = fName;
+    notifyListeners();
+  }
 
   User get user => _user;
 
@@ -20,6 +26,7 @@ class UserProvider with ChangeNotifier {
       _user = refreshedUser;
 
       // Notify listeners that the data has changed
+      firstname = _user.firstName;
       notifyListeners();
     } catch (e) {
       // Handle errors

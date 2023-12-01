@@ -1,3 +1,4 @@
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,12 +28,25 @@ class NavigationDrawer extends StatelessWidget {
   Widget buildHeader(BuildContext context) {
     DrawerProvider drawerProvider = Provider.of<DrawerProvider>(context);
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    MoreInfoUserProvider moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context);
     return Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
       ),
       child: ListTile(
-        leading: Image.asset('assets/images/profilePhoto.png'),
+        leading: CircleAvatar(
+          radius: 30,
+          backgroundColor: Colors.grey,
+          backgroundImage: moreInfoUserProvider.user.profileImage != null
+              ? NetworkImage(moreInfoUserProvider.user.profileImage)
+              : null,
+          child: moreInfoUserProvider.user.profileImage == null
+              ? Center(
+                  child: Image.asset('assets/images/drimage.png'),
+                )
+              : null, // Remove Center widget if profileImage is not null
+        ),
         title: Text(userProvider.user.firstName),
         subtitle: Text(userProvider.user.email),
         trailing: FloatingActionButton(
@@ -155,6 +169,9 @@ class NavigationDrawer extends StatelessWidget {
           BottomNavItems(
             itemtitle: 'Profile',
             itemIcon: Icons.person,
+            ontap: () {
+              Navigator.of(context).pushNamed('createProfile');
+            },
           ),
           BottomNavItems(
             itemtitle: 'About',

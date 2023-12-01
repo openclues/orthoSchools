@@ -47,7 +47,7 @@ dependencies:
   lottie: ^2.7.0
   custom_pop_up_menu: ^1.2.4
   csc_picker: ^0.2.7
- 
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:

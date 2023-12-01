@@ -27,7 +27,18 @@ class _PostWidgetState extends State<PostWidget> {
       padding: EdgeInsets.all(10),
       child: Column(children: [
         ListTile(
-          leading: Image.asset('assets/images/profilePhoto.png'),
+          leading: CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.grey,
+            backgroundImage: moreInfoUserProvider.user.profileImage != null
+                ? NetworkImage(moreInfoUserProvider.user.profileImage)
+                : null,
+            child: moreInfoUserProvider.user.profileImage == null
+                ? Center(
+                    child: Image.asset('assets/images/drimage.png'),
+                  )
+                : null, // Remove Center widget if profileImage is not null
+          ),
           title: Text(
               "${moreInfoUserProvider.user.speciality}  ${userProvider.user.firstName}"),
           subtitle: Text(

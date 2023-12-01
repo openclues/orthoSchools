@@ -1,4 +1,6 @@
+import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/Button.dart';
 
 class SearchBarWidget extends StatelessWidget {
@@ -6,6 +8,8 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MoreInfoUserProvider moreInfoUserProvider =
+        Provider.of<MoreInfoUserProvider>(context);
     return Container(
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -17,7 +21,18 @@ class SearchBarWidget extends StatelessWidget {
         children: [
           ListTile(
             contentPadding: EdgeInsets.all(5),
-            leading: Image.asset('assets/images/profilePhoto.png'),
+            leading: CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.grey,
+              backgroundImage: moreInfoUserProvider.user.profileImage != null
+                  ? NetworkImage(moreInfoUserProvider.user.profileImage)
+                  : null,
+              child: moreInfoUserProvider.user.profileImage == null
+                  ? Center(
+                      child: Image.asset('assets/images/drimage.png'),
+                    )
+                  : null, // Remove Center widget if profileImage is not null
+            ),
             title: TextField(
               decoration: InputDecoration(
                 suffixIcon: MaterialButton(

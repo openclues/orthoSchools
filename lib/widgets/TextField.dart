@@ -5,20 +5,24 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final String? labelText;
   final Icon? fieldicon;
+  void Function(String?)? onSaved;
   final IconButton? iconButton;
   final Color? textfiledColor;
   final TextEditingController? controller;
   final Color borderColor;
   final bool obscureText;
+  String? initialValue;
   final int? maxLines;
   // final String? intialValue;
 
-  const CustomTextField(
+  CustomTextField(
       {super.key,
       this.hintText,
+      this.onSaved,
       this.labelText,
       this.fieldicon,
       this.iconButton,
+      this.initialValue,
       // this.intialValue,
       this.controller,
       this.textfiledColor,
@@ -45,11 +49,13 @@ class CustomTextField extends StatelessWidget {
           SizedBox(
             height: 4,
           ),
-          TextField(
+          TextFormField(
+            onSaved: onSaved,
+            initialValue: initialValue,
             //was TextField
             maxLines: maxLines,
             obscureText: obscureText,
-            controller: controller,
+            controller: initialValue != null ? null : controller,
 
             decoration: InputDecoration(
               // labelText: intialValue,

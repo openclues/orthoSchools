@@ -114,7 +114,7 @@ class CommonMethods {
           'Authorization': 'Token $authToken',
         },
       );
-
+      print(response.body + "dsflsdofpjsdf");
       if (response.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON
         final Map<String, dynamic> data = json.decode(response.body);
