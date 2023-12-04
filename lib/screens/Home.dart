@@ -34,12 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 230, 230),
-      appBar: appBar.AppBarWidget(),
+      appBar: const appBar.AppBarWidget(),
       drawer: appdrawer.NavigationDrawer(),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(children: [
+          padding: const EdgeInsets.all(10),
+          child: const Column(children: [
             SearchBarWidget(),
             SizedBox(height: 15),
             PostWidget(),

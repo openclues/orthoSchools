@@ -11,7 +11,7 @@ class SearchBarWidget extends StatelessWidget {
     MoreInfoUserProvider moreInfoUserProvider =
         Provider.of<MoreInfoUserProvider>(context);
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         // boxShadow: ,
         color: Colors.white,
@@ -20,7 +20,7 @@ class SearchBarWidget extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            contentPadding: EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.all(5),
             leading: CircleAvatar(
               radius: 25,
               backgroundColor: Colors.grey,
@@ -43,22 +43,22 @@ class SearchBarWidget extends StatelessWidget {
                   color: Colors.blue,
                   textColor: Colors.white,
                   onPressed: () {},
-                  child: Text('SHARE'),
+                  child: const Text('SHARE'),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                 hintText: 'say Something',
                 filled: true,
-                fillColor: Color.fromARGB(255, 222, 222, 222),
+                fillColor: const Color.fromARGB(255, 222, 222, 222),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0XFFF5F6F8),
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0XFFF5F6F8),
                   ), // Change color here
                 ),

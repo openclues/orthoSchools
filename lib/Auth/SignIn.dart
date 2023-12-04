@@ -1,17 +1,18 @@
 import 'dart:convert';
 
+import 'package:azsoon/Core/images_path.dart';
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/TextField.dart';
 import '../widgets/Button.dart';
-import '../widgets/Label.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:azsoon/Core/common-methods.dart';
 
 class SignInScreen extends StatefulWidget {
+  static const String routeName = '/signIn';
   const SignInScreen({super.key});
 
   @override
@@ -20,23 +21,6 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   static String? userEmailAddress;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Load the user email from shared preferences when the widget is initialized
-  //   loadUserEmail();
-  // }
-
-  // Future<void> loadUserEmail() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // Retrieve the user email from shared preferences
-  //   String? savedEmail = prefs.getString('email');
-
-  //   setState(() {
-  //     userEmailAddress = savedEmail; // If null, set an empty string
-  //   });
-  // }
 
   bool? isChecked = false;
   bool passwordVisibilty = false;
@@ -47,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
         child: ListView(
           children: [
             Column(
@@ -55,43 +39,44 @@ class _SignInScreenState extends State<SignInScreen> {
               children: [
                 Center(
                   child: Container(
+                    height: LocalStorage.getcreenSize(context).height * 0.2,
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      ImagePath.logo,
                       fit: BoxFit.contain,
-                      width: 250.0,
-                      height: 100.0,
+                      // width: 250.0,
+                      // height: 100.0,
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
-                Text(
+                const Text(
                   "Login In",
                   style: TextStyle(
-                      color: const Color.fromARGB(255, 50, 50, 50),
+                      color: Color.fromARGB(255, 50, 50, 50),
                       fontWeight: FontWeight.bold,
                       fontSize: 25),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
-                Text(
+                const Text(
                   "Welcone back!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 25.0,
                       fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 103, 103, 103)),
+                      color: Color.fromARGB(255, 103, 103, 103)),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
                 CustomTextField(
                   obscureText: false,
                   labelText: 'Email',
-                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  borderColor: const Color.fromARGB(255, 176, 176, 176),
                   textfiledColor: Colors.white,
                   controller: emailController,
                   hintText: "e-mail address",
@@ -100,29 +85,29 @@ class _SignInScreenState extends State<SignInScreen> {
                   obscureText: passwordVisibilty,
                   labelText: 'Password',
                   iconButton: IconButton(
-                    padding: EdgeInsetsDirectional.only(end: 12.0),
+                    padding: const EdgeInsetsDirectional.only(end: 12.0),
                     icon: passwordVisibilty
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
                     onPressed: () {
                       setState(() {
                         passwordVisibilty = !passwordVisibilty;
                       });
                     },
                   ),
-                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  borderColor: const Color.fromARGB(255, 176, 176, 176),
                   textfiledColor: Colors.white,
                   controller: passwordController,
                   hintText: "Password",
                 ),
                 CheckboxListTile(
-                  contentPadding: EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.all(0),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(
+                  title: const Text(
                     'stay logged in',
                     style: TextStyle(
                         fontSize: 14,
-                        color: const Color.fromARGB(255, 102, 102, 102)),
+                        color: Color.fromARGB(255, 102, 102, 102)),
                   ),
                   value: isChecked,
                   onChanged: (bool? value) {
@@ -131,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     });
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
               ],
@@ -139,20 +124,20 @@ class _SignInScreenState extends State<SignInScreen> {
             CustomButton(
               height: 47,
               buttonText: 'Log in',
-              buttonColor: Color(0XFF2F7EDB),
+              buttonColor: const Color(0XFF2F7EDB),
               onpress: () {
                 checkRequiredData(context);
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Text(
+            const Text(
               'Forgot your password?',
               textAlign: TextAlign.center,
               style: TextStyle(color: Color(0XFF2F7EDB), fontSize: 15),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Center(
@@ -161,7 +146,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 Navigator.of(context).pushNamed('signUp');
               },
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   children: [
                     TextSpan(
                       text: 'Don\'t have an account?  ',
@@ -229,7 +214,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await pr.hide();
         //i should navigate to homescreen
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
             (route) => false);
       } else if (response.statusCode == 400) {
         print(response.statusCode);
@@ -249,7 +234,7 @@ class _SignInScreenState extends State<SignInScreen> {
         SharedPreferences pref = await SharedPreferences.getInstance();
         await pref.clear();
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => SignInScreen()),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
             (route) => false);
       }
     } catch (e) {

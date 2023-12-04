@@ -1,17 +1,21 @@
-import 'package:azsoon/Auth/SignIn.dart';
-import 'package:azsoon/Auth/SignUp.dart';
+import 'package:azsoon/Core/bloc_observer.dart';
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Providers/DrawerNavProvider.dart';
 import 'package:azsoon/Providers/moreUserInfoProvider.dart';
-import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:flutter/material.dart';
-import 'package:azsoon/screens/Home.dart';
-import 'package:azsoon/screens/SplashScreen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import './model/userinfoClass.dart';
 import './Providers/userInfoProvider.dart';
-import './widgets/Navigation-Drawer.dart';
+import 'Core/router.dart';
 
-void main() {
+void main() async {
+  // wait until all the widgets are loaded
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalStorage.init();
+
+  //register observers
+  Bloc.observer = MyBlocObserver();
+  // initialize the shared preferences
   runApp(
     MultiProvider(
       providers: [
@@ -31,22 +35,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onGenerateRoute: AppRouter.generateRoute,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: debugDisableShadows,
-      theme: ThemeData(
-          // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          // useMaterial3: true,
-          ),
-      home: SplashScreen(),
-      //SignUpScreen(),
-
-      //  CreateProfileScreen(),
-      routes: {
-        'home': (context) => HomeScreen(),
-        'signUp': (context) => SignUpScreen(),
-        'signIn': (context) => SignInScreen(),
-        'createProfile': (context) => CreateProfileScreen(),
-      },
+      theme: ThemeData(),
     );
   }
 }
