@@ -12,31 +12,26 @@ class SpacesList extends StatefulWidget {
 }
 
 class _SpacesListState extends State<SpacesList> {
-  // Example data for the list of spaces
   List<SpaceData> spaces = [
     SpaceData(
       name: 'Space 1',
       description:
           'The future of cryptoArt markets a network governed by artists, collectors and curators.',
-      color: Colors.blue,
       bgImage: "assets/images/postImage.png",
     ),
     SpaceData(
       name: 'Space 2',
       description: 'Description 2',
-      color: Colors.green,
       bgImage: "assets/images/postImage.png",
     ),
     SpaceData(
       name: 'Space 3',
       description: 'Description 3',
-      color: Colors.orange,
       bgImage: "assets/images/postImage.png",
     ),
     SpaceData(
       name: 'Space 4',
       description: 'Description 4',
-      color: Colors.red,
       bgImage: "assets/images/postImage.png",
     ),
   ];
