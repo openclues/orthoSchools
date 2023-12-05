@@ -47,7 +47,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           body: ListView(
             children: [
               SpacesList(),
-              PostWidget(),
+              // PostWidget(),
             ],
           )),
     );
