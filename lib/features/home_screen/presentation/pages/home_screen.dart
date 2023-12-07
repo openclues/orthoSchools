@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
+import 'package:azsoon/screens/EditProfilePage.dart';
 import 'package:azsoon/screens/ProfilePage.dart';
 import 'package:azsoon/widgets/Post.dart';
 import 'package:flutter/material.dart';
