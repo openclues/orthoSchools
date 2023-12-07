@@ -50,35 +50,51 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      body: ListView(children: [
-        Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Container(
-              child: buildCoverImage(coverHeight),
-            ),
-            Positioned(
-              top: top,
-              child: buildProfilePicture(profilePictureHeight),
-            ),
-            Positioned(
-              top: top + top / 4,
-              right: 0,
-              child: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () async {
-                  await editDialog();
-                },
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: ListView(children: [
+          Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                child: buildCoverImage(coverHeight),
               ),
+              Positioned(
+                top: top,
+                child: buildProfilePicture(profilePictureHeight),
+              ),
+              Positioned(
+                top: top + top / 4,
+                right: 0,
+                child: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () async {
+                    await editDialog();
+                  },
+                ),
+              ),
+            ],
+          ),
+          //tabs
+          tab_bar_tabs(),
+          //view of the tabs
+          tab_sections_view(),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+            child: CustomButton(
+              buttonText: 'Save',
+              buttonColor: Color(0XFF8174CC),
+              borderColor: Color(0XFF8174CC),
+              textColor: Colors.white,
+              height: 45,
+              onpress: () {
+                //saving edited data
+              },
             ),
-          ],
-        ),
-        //tabs
-        tab_bar_tabs(),
-        //view of the tabs
-        tab_sections_view(),
-      ]),
+          ),
+        ]),
+      ),
     );
   }
 
@@ -209,16 +225,6 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget buildSection(String text) {
-    return Center(
-      child: ListView(
-        children: [
-          Text(text),
-        ],
-      ),
-    );
-  }
-
   Widget about_me_content() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -237,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage>
                   // },
                   obscureText: false,
                   labelText: 'Bio',
-                  borderColor: const Color(0XFF8174CC),
+                  borderColor: Color.fromARGB(255, 204, 204, 205),
                   textfiledColor: Colors.white,
                   controller: workplaceController,
                   hintText: '',
@@ -248,21 +254,21 @@ class _ProfilePageState extends State<ProfilePage>
                   //   _worksat = n;
                   // },
                   obscureText: false,
-                  labelText: 'Works At',
-                  borderColor: const Color(0XFF8174CC),
+                  labelText: '',
+                  borderColor: const Color.fromARGB(255, 204, 204, 205),
                   textfiledColor: Colors.white,
                   controller: workplaceController,
-                  hintText: '',
+                  hintText: 'Works At',
                 ),
                 CustomTextField(
                   // onSaved: (b) {
                   //   study_at = b;
                   // },
                   obscureText: false,
-                  labelText: 'Study In',
-                  borderColor: const Color(0XFF8174CC),
+                  labelText: '',
+                  borderColor: const Color.fromARGB(255, 204, 204, 205),
                   controller: studyInController,
-                  hintText: '',
+                  hintText: 'Study In',
                   textfiledColor: Colors.white,
                 ),
               ]),
@@ -303,7 +309,9 @@ class _ProfilePageState extends State<ProfilePage>
                                             ? Color(0XFF8174CC)
                                             : Colors.transparent,
                                         border: Border.all(
-                                            color: Color(0XFF8174CC))),
+                                          color: Color.fromARGB(
+                                              255, 204, 204, 205),
+                                        )),
                                     child: Padding(
                                       padding: const EdgeInsets.all(7.0),
                                       child: Text(
@@ -334,7 +342,7 @@ class _ProfilePageState extends State<ProfilePage>
                         // },
                         obscureText: false,
                         labelText: 'First Name',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         controller: firstNameController,
                         hintText: "",
@@ -350,7 +358,7 @@ class _ProfilePageState extends State<ProfilePage>
                         // },
                         obscureText: false,
                         labelText: 'Last Name',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         controller: lastNameController,
                         hintText: "",
@@ -372,7 +380,7 @@ class _ProfilePageState extends State<ProfilePage>
                         // },
                         obscureText: false,
                         labelText: 'Phone Number',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         controller: phoneController,
                         hintText: "",
@@ -387,7 +395,7 @@ class _ProfilePageState extends State<ProfilePage>
                         // },
                         obscureText: false,
                         labelText: 'Date Of Birth',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         controller: dateOfBirsthController,
                         hintText: "",
@@ -399,12 +407,16 @@ class _ProfilePageState extends State<ProfilePage>
                   padding: const EdgeInsets.fromLTRB(0, 40, 0, 40),
                   child: CSCPicker(
                     dropdownDecoration: BoxDecoration(
-                      border: Border.all(color: Color(0XFF8174CC)),
+                      border: Border.all(
+                        color: Color.fromARGB(255, 204, 204, 205),
+                      ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     disabledDropdownDecoration: BoxDecoration(
                       color: Color.fromARGB(255, 239, 238, 238),
-                      border: Border.all(color: Color(0XFF8174CC)),
+                      border: Border.all(
+                        color: Color.fromARGB(255, 204, 204, 205),
+                      ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     layout: Layout.vertical,
@@ -546,7 +558,7 @@ class _ProfilePageState extends State<ProfilePage>
                       child: CustomTextField(
                         obscureText: false,
                         labelText: 'Change Passowrd',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         // controller:  ,
                         hintText: "Old Passowrd",
@@ -557,7 +569,7 @@ class _ProfilePageState extends State<ProfilePage>
                       child: CustomTextField(
                         obscureText: false,
                         labelText: '',
-                        borderColor: const Color(0XFF8174CC),
+                        borderColor: const Color.fromARGB(255, 204, 204, 205),
                         textfiledColor: Colors.white,
                         // controller:  ,
                         hintText: "New Password",
@@ -568,7 +580,7 @@ class _ProfilePageState extends State<ProfilePage>
                 CustomTextField(
                   obscureText: false,
                   labelText: 'My Email',
-                  borderColor: const Color(0XFF8174CC),
+                  borderColor: const Color.fromARGB(255, 204, 204, 205),
                   controller: emailtController,
                   hintText: '',
                   textfiledColor: Colors.white,
