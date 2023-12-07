@@ -1,6 +1,8 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
+import 'package:azsoon/screens/CreateProfile.dart';
+import 'package:azsoon/screens/ProfilePage.dart';
 import 'package:azsoon/widgets/Post.dart';
 import 'package:flutter/material.dart';
 import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
@@ -48,6 +50,16 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             children: [
               SpacesList(),
               // PostWidget(),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage()),
+                  );
+                },
+                icon: Icon(Icons.person),
+              ),
             ],
           )),
     );
