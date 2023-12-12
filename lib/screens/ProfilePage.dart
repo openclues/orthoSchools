@@ -3,6 +3,8 @@ import 'package:azsoon/widgets/Button.dart';
 import 'package:azsoon/widgets/IndicatorShape.dart';
 import 'package:flutter/material.dart';
 
+//192.168.1.52
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
