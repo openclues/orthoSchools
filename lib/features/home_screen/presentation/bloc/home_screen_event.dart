@@ -6,3 +6,18 @@ abstract class HomeScreenEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+
+
+class LoadHomeScreenData extends HomeScreenEvent {
+  const LoadHomeScreenData();
+  @override
+  List<Object> get props => [];
+}
+
+
+class ReasetHomeScreenData extends HomeScreenEvent {
+  const ReasetHomeScreenData();
+  @override
+  List<Object> get props => [];
+}

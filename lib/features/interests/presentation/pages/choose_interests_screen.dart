@@ -41,13 +41,8 @@ class _ChooseInterestsScreenState extends State<ChooseInterestsScreen> {
                 color: primaryColor,
                 textColor: Colors.white,
                 onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      PageAnimationTransition(
-                        page: const HomeScreenPage(),
-                        pageAnimationType: BottomToTopTransition(),
-                      ), (route) {
-                    return false;
-                  });
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      HomeScreenPage.routeName, (route) => false);
                 },
                 child: const Text('Next', style: TextStyle(fontSize: 20)),
               ),
