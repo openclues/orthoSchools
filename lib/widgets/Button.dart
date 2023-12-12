@@ -20,6 +20,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
+      elevation: 0,
       height: height,
       minWidth: width,
       color: buttonColor,
@@ -28,7 +29,7 @@ class CustomButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(50.0),
         side: BorderSide(
           color:
-              borderColor ?? Color(0XFF2F7EDB), // Use default if not provided
+              borderColor ?? Color(0XFF8174CC), // Use default if not provided
         ),
       ),
       onPressed: onpress,

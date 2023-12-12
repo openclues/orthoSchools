@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:azsoon/Constants.dart';
+import 'package:azsoon/Utils/Constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final String? hintText;
@@ -68,7 +68,7 @@ class CustomTextField extends StatelessWidget {
               filled: true,
               fillColor: textfiledColor,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(9.0),
+                borderRadius: BorderRadius.circular(20.0), //was 9.0
                 borderSide: BorderSide(
                   color: Color(0XFFF5F6F8),
                 ),
@@ -77,7 +77,7 @@ class CustomTextField extends StatelessWidget {
                 borderSide: BorderSide(
                   color: borderColor,
                 ),
-                borderRadius: BorderRadius.circular(9.0),
+                borderRadius: BorderRadius.circular(25.0), //was 9.0
               ),
             ),
           ),
