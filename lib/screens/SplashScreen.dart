@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Common.dart';
 import 'Home.dart';
-import '../Auth/SignIn.dart'; //on bording
+import '../Auth/screens/SignIn.dart'; //on bording
 import 'package:lottie/lottie.dart';
 import '../Core/common-methods.dart';
 import 'package:http/http.dart' as http;

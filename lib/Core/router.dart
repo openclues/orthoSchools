@@ -1,4 +1,4 @@
-import 'package:azsoon/Auth/SignIn.dart';
+import 'package:azsoon/Auth/screens/SignIn.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';

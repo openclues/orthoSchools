@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:azsoon/Auth/SignIn.dart';
+import 'package:azsoon/Auth/screens/SignIn.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
-import '../widgets/TextField.dart';
-import '../widgets/Button.dart';
-import '../widgets/Label.dart';
+import '../../widgets/TextField.dart';
+import '../../widgets/Button.dart';
+import '../../widgets/Label.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:http/http.dart' as http;
