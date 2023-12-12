@@ -33,12 +33,12 @@ class LocalStorage {
 
   static Future<void> saveAuthToken(String token) async {
     SharedPreferences prefs = LocalStorage.getInstance();
-    await prefs.setString("auth_token", token);
+    await prefs.setString("authToken", token);
   }
 
   static Future<void> removeAuthToken() async {
     SharedPreferences prefs = LocalStorage.getInstance();
-    await prefs.remove("auth_token");
+    await prefs.remove("authToken");
   }
 
   static Future<void> removeAll() async {

@@ -20,9 +20,8 @@ class LoadingScreen extends StatelessWidget {
           //   ));
           //   Navigator.pushNamed(context, HomeScreenPage.routeName);
           if (state is UserIsNotSignedIn) {
-            await Future.delayed(const Duration(seconds: 2));
-
-            Navigator.pushNamed(context, ChooseInterestsScreen.routeName);
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => SignInScreen()));
           }
         },
         child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(
