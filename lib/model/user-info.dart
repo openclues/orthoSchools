@@ -54,14 +54,14 @@ class MoreInfo {
 }
 
 class User {
-  final int id;
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String phone;
-  final String address;
-  final bool isActive;
-  final DateTime lastLogin;
+  final int? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+  final String? phone;
+  final String? address;
+  final bool? isActive;
+  final DateTime? lastLogin;
 
   User({
     required this.id,
@@ -93,6 +93,6 @@ class User {
         "phone": phone,
         "address": address,
         "is_active": isActive,
-        "last_login": lastLogin.toIso8601String(),
+        "last_login": lastLogin!.toIso8601String(),
       };
 }

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestHelper {
   static const String _baseUrl = ApiEndpoints.baseUrl;
-  static String? _token = "3d5f08ecb517e35f72531006e98d6b16c7e4d639";
+  static String? _token = "7849a8d88b557937a2a6c7339a3930979c0bea31";
   static setAuthTokenToNull() {
     _token = null;
   }
@@ -48,7 +48,7 @@ class RequestHelper {
   }
 
   static Future<http.Response> post(String endpoint, Map<String, dynamic> data,
-      {bool? signup}) async {
+      {bool? signup, List<XFile>? files, String? filesKey}) async {
     String url = _baseUrl + endpoint;
 
     Map<String, String> headers = {"Content-Type": "application/json"};
@@ -59,6 +59,22 @@ class RequestHelper {
       if (authToken != null) {
         // authenticated request with header
         headers["Authorization"] = "Token $authToken";
+
+        if (files != null && files.isNotEmpty) {
+          var request = http.MultipartRequest('POST', Uri.parse(url));
+          files.forEach((file) async {
+            var multipartFile = await http.MultipartFile.fromPath(
+              filesKey ?? 'profile_pic',
+              file.path,
+            );
+            request.files.add(multipartFile);
+          });
+          request.headers.addAll(headers);
+          request.fields.addAll(
+              data.map((key, value) => MapEntry(key, value.toString())));
+          var response = await request.send();
+          return http.Response.fromStream(response);
+        }
 
         return http.post(Uri.parse(url),
             headers: headers, body: jsonEncode(data));

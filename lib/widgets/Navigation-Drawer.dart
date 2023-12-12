@@ -47,8 +47,8 @@ class NavigationDrawer extends StatelessWidget {
                 )
               : null, // Remove Center widget if profileImage is not null
         ),
-        title: Text(userProvider.user.firstName),
-        subtitle: Text(userProvider.user.email),
+        // title: Text(userProvider.user.firstName),
+        // subtitle: Text(userProvider.user.email),
         trailing: FloatingActionButton(
           onPressed: () {},
           child: Icon(

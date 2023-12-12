@@ -17,15 +17,15 @@ class _BottomNavState extends State<BottomNav> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.edit,
-        ),
         backgroundColor: Colors.amber,
         onPressed: () {
           setState(() {
             _currentIndex = 1;
           });
         },
+        child: const Icon(
+          Icons.edit,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
@@ -36,7 +36,11 @@ class _BottomNavState extends State<BottomNav> {
         notchSmoothness: NotchSmoothness.verySmoothEdge,
         icons: iconList,
         activeIndex: _currentIndex,
-        onTap: (int) {},
+        onTap: (int) {
+          setState(() {
+            _currentIndex = int;
+          });
+        },
       ),
     );
   }
