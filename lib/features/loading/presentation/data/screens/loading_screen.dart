@@ -22,6 +22,9 @@ class LoadingScreen extends StatelessWidget {
           if (state is UserIsNotSignedIn) {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => SignInScreen()));
+          } else if (state is UserIsSignedIn) {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ChooseInterestsScreen()));
           }
         },
         child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(
