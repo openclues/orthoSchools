@@ -156,8 +156,9 @@ class SpacePostWidget extends StatelessWidget {
                     ListTile(
                       trailing: Column(
                         children: [
-                          const Icon(IconlyLight.more_circle,
-                              color: Colors.grey),
+                          if (post.isJoined == true)
+                            const Icon(IconlyLight.more_circle,
+                                color: Colors.grey),
                           // Icon(Icons.more_vert),
                           JoinButton(
                             isJoined: post.isJoined!,
