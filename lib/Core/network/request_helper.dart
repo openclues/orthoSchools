@@ -20,7 +20,7 @@ class RequestHelper {
     // get token from shared preferences
     SharedPreferences prefs = LocalStorage.getInstance();
 
-    _token = prefs.getString("auth_token");
+    _token = prefs.getString("authToken");
 
     return _token;
   }
