@@ -1,9 +1,11 @@
-import 'package:azsoon/Auth/SignIn.dart';
+import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../home_screen/presentation/pages/home_screen.dart';
 
 class LoadingScreen extends StatelessWidget {
   static const String routeName = '/';
@@ -14,17 +16,16 @@ class LoadingScreen extends StatelessWidget {
     return Scaffold(
       body: BlocListener<LoadingBlocBloc, LoadingBlocState>(
         listener: (context, state) async {
+          if (state is UserIsSignedIn) {
+            Navigator.of(context).pushNamed(HomeScreenPage.routeName);
+          }
           // if (state is UserIsSignedIn) {
           //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           //     content: SuccessSnackbar(),
           //   ));
           //   Navigator.pushNamed(context, HomeScreenPage.routeName);
           if (state is UserIsNotSignedIn) {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => SignInScreen()));
-          } else if (state is UserIsSignedIn) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChooseInterestsScreen()));
+            Navigator.of(context).pushNamed(SignInScreen.routeName);
           }
         },
         child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(

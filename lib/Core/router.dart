@@ -1,4 +1,6 @@
-import 'package:azsoon/Auth/SignIn.dart';
+import 'package:azsoon/Auth/bussiness_logi/cubit/auth_cubit_cubit.dart';
+import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
+import 'package:azsoon/Auth/presentaiton/screens/SignUp.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 
+import '../features/blog/presentation/screens/blogWriting.dart';
 import '../features/profile/bloc/profile_bloc.dart';
 import '../features/space/bloc/space_bloc.dart';
 
@@ -62,7 +65,19 @@ class AppRouter {
                   ),
                 ));
       case SignInScreen.routeName:
-        return MaterialPageRoute(builder: (_) => const SignInScreen());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => AuthCubitCubit(),
+                  child: SignInScreen(),
+                ));
+      case SignUpScreen.routeName:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => AuthCubitCubit(),
+                  child: SignUpScreen(),
+                ));
+      // case BlogWritingScreen.routeName:
+      //       return MaterialPageRoute(builder:  BlogWritingScreen() );
       case ChooseInterestsScreen.routeName:
         return MaterialPageRoute(builder: (_) => const ChooseInterestsScreen());
       case '/chooseInterests':

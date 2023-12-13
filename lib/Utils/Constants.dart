@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 //////Constants style
 
+final loginUrl = 'https://orthoschools.com/auth/token/login/';
+
 const kLoginRegisterTexFieldtStyle =
     TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 

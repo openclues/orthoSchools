@@ -1,6 +1,8 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Core/network/request_helper.dart';
+import 'package:azsoon/features/blog/presentation/screens/blogWriting.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
@@ -136,6 +138,21 @@ AppBar buildAppBar(BuildContext context) {
     ),
     backgroundColor: Colors.white,
     actions: [
+      IconButton(
+          onPressed: () async {
+            await LocalStorage.removeAuthToken().then((_) {
+              if (context.mounted) {
+                Navigator.of(context)
+                    .pushReplacementNamed(LoadingScreen.routeName);
+              }
+            });
+          },
+          icon: Icon(Icons.logout)),
+      // IconButton(
+      //     onPressed: () async {
+      //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
+      //     },
+      //     icon: Icon(Icons.folder)),
       IconButton(onPressed: () {}, icon: const Icon(IconlyLight.search)),
       Padding(
         padding: const EdgeInsets.all(10.0),

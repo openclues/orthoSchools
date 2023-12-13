@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestHelper {
   static const String _baseUrl = ApiEndpoints.baseUrl;
-  static String? _token = "7849a8d88b557937a2a6c7339a3930979c0bea31";
+  static String? _token;
   static setAuthTokenToNull() {
     _token = null;
   }
@@ -20,7 +20,7 @@ class RequestHelper {
     // get token from shared preferences
     SharedPreferences prefs = LocalStorage.getInstance();
 
-    _token = prefs.getString("auth_token");
+    _token = prefs.getString("authToken");
 
     return _token;
   }
