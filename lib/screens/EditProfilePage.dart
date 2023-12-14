@@ -35,7 +35,7 @@ class _ProfilePageState extends State<EditProfilePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
@@ -147,7 +147,7 @@ class _ProfilePageState extends State<EditProfilePage>
           //content of certificates
           certificates(),
           //content of securirty
-          security(),
+          // security(),
         ],
       ),
     );
@@ -186,13 +186,13 @@ class _ProfilePageState extends State<EditProfilePage>
             ),
             text: 'Certificates',
           ),
-          Tab(
-            icon: Icon(
-              Icons.security,
-              size: 20,
-            ),
-            text: 'Security',
-          ),
+          // Tab(
+          //   icon: Icon(
+          //     Icons.security,
+          //     size: 20,
+          //   ),
+          //   text: 'Security',
+          // ),
         ],
       ),
     );
@@ -544,56 +544,56 @@ class _ProfilePageState extends State<EditProfilePage>
   }
 
 //we will change this///
-  Widget security() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListView(
-        children: [
-          Form(
-            key: globalKey,
-            child: Container(
-              child: Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        obscureText: false,
-                        labelText: 'Change Passowrd',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        // controller:  ,
-                        hintText: "Old Passowrd",
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: CustomTextField(
-                        obscureText: false,
-                        labelText: '',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        // controller:  ,
-                        hintText: "New Password",
-                      ),
-                    ),
-                  ],
-                ),
-                CustomTextField(
-                  obscureText: false,
-                  labelText: 'My Email',
-                  borderColor: const Color.fromARGB(255, 204, 204, 205),
-                  controller: emailtController,
-                  hintText: '',
-                  textfiledColor: Colors.white,
-                ),
-              ]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget security() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+  //     child: ListView(
+  //       children: [
+  //         Form(
+  //           key: globalKey,
+  //           child: Container(
+  //             child: Column(children: [
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Expanded(
+  //                     child: CustomTextField(
+  //                       obscureText: false,
+  //                       labelText: 'Change Passowrd',
+  //                       borderColor: const Color.fromARGB(255, 204, 204, 205),
+  //                       textfiledColor: Colors.white,
+  //                       // controller:  ,
+  //                       hintText: "Old Passowrd",
+  //                     ),
+  //                   ),
+  //                   SizedBox(width: 16),
+  //                   Expanded(
+  //                     child: CustomTextField(
+  //                       obscureText: false,
+  //                       labelText: '',
+  //                       borderColor: const Color.fromARGB(255, 204, 204, 205),
+  //                       textfiledColor: Colors.white,
+  //                       // controller:  ,
+  //                       hintText: "New Password",
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               CustomTextField(
+  //                 obscureText: false,
+  //                 labelText: 'My Email',
+  //                 borderColor: const Color.fromARGB(255, 204, 204, 205),
+  //                 controller: emailtController,
+  //                 hintText: '',
+  //                 textfiledColor: Colors.white,
+  //               ),
+  //             ]),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
 //////////////////
   Future<FilePickerResult?> _pickFiles() async {

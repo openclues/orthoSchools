@@ -11,6 +11,8 @@ import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart
 import 'package:azsoon/features/space/bloc/load_post_bloc.dart';
 import 'package:azsoon/features/space/presentation/post_screen.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
+import 'package:azsoon/screens/ProfilePage.dart';
+import 'package:azsoon/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
@@ -45,7 +47,10 @@ class AppRouter {
           ),
           pageAnimationType: BottomToTopTransition(),
         );
-
+      case SettingsScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case ProfilePage.routeName:
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
       case SpaceScreen.routeName:
         int spaceId = settings.arguments as int;
         return MaterialPageRoute(

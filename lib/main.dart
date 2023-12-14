@@ -21,7 +21,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => MoreInfoUserProvider()),
-        ChangeNotifierProvider(create: (context) => DrawerProvider()),
+        // ChangeNotifierProvider(create: (context) => DrawerProvider()),
       ],
       child: const MyApp(),
     ),

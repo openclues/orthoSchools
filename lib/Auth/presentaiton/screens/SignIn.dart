@@ -10,6 +10,7 @@ import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../Core/snacbars/success_snacbar.dart';
 import '../../../widgets/TextField.dart';
 import '../../../widgets/Button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
   static String? userEmailAddress;
 
   bool? isChecked = false;
-  bool passwordVisibilty = false;
+  bool passwordVisibilty = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -53,8 +54,9 @@ class _SignInScreenState extends State<SignInScreen> {
     return BlocBuilder<AuthCubitCubit, AuthCubitState>(
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: Container(
-            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+            padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
             child: ListView(
               children: [
                 Column(
@@ -62,9 +64,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     Center(
                       child: Container(
-                        height: LocalStorage.getcreenSize(context).height * 0.2,
+                        height: LocalStorage.getcreenSize(context).height * 0.4,
                         child: Image.asset(
-                          ImagePath.logo,
+                          ImagePath.dentistImage,
                           fit: BoxFit.contain,
                           // width: 250.0,
                           // height: 100.0,
@@ -72,32 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 40,
-                    ),
-                    //
-                    state is! AuthLoading
-                        ? const Text(
-                            "Login In",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 50, 50, 50),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
-                            textAlign: TextAlign.center,
-                          )
-                        : CircularProgressIndicator(),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    const Text(
-                      "Welcone back!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 103, 103, 103)),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
+                      height: 20,
                     ),
                     CustomTextField(
                       obscureText: false,
@@ -126,34 +103,43 @@ class _SignInScreenState extends State<SignInScreen> {
                       controller: passwordController,
                       hintText: "Password",
                     ),
-                    CheckboxListTile(
-                      contentPadding: const EdgeInsets.all(0),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: const Text(
-                        'stay logged in',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color.fromARGB(255, 102, 102, 102)),
-                      ),
-                      value: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = !isChecked!;
-                        });
-                      },
-                    ),
                     const SizedBox(
                       height: 15,
                     ),
                   ],
                 ),
-                CustomButton(
+                SizedBox(
+                  height: 20,
+                ),
+                MaterialButton(
+                  elevation: 0,
                   height: 47,
-                  buttonText: 'Log in',
-                  buttonColor: primaryColor,
-                  onpress: () {
+                  color: primaryColor,
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(
+                      color: Color(0XFF8174CC), // Use default if not provided
+                    ),
+                  ),
+                  onPressed: () {
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBarWidget.faliure('Operation failed'),
+                    // );
                     checkRequiredData(context);
                   },
+                  child: state is! AuthLoading
+                      ? const Text(
+                          "Login In",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          textAlign: TextAlign.center,
+                        )
+                      : CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -161,10 +147,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 const Text(
                   'Forgot your password?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Color(0XFF2F7EDB), fontSize: 15),
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 81, 81, 81), fontSize: 15),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 Center(
                     child: InkWell(
@@ -176,19 +163,23 @@ class _SignInScreenState extends State<SignInScreen> {
                       children: [
                         TextSpan(
                           text: 'Don\'t have an account?  ',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 131, 131, 131)),
                         ),
                         TextSpan(
                           text: 'Sign Up',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0XFF2F7EDB),
+                            color: primaryColor,
                           ),
                         ),
                       ],
                     ),
                   ),
                 )),
+                const SizedBox(
+                  height: 15,
+                ),
               ],
             ),
           ),
