@@ -160,11 +160,14 @@ class SpacePostWidget extends StatelessWidget {
                             const Icon(IconlyLight.more_circle,
                                 color: Colors.grey),
                           // Icon(Icons.more_vert),
-                          JoinButton(
-                            isJoined: post.isJoined!,
-                            spaceId: post.space!,
-                            // space: post.space!,
-                            isAllowedToJoin: post.isAllowedToJoin!,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: JoinButton(
+                              isJoined: post.isJoined!,
+                              spaceId: post.space!,
+                              // space: post.space!,
+                              isAllowedToJoin: post.isAllowedToJoin!,
+                            ),
                           ),
                         ],
                       ),

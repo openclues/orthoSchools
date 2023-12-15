@@ -12,7 +12,7 @@ final class BlogsInitial extends BlogsState {}
 final class BlogsLoading extends BlogsState {}
 
 final class BlogsLoaded extends BlogsState {
-  final List<Blog> blogs;
+  final PaginationBlogListModel blogs;
 
   const BlogsLoaded(this.blogs);
 
@@ -20,4 +20,13 @@ final class BlogsLoaded extends BlogsState {
   List<Object> get props => [blogs];
 }
 
-class Blog {}
+
+
+final class BlogErr extends BlogsState {
+  final String message;
+
+  const BlogErr({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

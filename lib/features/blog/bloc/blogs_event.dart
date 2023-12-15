@@ -10,7 +10,8 @@ sealed class BlogsEvent extends Equatable {
 
 
 class LoadBlogs extends BlogsEvent {
-  const LoadBlogs();
+ final int? page;
+  const LoadBlogs({this.page});
 
   @override
   List<Object> get props => [];

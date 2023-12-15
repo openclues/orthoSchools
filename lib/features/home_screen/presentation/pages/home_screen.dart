@@ -1,7 +1,9 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
+import 'package:azsoon/Core/network/endpoints.dart';
 import 'package:azsoon/Core/network/request_helper.dart';
+import 'package:azsoon/features/blog/bloc/blogs_bloc.dart';
 import 'package:azsoon/features/blog/presentation/screens/blogWriting.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
@@ -18,7 +20,10 @@ import 'package:iconly/iconly.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:tab_container/tab_container.dart';
+import '../../../../Auth/presentaiton/screens/SignIn.dart';
 import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
+import '../../../blog/data/models/blog_model.dart';
+import '../../../blog/presentation/screens/blog_post_screen.dart';
 import '../../../space/bloc/add_post_bloc.dart';
 import '../../../space/bloc/my_spaces_bloc.dart';
 
@@ -56,33 +61,45 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeScreenBloc, HomeScreenState>(
-      builder: (context, state) {
-        if (state is HomeScreenInitial) {
-          // BlocProvider.of<HomeScreenBloc>(context).add(
-          //   const LoadHomeScreenData(),
-          // );
-          return const LoadingWidget();
-        } else if (state is HomeScreenLoading) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else if (state is HomeScreenError) {
-          return const Scaffold(
-            body: Center(
-              child: Text('Something went wrong'),
-            ),
-          );
-        } else if (state is HomeScreenNotAuthenticated) {
-          return const Center(
-            child: Text('Your session has expired'),
-          );
-        } else {
-          return const HomeScreenLoadedScreen();
+    return BlocListener<HomeScreenBloc, HomeScreenState>(
+      listener: (context, state) async {
+        if (state is HomeScreenNotAuthenticated) {
+          await LocalStorage.removeAll().then((value) {
+            if (context.mounted) {
+              Navigator.of(context).pushNamed(SignInScreen.routeName);
+            }
+          });
         }
+        // TODO: implement listener
       },
+      child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+        builder: (context, state) {
+          if (state is HomeScreenInitial) {
+            // BlocProvider.of<HomeScreenBloc>(context).add(
+            //   const LoadHomeScreenData(),
+            // );
+            return const LoadingWidget();
+          } else if (state is HomeScreenLoading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (state is HomeScreenError) {
+            return const Scaffold(
+              body: Center(
+                child: Text('Something went wrong'),
+              ),
+            );
+          } else if (state is HomeScreenNotAuthenticated) {
+            return const Center(
+              child: Text('Your session has expired'),
+            );
+          } else {
+            return const HomeScreenLoadedScreen();
+          }
+        },
+      ),
     );
   }
 }
@@ -147,7 +164,7 @@ AppBar buildAppBar(BuildContext context) {
               }
             });
           },
-          icon: Icon(Icons.logout)),
+          icon: const Icon(Icons.logout)),
       // IconButton(
       //     onPressed: () async {
       //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
@@ -442,9 +459,12 @@ class HomeScreenTab extends StatelessWidget {
         ],
         childCurve: Curves.easeIn,
         isStringTabs: false,
-        children: const [
-          HomeScreenSpaceTab(),
-          HomeScreebBlogTab(),
+        children: [
+          const HomeScreenSpaceTab(),
+          BlocProvider(
+            create: (context) => BlogsBloc(),
+            child: const HomeScreebBlogTab(),
+          ),
         ],
       ),
     );
@@ -496,11 +516,162 @@ class HomeScreebBlogTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200]!,
-      body: ListView(
-        children: const [Text('Blog')],
-      ),
+    var state = context.watch<BlogsBloc>().state;
+    if (state is BlogsInitial) {
+      context.read<BlogsBloc>().add(const LoadBlogs());
+    }
+    if (state is BlogsLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state is BlogsLoaded &&
+        state.blogs.results != null &&
+        state.blogs.results!.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Latest Articles',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'View All',
+                      style: TextStyle(color: primaryColor),
+                    ))
+              ],
+            ),
+            Container(
+              height: LocalStorage.getcreenSize(context).height * 0.3,
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: state.blogs.latest_updated_posts_model!.length,
+                itemBuilder: (context, index) {
+                  BlogModel blog = getBlogFromId(
+                      state.blogs.latest_updated_posts_model![index].blog!,
+                      state.blogs.results!);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, BlogPostScreen.routeName,
+                          arguments:
+                              state.blogs.latest_updated_posts_model![index]);
+                    },
+                    child: Hero(
+                      tag: state.blogs.latest_updated_posts_model![index].id!,
+                      child: Container(
+                        width: LocalStorage.getcreenSize(context).width * 0.8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.grey[200],
+                          image: DecorationImage(
+                            image: NetworkImage(ApiEndpoints.baseUrl +
+                                state.blogs.latest_updated_posts_model![index]
+                                    .cover!),
+                            filterQuality: FilterQuality.high,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.7),
+                                BlendMode.darken),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: blog.user.profileImage !=
+                                              null
+                                          ? NetworkImage(ApiEndpoints.baseUrl +
+                                              blog.user.profileImage!)
+                                          : const AssetImage(
+                                                  'assets/images/drimage.png')
+                                              as ImageProvider,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            blog.title!,
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 25,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            '${blog.user.userAccount.firstName!} ${blog.user.userAccount.lastName!}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          IconlyLight.bookmark,
+                                          color: Colors.white,
+                                        ))
+                                  ],
+                                ),
+                                const Spacer(),
+                                Text(
+                                    state
+                                        .blogs
+                                        .latest_updated_posts_model![index]
+                                        .title!,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 27,
+                                        height: 1.5)),
+                              ],
+                            )),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return ListView(
+      children: const [
+        SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+        )
+      ],
     );
   }
+}
+
+getBlogFromId(int id, List<BlogModel> blogs) {
+  return blogs.firstWhere((element) => element.id == id);
 }

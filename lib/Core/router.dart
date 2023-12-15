@@ -1,6 +1,7 @@
 import 'package:azsoon/Auth/bussiness_logi/cubit/auth_cubit_cubit.dart';
 import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
 import 'package:azsoon/Auth/presentaiton/screens/SignUp.dart';
+import 'package:azsoon/features/blog/data/models/blog_model.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
@@ -17,6 +18,7 @@ import 'package:page_animation_transition/animations/bottom_to_top_transition.da
 import 'package:page_animation_transition/page_animation_transition.dart';
 
 import '../features/blog/presentation/screens/blogWriting.dart';
+import '../features/blog/presentation/screens/blog_post_screen.dart';
 import '../features/profile/bloc/profile_bloc.dart';
 import '../features/space/bloc/space_bloc.dart';
 
@@ -91,6 +93,13 @@ class AppRouter {
                   child: PostScreen(
                     postId: postId,
                   ),
+                ));
+
+      case BlogPostScreen.routeName:
+        PostModel? blogPostModel = settings.arguments as PostModel?;
+        return MaterialPageRoute(
+            builder: (_) => BlogPostScreen(
+                  blogPostModel: blogPostModel,
                 ));
       default:
         return MaterialPageRoute(
