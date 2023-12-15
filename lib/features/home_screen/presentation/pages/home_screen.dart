@@ -105,30 +105,55 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
 }
 
 AppBar buildAppBar(BuildContext context) {
+  bool isVisible = true;
+
   return AppBar(
     bottom: PreferredSize(
-        preferredSize: const Size(30, 50),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+      preferredSize: const Size(30, 50),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 8.0,
+        ),
+        child: Visibility(
+          visible: isVisible,
           child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.pinkAccent[50],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              // ignore: prefer_const_constructors
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
-                  'Your  account is not verified yet',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 215, 82, 82),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  offset: Offset(0, 2),
+                  blurRadius: 1,
+                  spreadRadius: 0.2,
                 ),
-              )),
-        )),
+              ],
+            ),
+            child: ListTile(
+              trailing: IconButton(
+                icon: Icon(Icons.close),
+                color: Colors.white,
+                onPressed: () {
+                  // setState(() {
+                  //   isVisible = false;
+                  // });// not working
+                },
+              ),
+              leading: Icon(
+                Icons.warning,
+                color: Colors.white,
+              ),
+              title: Text(
+                'Verify your account !',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
     iconTheme: const IconThemeData(color: Color.fromARGB(255, 47, 47, 47)),
     elevation: 0,
     centerTitle: true,
@@ -155,16 +180,16 @@ AppBar buildAppBar(BuildContext context) {
     ),
     backgroundColor: Colors.white,
     actions: [
-      IconButton(
-          onPressed: () async {
-            await LocalStorage.removeAuthToken().then((_) {
-              if (context.mounted) {
-                Navigator.of(context)
-                    .pushReplacementNamed(LoadingScreen.routeName);
-              }
-            });
-          },
-          icon: const Icon(Icons.logout)),
+      // IconButton(
+      //     onPressed: () async {
+      //       await LocalStorage.removeAuthToken().then((_) {
+      //         if (context.mounted) {
+      //           Navigator.of(context)
+      //               .pushReplacementNamed(LoadingScreen.routeName);
+      //         }
+      //       });
+      //     },
+      //     icon: Icon(Icons.logout)),
       // IconButton(
       //     onPressed: () async {
       //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
@@ -235,6 +260,8 @@ List<Widget> _widgetOptions = <Widget>[
 ];
 
 class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
+  bool isVisible = true;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<JoinSpaceBloc, JoinSpaceState>(

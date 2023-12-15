@@ -43,7 +43,7 @@ class CustomTextField extends StatelessWidget {
               style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w500,
-                  color: Color.fromARGB(255, 71, 71, 71)),
+                  color: Color.fromARGB(255, 171, 171, 171)),
             ),
           ),
           SizedBox(
@@ -68,7 +68,7 @@ class CustomTextField extends StatelessWidget {
               filled: true,
               fillColor: textfiledColor,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0), //was 9.0
+                borderRadius: BorderRadius.circular(10.0), //was 9.0
                 borderSide: BorderSide(
                   color: Color(0XFFF5F6F8),
                 ),
@@ -77,7 +77,7 @@ class CustomTextField extends StatelessWidget {
                 borderSide: BorderSide(
                   color: borderColor,
                 ),
-                borderRadius: BorderRadius.circular(25.0), //was 9.0
+                borderRadius: BorderRadius.circular(10.0), //was 9.0
               ),
             ),
           ),

@@ -1,9 +1,13 @@
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/Providers/userInfoProvider.dart';
+import 'package:azsoon/features/loading/presentation/data/screens/loading_screen.dart';
+import 'package:azsoon/screens/ProfilePage.dart';
+import 'package:azsoon/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/userinfoClass.dart';
-import '../Providers/DrawerNavProvider.dart';
+// import '../Providers/DrawerNavProvider.dart';
 
 class NavigationDrawer extends StatelessWidget {
   // const NavigationDrawer({super.key});
@@ -11,6 +15,7 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,38 +31,19 @@ class NavigationDrawer extends StatelessWidget {
   }
 
   Widget buildHeader(BuildContext context) {
-    DrawerProvider drawerProvider = Provider.of<DrawerProvider>(context);
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    MoreInfoUserProvider moreInfoUserProvider =
-        Provider.of<MoreInfoUserProvider>(context);
     return Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
       ),
       child: ListTile(
+        title: Text('sara hossam '),
         leading: CircleAvatar(
           radius: 30,
           backgroundColor: Colors.grey,
-          backgroundImage: moreInfoUserProvider.user.profileImage != null
-              ? NetworkImage(moreInfoUserProvider.user.profileImage)
-              : null,
-          child: moreInfoUserProvider.user.profileImage == null
-              ? Center(
-                  child: Image.asset('assets/images/drimage.png'),
-                )
-              : null, // Remove Center widget if profileImage is not null
+          // backgroundImage:  Image.asset(''),
         ),
-        // title: Text(userProvider.user.firstName),
+
         // subtitle: Text(userProvider.user.email),
-        trailing: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(
-            Icons.close,
-            size: 16,
-          ),
-          backgroundColor: Color(0XFF2F7EDB),
-          mini: true,
-        ),
       ),
     );
   }
@@ -67,79 +53,88 @@ class NavigationDrawer extends StatelessWidget {
       padding: EdgeInsets.all(15),
       child: Column(
         children: [
-          //searchBar
-          TextField(
-            // controller: controller,
-            decoration: InputDecoration(
-              suffixIcon: Icon(Icons.search),
-              hintText: 'search...',
-              hintStyle: TextStyle(color: Color(0XFF939199)),
-              contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide(
-                  color: Color(0XFF2F7EDB),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color(0XFF2F7EDB),
-                ),
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-            ),
-          ),
           SizedBox(
             height: 30,
           ),
           Column(children: [
-            NavigationTextBar(
-              text: 'HOME',
-              onTap: () {
-                // Your onTap function
-              },
+            Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 2),
+                    blurRadius: 1,
+                    spreadRadius: 0.2,
+                  ),
+                ],
+              ),
+              child: ListTile(
+                // trailing: Icon(
+                //   Icons.verified,
+                //   color: Colors.blue,
+                // ),
+                leading: Icon(
+                  Icons.verified,
+                  color: Colors.blue,
+                ),
+                title: Text(
+                  'Become Verified Now!',
+                ),
+              ),
             ),
             SizedBox(
               height: 15,
             ),
-            NavigationTextBar(
-              text: 'SPACES',
-              onTap: () {
-                // Your onTap function
-              },
-            ),
-            ExpansionTile(
-              tilePadding: EdgeInsets.all(0),
-              initiallyExpanded: false,
-              title: Text(
-                'COURSES',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 2),
+                    blurRadius: 1,
+                    spreadRadius: 0.2,
+                  ),
+                ],
               ),
+              child: ListTile(
+                leading: Icon(
+                  Icons.workspace_premium_rounded,
+                  color: Colors.yellow[800],
+                  size: 25,
+                ),
+                title: Text(
+                  'Want To Be Verified Pro?',
+                ),
+              ),
+            ),
+            // ExpansionTile(
+            //   tilePadding: EdgeInsets.all(0),
+            //   initiallyExpanded: false,
+            //   title: Text(
+            //     'COURSES',
+            //     style: TextStyle(fontWeight: FontWeight.bold),
+            //   ),
 
-              trailing: Icon(Icons.add), // Your trailing icon
-              children: [
-                NavigationTextBar(
-                  text: 'Courses offered',
-                  onTap: () {
-                    // Your onTap function
-                  },
-                ),
-                NavigationTextBar(
-                  text: 'My courses',
-                  onTap: () {
-                    // Your onTap function
-                  },
-                ),
-              ],
-            ),
-            NavigationTextBar(
-              text: 'My Blog',
-              onTap: () {
-                // Your onTap function
-              },
-            ),
+            //   trailing: Icon(Icons.add), // Your trailing icon
+            //   children: [
+            //     NavigationTextBar(
+            //       text: 'Courses offered',
+            //       onTap: () {
+            //         // Your onTap function
+            //       },
+            //     ),
+            //     NavigationTextBar(
+            //       text: 'My courses',
+            //       onTap: () {
+            //         // Your onTap function
+            //       },
+            //     ),
+            //   ],
+            // ),
           ]),
 
           // Text('Spaces', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -166,13 +161,19 @@ class NavigationDrawer extends StatelessWidget {
           // Divider(
           //   thickness: 1,
           // ),
-          BottomNavItems(
-            itemtitle: 'Profile',
-            itemIcon: Icons.person,
-            ontap: () {
-              Navigator.of(context).pushNamed('createProfile');
-            },
+
+          SizedBox(
+            height: 30,
           ),
+          Divider(),
+          // BottomNavItems(
+          //   itemtitle: 'Profile',
+          //   itemIcon: Icons.person,
+          //   ontap: () {
+          //     //navigate to profile page
+          //     Navigator.of(context).pushNamed(ProfilePage.routeName);
+          //   },
+          // ),
           BottomNavItems(
             itemtitle: 'About',
             itemIcon: Icons.insert_drive_file_rounded,
@@ -182,12 +183,37 @@ class NavigationDrawer extends StatelessWidget {
             itemIcon: Icons.save_alt_outlined,
           ),
           BottomNavItems(
-            itemtitle: 'Settings',
-            itemIcon: Icons.settings,
+            itemtitle: 'Favorite posts',
+            itemIcon: Icons.favorite_border,
+          ),
+          // BottomNavItems(
+          //   itemtitle: 'Settings',
+          //   itemIcon: Icons.settings,
+          //   ontap: () {
+          //     //navigate to settings page
+          //     Navigator.of(context).pushNamed(SettingsScreen.routeName);
+          //   },
+          // ),
+          BottomNavItems(
+            itemtitle: 'Help Center',
+            itemIcon: Icons.privacy_tip_outlined,
+          ),
+          BottomNavItems(
+            itemtitle: 'Notifications',
+            itemIcon: Icons.notifications_none,
           ),
           BottomNavItems(
             itemtitle: 'Sign out',
             itemIcon: Icons.login,
+            ontap: () async {
+              //sign out
+              await LocalStorage.removeAuthToken().then((_) {
+                if (context.mounted) {
+                  Navigator.of(context)
+                      .pushReplacementNamed(LoadingScreen.routeName);
+                }
+              });
+            },
           ),
         ],
       ),

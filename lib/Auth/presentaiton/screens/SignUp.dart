@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
+import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/Core/images_path.dart';
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/screens/CreateProfile.dart';
 import 'package:azsoon/screens/Home.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePassowrdController = TextEditingController();
+  bool passwordVisibilty = true;
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +57,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocBuilder<AuthCubitCubit, AuthCubitState>(
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: Container(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
             child: ListView(
               children: [
                 Column(
@@ -62,16 +67,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     Center(
                       child: Container(
+                        height: LocalStorage.getcreenSize(context).height * 0.5,
                         child: Image.asset(
-                          'assets/images/logo.png',
+                          ImagePath.doctorsImage,
                           fit: BoxFit.contain,
-                          width: 250.0,
-                          height: 100.0,
+                          // width: 250.0,
+                          // height: 100.0,
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 40,
                     ),
                     Text(
                       'Create an Account',
@@ -86,12 +89,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       style: TextStyle(
                           fontSize: 14.0,
                           color: const Color.fromARGB(255, 109, 109, 109)),
-                    ),
-                    state is! AuthLoading
-                        ? Text('welcome!')
-                        : CircularProgressIndicator(),
-                    SizedBox(
-                      height: 10.0,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,57 +126,90 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: "e-email address",
                     ),
                     CustomTextField(
-                      obscureText: false,
+                      obscureText: passwordVisibilty,
                       labelText: 'Password',
                       borderColor: Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: passwordController,
                       hintText: "Password",
+                      iconButton: IconButton(
+                        padding: const EdgeInsetsDirectional.only(end: 12.0),
+                        icon: passwordVisibilty
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisibilty = !passwordVisibilty;
+                          });
+                        },
+                      ),
                     ),
                     CustomTextField(
-                      obscureText: false,
+                      obscureText: passwordVisibilty,
                       labelText: 'Re-Passowrd',
                       borderColor: Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: rePassowrdController,
                       hintText: "Re-Password",
                     ),
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: 'i agree to the ',
-                                style: TextStyle(color: Colors.grey)),
-                            TextSpan(
-                                text: 'Terms & Conditions',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                          ],
-                        ),
-                      ),
-                      value: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = !isChecked!;
-                        });
-                      },
-                    ),
+                    // CheckboxListTile(
+                    //   contentPadding: EdgeInsets.all(0),
+                    //   controlAffinity: ListTileControlAffinity.leading,
+                    //   title: RichText(
+                    //     text: TextSpan(
+                    //       children: <TextSpan>[
+                    //         TextSpan(
+                    //             text: 'i agree to the ',
+                    //             style: TextStyle(color: Colors.grey)),
+                    //         TextSpan(
+                    //             text: 'Terms & Conditions',
+                    //             style: TextStyle(
+                    //                 fontWeight: FontWeight.bold,
+                    //                 color: Colors.black)),
+                    //       ],
+                    //     ),
+                    //   ),
+                    //   value: isChecked,
+                    //   onChanged: (bool? value) {
+                    //     setState(() {
+                    //       isChecked = !isChecked!;
+                    //     });
+                    //   },
+                    // ),
                     SizedBox(
                       height: 3.0,
                     ),
                   ],
                 ),
-                CustomButton(
+                SizedBox(
+                  height: 20,
+                ),
+                MaterialButton(
+                  elevation: 0,
                   height: 47,
-                  buttonText: 'Sign up',
-                  buttonColor: Color(0XFF2F7EDB),
-                  onpress: () {
+                  color: primaryColor,
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(
+                      color: Color(0XFF8174CC), // Use default if not provided
+                    ),
+                  ),
+                  onPressed: () {
                     checkRequiredDataThenSignUp(context);
                   },
+                  child: state is! AuthLoading
+                      ? const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          textAlign: TextAlign.center,
+                        )
+                      : CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
                 ),
                 SizedBox(
                   height: 30,
@@ -200,13 +230,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           text: 'Sign In',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0XFF2F7EDB),
+                            color: primaryColor,
                           ),
                         ),
                       ],
                     ),
                   ),
                 )),
+                const SizedBox(
+                  height: 15,
+                ),
               ],
             ),
           ),

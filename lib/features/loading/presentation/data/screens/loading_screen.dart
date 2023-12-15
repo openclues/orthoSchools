@@ -16,17 +16,15 @@ class LoadingScreen extends StatelessWidget {
     return Scaffold(
       body: BlocListener<LoadingBlocBloc, LoadingBlocState>(
         listener: (context, state) async {
-          if (state is UserIsSignedIn) {
-            Navigator.of(context).pushNamed(HomeScreenPage.routeName);
-          }
-          // if (state is UserIsSignedIn) {
-          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: SuccessSnackbar(),
-          //   ));
-          //   Navigator.pushNamed(context, HomeScreenPage.routeName);
-          if (state is UserIsNotSignedIn) {
-            Navigator.of(context).pushNamed(SignInScreen.routeName);
-          }
+          Navigator.of(context)
+              .pushNamed(HomeScreenPage.routeName); //TODO REMOVE THIS
+          // if (state is UserIsSignedIn) { //UNCOMMENT THIS
+          //   Navigator.of(context).pushNamed(HomeScreenPage.routeName);
+          // }
+
+          // if (state is UserIsNotSignedIn) {
+          //   Navigator.of(context).pushNamed(SignInScreen.routeName);
+          // }
         },
         child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(
           builder: (context, state) {
