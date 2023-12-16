@@ -131,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderColor: Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: passwordController,
-                      hintText: "Password",
+                      hintText: "password must be at least 8 characters.",
                       iconButton: IconButton(
                         padding: const EdgeInsetsDirectional.only(end: 12.0),
                         icon: passwordVisibilty
@@ -146,11 +146,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     CustomTextField(
                       obscureText: passwordVisibilty,
-                      labelText: 'Re-Passowrd',
+                      labelText: 'Confirm Passowrd',
                       borderColor: Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: rePassowrdController,
-                      hintText: "Re-Password",
+                      hintText: "both passwords must match",
                     ),
                     // CheckboxListTile(
                     //   contentPadding: EdgeInsets.all(0),

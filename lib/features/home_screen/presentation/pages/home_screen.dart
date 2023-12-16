@@ -58,31 +58,32 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
-        return HomeScreenLoadedScreen(); //remove this
-        // if (state is HomeScreenInitial) { //uncomment this
-        //   // BlocProvider.of<HomeScreenBloc>(context).add(
-        //   //   const LoadHomeScreenData(),
-        //   // );
-        //   return const LoadingWidget();
-        // } else if (state is HomeScreenLoading) {
-        //   return const Scaffold(
-        //     body: Center(
-        //       child: CircularProgressIndicator(),
-        //     ),
-        //   );
-        // } else if (state is HomeScreenError) {
-        //   return const Scaffold(
-        //     body: Center(
-        //       child: Text('Something went wrong'),
-        //     ),
-        //   );
-        // } else if (state is HomeScreenNotAuthenticated) {
-        //   return const Center(
-        //     child: Text('Your session has expired'),
-        //   );
-        // } else {
-        //   return const HomeScreenLoadedScreen();
-        // }
+        //remove this
+        if (state is HomeScreenInitial) {
+          //uncomment this
+          BlocProvider.of<HomeScreenBloc>(context).add(
+            const LoadHomeScreenData(),
+          );
+          return const LoadingWidget();
+        } else if (state is HomeScreenLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (state is HomeScreenError) {
+          return const Scaffold(
+            body: Center(
+              child: Text('Something went wrong'),
+            ),
+          );
+        } else if (state is HomeScreenNotAuthenticated) {
+          return const Center(
+            child: Text('Your session has expired'),
+          );
+        } else {
+          return const HomeScreenLoadedScreen();
+        }
       },
     );
   }

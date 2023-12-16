@@ -1,6 +1,7 @@
 import 'package:azsoon/Auth/bussiness_logi/cubit/auth_cubit_cubit.dart';
 import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
 import 'package:azsoon/Auth/presentaiton/screens/SignUp.dart';
+import 'package:azsoon/Auth/presentaiton/screens/reset_Password.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
@@ -47,6 +48,12 @@ class AppRouter {
           ),
           pageAnimationType: BottomToTopTransition(),
         );
+      case ResetPassword.routeName:
+        return MaterialPageRoute(builder: (_) => const ResetPassword());
+      case SecondStep.routeName:
+        return MaterialPageRoute(builder: (_) => const SecondStep());
+      case ThirdStep.routeName:
+        return MaterialPageRoute(builder: (_) => const ThirdStep());
       case SettingsScreen.routeName:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case ProfilePage.routeName:

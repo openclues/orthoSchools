@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:azsoon/Auth/bussiness_logi/cubit/auth_cubit_cubit.dart';
 import 'package:azsoon/Auth/data/reposotery/auth_repo.dart';
+import 'package:azsoon/Auth/presentaiton/screens/reset_Password.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/images_path.dart';
 import 'package:azsoon/Core/local_storage.dart';
@@ -144,11 +145,16 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  'Forgot your password?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 81, 81, 81), fontSize: 15),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/resetPassword');
+                  },
+                  child: const Text(
+                    'Forgot your password?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 81, 81, 81), fontSize: 15),
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
