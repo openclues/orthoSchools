@@ -41,7 +41,7 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
             backgroundColor: const Color.fromARGB(255, 166, 221, 247),
             textColor: Colors.black,
             fontSize: 16.0);
-        return;
+        emit(AuthError('Invalid credentials'));
       } else {
         emit(AuthError('Invalid credentials'));
       }
@@ -81,7 +81,7 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
               backgroundColor: const Color.fromARGB(255, 166, 221, 247),
               textColor: Colors.black,
               fontSize: 16.0);
-          return;
+          emit(AuthError('user with this email already exists'));
         } else if (responseData.containsKey('password')) {
           Fluttertoast.showToast(
               msg: 'password is too similar to the email',
@@ -91,7 +91,7 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
               backgroundColor: const Color.fromARGB(255, 166, 221, 247),
               textColor: Colors.black,
               fontSize: 16.0);
-          return;
+          emit(AuthError('password is too similar to the email'));
         }
       } else {
         emit(AuthError('Invalid credentials'));

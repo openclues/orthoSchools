@@ -12,6 +12,7 @@ import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart
 import 'package:azsoon/features/space/bloc/load_post_bloc.dart';
 import 'package:azsoon/features/space/presentation/post_screen.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
+import 'package:azsoon/features/verification/persentation/screens/verification_pro_request_screen.dart';
 import 'package:azsoon/screens/ProfilePage.dart';
 import 'package:azsoon/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
@@ -19,21 +20,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 
-import '../features/blog/presentation/screens/blogWriting.dart';
 import '../features/blog/presentation/screens/blog_post_screen.dart';
 import '../features/profile/bloc/profile_bloc.dart';
 import '../features/space/bloc/space_bloc.dart';
+import '../features/verification/bloc/verification_bloc.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     JoinSpaceBloc joinSpaceBloc = JoinSpaceBloc();
     switch (settings.name) {
       case LoadingScreen.routeName:
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => LoadingBlocBloc(),
-                  child: const LoadingScreen(),
-                ));
+        return MaterialPageRoute(builder: (_) => const LoadingScreen());
       case HomeScreenPage.routeName:
         return PageAnimationTransition(
           page: MultiBlocProvider(
@@ -63,25 +60,33 @@ class AppRouter {
                   ),
                 ));
       case ProfileScreen.routeName:
-        bool? isNav = settings.arguments as bool?;
+        var arguments = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => ProfileBloc(),
                   child: ProfileScreen(
-                    isNav: isNav,
+                    userId: arguments['userId'],
+                    isNav: arguments['isNav'] ?? false,
                   ),
+                ));
+
+      case VerificationProRequestScreen.routeName:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => VerificationBloc(),
+                  child: const VerificationProRequestScreen(),
                 ));
       case SignInScreen.routeName:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => AuthCubitCubit(),
-                  child: SignInScreen(),
+                  child: const SignInScreen(),
                 ));
       case SignUpScreen.routeName:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
                   create: (context) => AuthCubitCubit(),
-                  child: SignUpScreen(),
+                  child: const SignUpScreen(),
                 ));
       // case BlogWritingScreen.routeName:
       //       return MaterialPageRoute(builder:  BlogWritingScreen() );

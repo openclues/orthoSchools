@@ -42,10 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (state is AuthSignedUp) {
           //create the AuthSignedUp
           Navigator.of(context).pushReplacementNamed(SignInScreen.routeName);
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.errorMessage)));
-        }
+        } else if (state is AuthError) {}
       },
       builder: (context, state) {
         return buildSignUpForm(context);

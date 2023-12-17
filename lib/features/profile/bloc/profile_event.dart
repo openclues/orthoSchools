@@ -10,9 +10,20 @@ sealed class ProfileEvent extends Equatable {
 
 
 class LoadProfileData extends ProfileEvent {
+  final int? id;
+  
+
+  const LoadProfileData({ this.id});
+
+  @override
+  List<Object> get props => [];
+}
+
+
+class SetInitialProfileData extends ProfileEvent {
   final int id;
 
-  const LoadProfileData({required this.id});
+  const SetInitialProfileData({required this.id});
 
   @override
   List<Object> get props => [id];

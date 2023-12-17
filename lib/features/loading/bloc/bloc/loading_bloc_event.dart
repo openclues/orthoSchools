@@ -13,3 +13,10 @@ class CheckUserStatus extends LoadingBlocEvent {
 }
 
 
+
+class UpdateProfile extends LoadingBlocEvent {
+  final Profile profile;
+  const UpdateProfile({
+    required this.profile,
+  });
+}

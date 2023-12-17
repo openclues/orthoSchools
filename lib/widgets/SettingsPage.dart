@@ -20,9 +20,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 251, 250, 250),
+      backgroundColor: const Color.fromARGB(255, 251, 250, 250),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(
               color: Colors.black, fontSize: 25, fontWeight: FontWeight.w500),
@@ -33,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             Expanded(
               child: SettingsList(
-                lightTheme: SettingsThemeData(
+                lightTheme: const SettingsThemeData(
                     settingsListBackground: Color.fromARGB(255, 251, 250, 250)),
                 sections: [
                   SettingsSection(
@@ -47,22 +47,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
-                                offset: Offset(0, 2),
+                                offset: const Offset(0, 2),
                                 blurRadius: 1,
                                 spreadRadius: 0.2,
                               ),
                             ],
                           ),
                           child: SettingsTile.navigation(
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            leading: Icon(Icons.person_pin),
-                            title: Text('Account Settings'),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                            leading: const Icon(Icons.person_pin),
+                            title: const Text('Account Settings'),
                           ),
                         ),
                       ),
                       SettingsTile(
                         title: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -71,7 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 1,
                                   spreadRadius: 0.2,
                                 ),
@@ -81,30 +81,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               children: [
                                 SettingsTile.switchTile(
                                   enabled: false,
-                                  activeSwitchColor: Color(0XFFA29CEC),
+                                  activeSwitchColor: const Color(0XFFA29CEC),
                                   onToggle: (value) {},
                                   initialValue: false,
-                                  leading: Icon(Icons.dark_mode_outlined),
-                                  title: Text('Dark mode'),
+                                  leading: const Icon(Icons.dark_mode_outlined),
+                                  title: const Text('Dark mode'),
                                 ),
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.language),
-                                  title: Text('Language and Region'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.language),
+                                  title: const Text('Language and Region'),
                                 ),
                                 SettingsTile.switchTile(
-                                  activeSwitchColor: Color(0XFFA29CEC),
+                                  activeSwitchColor: const Color(0XFFA29CEC),
                                   onToggle: (value) {},
                                   initialValue: true,
-                                  leading: Icon(Icons.notifications_outlined),
-                                  title: Text('Notifications'),
+                                  leading: const Icon(Icons.notifications_outlined),
+                                  title: const Text('Notifications'),
                                 ),
                               ],
                             )),
                       ),
                       SettingsTile(
                         title: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -113,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 1,
                                   spreadRadius: 0.2,
                                 ),
@@ -122,27 +122,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               children: [
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.lock_outline),
-                                  title: Text('Privacy'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.lock_outline),
+                                  title: const Text('Privacy'),
                                 ),
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
                                   leading:
-                                      Icon(Icons.stacked_bar_chart_outlined),
-                                  title: Text('Data and Permissions'),
+                                      const Icon(Icons.stacked_bar_chart_outlined),
+                                  title: const Text('Data and Permissions'),
                                 ),
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.check_box_outlined),
-                                  title: Text('Terms and Service'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.check_box_outlined),
+                                  title: const Text('Terms and Service'),
                                 ),
                               ],
                             )),
                       ),
                       SettingsTile(
                         title: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 0, vertical: 0),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -151,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
-                                  offset: Offset(0, 2),
+                                  offset: const Offset(0, 2),
                                   blurRadius: 1,
                                   spreadRadius: 0.2,
                                 ),
@@ -160,19 +160,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               children: [
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.privacy_tip_outlined),
-                                  title: Text('Help Center'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.privacy_tip_outlined),
+                                  title: const Text('Help Center'),
                                 ),
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.help_center_outlined),
-                                  title: Text('FAQ'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.help_center_outlined),
+                                  title: const Text('FAQ'),
                                 ),
                                 SettingsTile.navigation(
-                                  trailing: Icon(Icons.arrow_forward_ios),
-                                  leading: Icon(Icons.logout),
-                                  title: Text(
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  leading: const Icon(Icons.logout),
+                                  title: const Text(
                                     'Log Out',
                                     style: TextStyle(color: Colors.red),
                                   ),
@@ -191,38 +191,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       SettingsTile(
                         title: Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                              const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 215, 82, 82),
+                            color: const Color.fromARGB(255, 215, 82, 82),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: Color.fromARGB(255, 215, 82, 82),
+                              color: const Color.fromARGB(255, 215, 82, 82),
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
-                                offset: Offset(0, 2),
+                                offset: const Offset(0, 2),
                                 blurRadius: 1,
                                 spreadRadius: 0.2,
                               ),
                             ],
                           ),
                           child: SettingsTile.navigation(
-                            value: Text(
+                            value: const Text(
                               '22 day left',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.arrow_forward_ios,
                               color: Colors.white,
                             ),
-                            leading: Icon(
+                            leading: const Icon(
                               Icons.warning,
                               color: Colors.white,
                             ),
-                            title: Text(
+                            title: const Text(
                               'Verify your account !',
                               style: TextStyle(
                                 color: Colors.white,

@@ -1,10 +1,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
-import 'package:azsoon/Core/network/endpoints.dart';
-import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:azsoon/features/blog/bloc/blogs_bloc.dart';
-import 'package:azsoon/features/blog/presentation/screens/blogWriting.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
@@ -22,10 +19,9 @@ import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:tab_container/tab_container.dart';
 import '../../../../Auth/presentaiton/screens/SignIn.dart';
 import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
-import '../../../blog/data/models/blog_model.dart';
-import '../../../blog/presentation/screens/blog_post_screen.dart';
 import '../../../space/bloc/add_post_bloc.dart';
 import '../../../space/bloc/my_spaces_bloc.dart';
+import 'blogs_home_screen.dart';
 
 class HomeScreenPage extends StatefulWidget {
   static const String routeName = '/home';
@@ -43,20 +39,6 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
     print('initState');
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    context.read<HomeScreenBloc>().add(const ReasetHomeScreenData());
-    print('dispose');
-    super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    context.read<HomeScreenBloc>().add(const ReasetHomeScreenData());
-    print('deactivate');
-    super.deactivate();
   }
 
   @override
@@ -118,12 +100,13 @@ AppBar buildAppBar(BuildContext context) {
           visible: isVisible,
           child: Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 215, 82, 82),
-              borderRadius: BorderRadius.circular(10),
+              color: primaryColor,
+
+              // borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                   blurRadius: 1,
                   spreadRadius: 0.2,
                 ),
@@ -131,7 +114,7 @@ AppBar buildAppBar(BuildContext context) {
             ),
             child: ListTile(
               trailing: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 color: Colors.white,
                 onPressed: () {
                   // setState(() {
@@ -139,15 +122,20 @@ AppBar buildAppBar(BuildContext context) {
                   // });// not working
                 },
               ),
-              leading: Icon(
-                Icons.warning,
-                color: Colors.white,
+              leading: const Icon(
+                IconlyLight.danger,
+                color: Colors.redAccent,
               ),
-              title: Text(
-                'Verify your account !',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              title: const Row(
+                children: [
+                  Text(
+                    'Verify your account !',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -250,7 +238,9 @@ List<Widget> _widgetOptions = <Widget>[
   ),
   BlocProvider(
     create: (context) => ProfileBloc(),
-    child: const ProfileScreen(),
+    child: const ProfileScreen(
+      userId: null,
+    ),
   ),
   const Scaffold(
     body: Center(
@@ -264,6 +254,7 @@ class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     return BlocListener<JoinSpaceBloc, JoinSpaceState>(
       listener: (context, state) {
         if (state is JoinSpaceSuccess) {
@@ -279,7 +270,6 @@ class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
               splashColor: Colors.white,
               backgroundColor: primaryColor,
               onPressed: () async {
-                //show bottom to choose between posting in space or in a blog
                 showModalBottomSheet(
                   context: context,
                   builder: (context) {
@@ -424,10 +414,11 @@ class HomeScreenTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: TabContainer(
+      child: 
+      TabContainer(
         childPadding: const EdgeInsets.all(0),
-        childDuration: const Duration(milliseconds: 0),
-        tabCurve: Curves.easeIn,
+        // childDuration: const Duration(milliseconds: 0),
+        // tabCurve: Curves.easeIn,
         tabExtent: 35,
         tabEdge: TabEdge.left,
         colors: [
@@ -536,169 +527,4 @@ class HomeScreenSpaceTab extends StatelessWidget {
       ),
     );
   }
-}
-
-class HomeScreebBlogTab extends StatelessWidget {
-  const HomeScreebBlogTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var state = context.watch<BlogsBloc>().state;
-    if (state is BlogsInitial) {
-      context.read<BlogsBloc>().add(const LoadBlogs());
-    }
-    if (state is BlogsLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (state is BlogsLoaded &&
-        state.blogs.results != null &&
-        state.blogs.results!.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Latest Articles',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'View All',
-                      style: TextStyle(color: primaryColor),
-                    ))
-              ],
-            ),
-            Container(
-              height: LocalStorage.getcreenSize(context).height * 0.3,
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: state.blogs.latest_updated_posts_model!.length,
-                itemBuilder: (context, index) {
-                  BlogModel blog = getBlogFromId(
-                      state.blogs.latest_updated_posts_model![index].blog!,
-                      state.blogs.results!);
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, BlogPostScreen.routeName,
-                          arguments:
-                              state.blogs.latest_updated_posts_model![index]);
-                    },
-                    child: Hero(
-                      tag: state.blogs.latest_updated_posts_model![index].id!,
-                      child: Container(
-                        width: LocalStorage.getcreenSize(context).width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200],
-                          image: DecorationImage(
-                            image: NetworkImage(ApiEndpoints.baseUrl +
-                                state.blogs.latest_updated_posts_model![index]
-                                    .cover!),
-                            filterQuality: FilterQuality.high,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.7),
-                                BlendMode.darken),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundImage: blog.user.profileImage !=
-                                              null
-                                          ? NetworkImage(ApiEndpoints.baseUrl +
-                                              blog.user.profileImage!)
-                                          : const AssetImage(
-                                                  'assets/images/drimage.png')
-                                              as ImageProvider,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            blog.title!,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            '${blog.user.userAccount.firstName!} ${blog.user.userAccount.lastName!}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          IconlyLight.bookmark,
-                                          color: Colors.white,
-                                        ))
-                                  ],
-                                ),
-                                const Spacer(),
-                                Text(
-                                    state
-                                        .blogs
-                                        .latest_updated_posts_model![index]
-                                        .title!,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 27,
-                                        height: 1.5)),
-                              ],
-                            )),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
-      );
-    }
-    return ListView(
-      children: const [
-        SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-        )
-      ],
-    );
-  }
-}
-
-getBlogFromId(int id, List<BlogModel> blogs) {
-  return blogs.firstWhere((element) => element.id == id);
 }

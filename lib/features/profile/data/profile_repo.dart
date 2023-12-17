@@ -7,4 +7,9 @@ class ProfileRepo {
     var response = await RequestHelper.get('visit/profile/$id');
     return response;
   }
+
+  Future<Response> getMyProfile(){
+    return RequestHelper.get('myprofile');
+
+  }
 }

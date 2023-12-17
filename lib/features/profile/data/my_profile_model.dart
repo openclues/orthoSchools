@@ -14,13 +14,17 @@ class Profile {
     this.birthDate,
     this.placeOfWork,
     this.speciality,
+    this.isme,
     this.user,
+    this.cardId,
   });
 
   String? title;
   String? bio;
   String? studyIn;
   String? cover;
+  bool? isme;
+  String? cardId;
   String? profileImage;
   DateTime? birthDate;
   String? placeOfWork;
@@ -33,11 +37,11 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
         title: json["title"],
+        cardId: json["card_id"],
+        isme: json["is_me"],
         bio: json["bio"],
         studyIn: json["study_in"],
-        // user: json["user"] == null
-        //     ? null
-        //     : UserModel.fromJson(jsonDecode(json["user"])),
+        user: json["user"] == null ? null : UserModel.fromMap(json["user"]),
         cover: json["cover"],
         profileImage: json["profileImage"],
         birthDate: json["birth_date"] == null

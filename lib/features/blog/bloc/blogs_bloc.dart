@@ -11,9 +11,9 @@ part 'blogs_state.dart';
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
   BlogRepo blogRepo = BlogRepo();
   BlogsBloc() : super(BlogsInitial()) {
-    on<BlogsEvent>((event, emit) {
-    });
+    on<BlogsEvent>((event, emit) {});
     on<LoadBlogs>((event, emit) async {
+      print('LoadBlogs');
       emit(BlogsLoading());
       var response = await blogRepo.getBlogList(event.page);
       if (response.statusCode == 200) {

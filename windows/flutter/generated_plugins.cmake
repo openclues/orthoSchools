@@ -4,13 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
-<<<<<<< HEAD
   gal
   irondash_engine_context
   super_native_extensions
   url_launcher_windows
-=======
->>>>>>> c5af827ae0ed9a6ac82c2b5902e837977b6f5fb5
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

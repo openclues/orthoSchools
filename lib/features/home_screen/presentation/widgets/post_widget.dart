@@ -1,3 +1,4 @@
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
@@ -17,16 +18,6 @@ class SpacePostWidget extends StatelessWidget {
     required this.post,
   });
   // from date to x time ago
-  String timeAgo(DateTime d) {
-    Duration diff = DateTime.now().difference(d);
-    if (diff.inDays > 365) return "${(diff.inDays / 365).floor()} years ago";
-    if (diff.inDays > 30) return "${(diff.inDays / 30).floor()} months ago";
-    if (diff.inDays > 7) return "${(diff.inDays / 7).floor()} weeks ago";
-    if (diff.inDays > 0) return "${diff.inDays} days ago";
-    if (diff.inHours > 0) return "${diff.inHours} hours ago";
-    if (diff.inMinutes > 0) return "${diff.inMinutes} minutes ago";
-    return "just now";
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +47,10 @@ class SpacePostWidget extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, ProfileScreen.routeName,
-                    arguments: true);
+                    arguments: {
+                      "userId": post.user!.id,
+                      "isNav": false,
+                    } );
               },
               child: Row(
                 children: [
@@ -175,7 +169,7 @@ class SpacePostWidget extends StatelessWidget {
                       title: Row(
                         children: [
                           Text(
-                            timeAgo(DateTime.parse(post.createdAt!)),
+                           LocalStorage.timeAgo(DateTime.parse(post.createdAt!)),
                             style: const TextStyle(
                                 color: Colors.grey, fontSize: 11),
                           ),

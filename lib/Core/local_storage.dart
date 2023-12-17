@@ -1,3 +1,4 @@
+import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,6 +44,9 @@ class LocalStorage {
 
   static Future<void> removeAll() async {
     SharedPreferences prefs = LocalStorage.getInstance();
+    await prefs.remove("authToken");
+    RequestHelper.removeAuthToken();
+    await prefs.clear();
   }
 
   static Future<void> setPreferredLanguage(String languageCode) async {
@@ -107,4 +111,14 @@ class LocalStorage {
 // }
 
 // enum DonationStatus { Donator, NonDonator, InactiveDonator }
+  static String timeAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365) return "${(diff.inDays / 365).floor()} years ago";
+    if (diff.inDays > 30) return "${(diff.inDays / 30).floor()} months ago";
+    if (diff.inDays > 7) return "${(diff.inDays / 7).floor()} weeks ago";
+    if (diff.inDays > 0) return "${diff.inDays} days ago";
+    if (diff.inHours > 0) return "${diff.inHours} hours ago";
+    if (diff.inMinutes > 0) return "${diff.inMinutes} minutes ago";
+    return "just now";
+  }
 }

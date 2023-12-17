@@ -13,6 +13,10 @@ class RequestHelper {
     _token = null;
   }
 
+  static removeAuthToken() async {
+    _token = null;
+  }
+
   static Future<String?> getAuthToken() async {
     if (_token != null) {
       return _token;
@@ -21,7 +25,6 @@ class RequestHelper {
     SharedPreferences prefs = LocalStorage.getInstance();
 
     _token = prefs.getString("authToken");
-
     return _token;
   }
 
@@ -30,6 +33,7 @@ class RequestHelper {
   static Future<http.Response> get(String endpoint) async {
     String url = _baseUrl + endpoint;
     String? authToken = await getAuthToken();
+    print(authToken.toString() + "authToken");
 
     if (authToken != null) {
       // Authenticated request with header

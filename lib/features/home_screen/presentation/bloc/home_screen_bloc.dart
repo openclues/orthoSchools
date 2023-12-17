@@ -21,8 +21,6 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
 
       try {
         var response = await homeScreenRepo.getHomeScreenData();
-        print(response.statusCode);
-        print(response.body);
 
         if (response.statusCode == 200) {
           var decodedResponse = jsonDecode(response.body);

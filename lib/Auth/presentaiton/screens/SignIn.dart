@@ -41,9 +41,9 @@ class _SignInScreenState extends State<SignInScreen> {
       if (state is AuthLoggedIn) {
         Navigator.of(context).pushReplacementNamed(LoadingScreen.routeName);
       } else if (state is AuthError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.errorMessage)),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(state.errorMessage)),
+        // );
       }
     }, builder: (context, state) {
       return buildSignInForm(context);
@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 MaterialButton(
@@ -118,7 +118,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Color(0XFF8174CC), // Use default if not provided
                     ),
                   ),
@@ -137,7 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               fontSize: 18),
                           textAlign: TextAlign.center,
                         )
-                      : CircularProgressIndicator(
+                      : const CircularProgressIndicator(
                           color: Colors.white,
                         ),
                 ),
