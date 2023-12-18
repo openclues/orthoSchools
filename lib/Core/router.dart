@@ -19,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
 
-import '../features/blog/presentation/screens/blogWriting.dart';
+import '../features/blog/presentation/screens/blog.dart';
 import '../features/profile/bloc/profile_bloc.dart';
 import '../features/space/bloc/space_bloc.dart';
 
@@ -67,15 +67,15 @@ class AppRouter {
                     id: spaceId,
                   ),
                 ));
-      case ProfileScreen.routeName:
-        bool? isNav = settings.arguments as bool?;
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => ProfileBloc(),
-                  child: ProfileScreen(
-                    isNav: isNav,
-                  ),
-                ));
+      // case ProfileScreen.routeName:
+      //   bool? isNav = settings.arguments as bool?;
+      //   return MaterialPageRoute(
+      //       builder: (_) => BlocProvider(
+      //             create: (context) => ProfileBloc(),
+      //             child: ProfileScreen(
+      //               isNav: isNav,
+      //             ),
+      //           ));
       case SignInScreen.routeName:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
@@ -88,8 +88,8 @@ class AppRouter {
                   create: (context) => AuthCubitCubit(),
                   child: SignUpScreen(),
                 ));
-      // case BlogWritingScreen.routeName:
-      //       return MaterialPageRoute(builder:  BlogWritingScreen() );
+      case BlogScreen.routeName:
+        return MaterialPageRoute(builder: (_) => BlogScreen());
       case ChooseInterestsScreen.routeName:
         return MaterialPageRoute(builder: (_) => const ChooseInterestsScreen());
       case '/chooseInterests':

@@ -2,7 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Core/network/request_helper.dart';
-import 'package:azsoon/features/blog/presentation/screens/blogWriting.dart';
+import 'package:azsoon/features/blog/presentation/screens/blog.dart';
 import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
@@ -58,9 +58,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
-        //remove this
+        // return BlogScreen(); //remove this
         if (state is HomeScreenInitial) {
-          //uncomment this
           BlocProvider.of<HomeScreenBloc>(context).add(
             const LoadHomeScreenData(),
           );
@@ -390,6 +389,13 @@ class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
               onTap: (index) {
                 setState(() {
                   _currentIndex = index;
+                  if (index == 3) {
+                    Navigator.pushNamed(context,
+                        '/settings'); // Assuming '/settings' is the route for your settings page
+                  }
+                  if (index == 2) {
+                    Navigator.pushNamed(context, '/profilepage');
+                  }
                 });
               },
             ),

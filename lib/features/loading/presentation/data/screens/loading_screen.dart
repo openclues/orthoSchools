@@ -1,5 +1,6 @@
 import 'package:azsoon/Auth/presentaiton/screens/SignIn.dart';
 import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/features/blog/presentation/screens/blog.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +18,15 @@ class LoadingScreen extends StatelessWidget {
       body: BlocListener<LoadingBlocBloc, LoadingBlocState>(
         listener: (context, state) async {
           Navigator.of(context)
-              .pushNamed(SignInScreen.routeName); //TODO REMOVE THIS
-          if (state is UserIsSignedIn) {
-            //UNCOMMENT THIS
-            Navigator.of(context).pushNamed(HomeScreenPage.routeName);
-          }
+              .pushNamed(BlogScreen.routeName); //TODO REMOVE THIS
+          // if (state is UserIsSignedIn) {
+          //   //UNCOMMENT THIS
+          //   Navigator.of(context).pushNamed(HomeScreenPage.routeName);
+          // }
 
-          if (state is UserIsNotSignedIn) {
-            Navigator.of(context).pushNamed(SignInScreen.routeName);
-          }
+          // if (state is UserIsNotSignedIn) {
+          //   Navigator.of(context).pushNamed(SignInScreen.routeName);
+          // }
         },
         child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(
           builder: (context, state) {
