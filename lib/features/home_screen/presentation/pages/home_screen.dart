@@ -11,6 +11,7 @@ import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart
 import 'package:azsoon/features/space/presentation/add_post.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
 import 'package:azsoon/widgets/Post.dart';
+import 'package:azsoon/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
@@ -18,6 +19,7 @@ import 'package:page_animation_transition/animations/bottom_to_top_transition.da
 import 'package:page_animation_transition/page_animation_transition.dart';
 import 'package:tab_container/tab_container.dart';
 import '../../../../Auth/presentaiton/screens/SignIn.dart';
+import '../../../../screens/ProfilePage.dart';
 import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
 import '../../../space/bloc/add_post_bloc.dart';
 import '../../../space/bloc/my_spaces_bloc.dart';
@@ -236,17 +238,20 @@ List<Widget> _widgetOptions = <Widget>[
       child: Text('Profile'),
     ),
   ),
-  BlocProvider(
-    create: (context) => ProfileBloc(),
-    child: const ProfileScreen(
+  MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => ProfileBloc(),
+      ),
+      BlocProvider(
+        create: (context) => MySpacesBloc(),
+      ),
+    ],
+    child: const ProfilePage(
       userId: null,
     ),
   ),
-  const Scaffold(
-    body: Center(
-      child: Text('Settings'),
-    ),
-  )
+  SettingsScreen()
 ];
 
 class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
@@ -273,8 +278,8 @@ class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
                 showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return Container(
-                      height: 200,
+                    return SizedBox(
+                      height: 300,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -414,8 +419,7 @@ class HomeScreenTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: 
-      TabContainer(
+      child: TabContainer(
         childPadding: const EdgeInsets.all(0),
         // childDuration: const Duration(milliseconds: 0),
         // tabCurve: Curves.easeIn,

@@ -42,58 +42,43 @@ class _ProfilePageState extends State<EditProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    final double coverHeight = screenHeight / 3.7;
-    final double profilePictureHeight = 70;
-    final double top = coverHeight - profilePictureHeight / 2;
-
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+        child: CustomButton(
+          buttonText: 'Save',
+          buttonColor: const Color(0XFF8174CC),
+          borderColor: const Color(0XFF8174CC),
+          textColor: Colors.white,
+          height: 45,
+          onpress: () {
+            print(firstNameController.text);
+            print(lastNameController.text);
+            print(phoneController.text);
+            print(dateOfBirsthController.text);
+            print(selectedCountry);
+            print(selectedState);
+            print(selectedCity);
+            print(bioController.text);
+            print(workplaceController.text);
+            print(studyInController.text);
+            print(_certificates);
+            print(titleSelectd);
+
+            //saving edited data
+          },
+        ),
+      ),
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: ListView(children: [
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Container(
-                child: buildCoverImage(coverHeight),
-              ),
-              Positioned(
-                top: top,
-                child: buildProfilePicture(profilePictureHeight),
-              ),
-              Positioned(
-                top: top + top / 4,
-                right: 0,
-                child: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () async {
-                    await editDialog();
-                  },
-                ),
-              ),
-            ],
-          ),
+        padding: const EdgeInsets.only(bottom: 0),
+        child:
+            ListView(physics: const NeverScrollableScrollPhysics(), children: [
           //tabs
           tab_bar_tabs(),
           //view of the tabs
           tab_sections_view(),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-            child: CustomButton(
-              buttonText: 'Save',
-              buttonColor: Color(0XFF8174CC),
-              borderColor: Color(0XFF8174CC),
-              textColor: Colors.white,
-              height: 45,
-              onpress: () {
-                //saving edited data
-              },
-            ),
-          ),
         ]),
       ),
     );
@@ -107,13 +92,13 @@ class _ProfilePageState extends State<EditProfilePage>
           children: [
             TextButton(
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   'edit profile photo',
                   style: TextStyle(color: Colors.black),
                 )),
             TextButton(
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   'edit cover image',
                   style: TextStyle(color: Colors.black),
                 )),
@@ -124,7 +109,7 @@ class _ProfilePageState extends State<EditProfilePage>
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'cancle',
                 style: TextStyle(color: Colors.red),
               ))
@@ -133,11 +118,12 @@ class _ProfilePageState extends State<EditProfilePage>
     );
   }
 
-  Container tab_sections_view() {
-    return Container(
+  Widget tab_sections_view() {
+    return SizedBox(
       width: double.maxFinite,
-      height: 300,
+      height: MediaQuery.of(context).size.height,
       child: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: [
           //content of about
@@ -153,48 +139,46 @@ class _ProfilePageState extends State<EditProfilePage>
     );
   }
 
-  Padding tab_bar_tabs() {
-    return Padding(
-      padding: EdgeInsets.only(top: 120),
-      child: TabBar(
-        unselectedLabelColor: Color.fromARGB(255, 156, 156, 156),
-        padding: EdgeInsets.only(left: 20, right: 20),
-        indicatorColor: Color(0XFF8174CC),
-        indicator: DotIndicator(),
-        controller: _tabController,
-        labelColor: Colors.black,
-        labelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        tabs: [
-          Tab(
-            icon: Icon(
-              Icons.person,
-              size: 20,
-            ),
-            text: 'About Me',
+  Widget tab_bar_tabs() {
+    return TabBar(
+      physics: const NeverScrollableScrollPhysics(),
+      unselectedLabelColor: const Color.fromARGB(255, 156, 156, 156),
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      indicatorColor: const Color(0XFF8174CC),
+      indicator: const DotIndicator(),
+      controller: _tabController,
+      labelColor: Colors.black,
+      labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      tabs: const [
+        Tab(
+          icon: Icon(
+            Icons.person,
+            size: 20,
           ),
-          Tab(
-            icon: Icon(
-              Icons.info,
-              size: 20,
-            ),
-            text: 'Basic Info',
+          text: 'About Me',
+        ),
+        Tab(
+          icon: Icon(
+            Icons.info,
+            size: 20,
           ),
-          Tab(
-            icon: Icon(
-              Icons.badge,
-              size: 20,
-            ),
-            text: 'Certificates',
+          text: 'Basic Info',
+        ),
+        Tab(
+          icon: Icon(
+            Icons.badge,
+            size: 20,
           ),
-          // Tab(
-          //   icon: Icon(
-          //     Icons.security,
-          //     size: 20,
-          //   ),
-          //   text: 'Security',
-          // ),
-        ],
-      ),
+          text: 'Certificates',
+        ),
+        // Tab(
+        //   icon: Icon(
+        //     Icons.security,
+        //     size: 20,
+        //   ),
+        //   text: 'Security',
+        // ),
+      ],
     );
   }
 
@@ -222,7 +206,7 @@ class _ProfilePageState extends State<EditProfilePage>
       child: CircleAvatar(
         radius: profilePictureHeight -
             4, // adjust the inner radius to leave room for the border
-        backgroundImage: AssetImage('assets/images/profile.jpeg'),
+        backgroundImage: const AssetImage('assets/images/profile.jpeg'),
       ),
     );
   }
@@ -233,21 +217,21 @@ class _ProfilePageState extends State<EditProfilePage>
       child: ListView(
         children: [
           Form(
-            key: globalKey,
+            // key: globalKey,
             child: Container(
-              padding: EdgeInsets.only(bottom: 30),
+              padding: const EdgeInsets.only(bottom: 30),
               child: Column(children: [
                 CustomTextField(
-                  initialValue: '',
                   maxLines: 3,
                   // onSaved: (v) {
                   //   _bio = v;
                   // },
                   obscureText: false,
                   labelText: 'Bio',
-                  borderColor: Color.fromARGB(255, 204, 204, 205),
+                  initialValue: "",
+                  borderColor: const Color.fromARGB(255, 204, 204, 205),
                   textfiledColor: Colors.white,
-                  controller: workplaceController,
+                  controller: bioController,
                   hintText: '',
                 ),
                 CustomTextField(
@@ -287,11 +271,10 @@ class _ProfilePageState extends State<EditProfilePage>
       child: ListView(
         children: [
           Form(
-            key: globalKey,
             child: Container(
               child: Column(children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 30, bottom: 30),
+                  padding: const EdgeInsets.only(top: 30, bottom: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: ['Dr', 'Prof', 'None']
@@ -308,10 +291,10 @@ class _ProfilePageState extends State<EditProfilePage>
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: e == titleSelectd
-                                            ? Color(0XFF8174CC)
+                                            ? const Color(0XFF8174CC)
                                             : Colors.transparent,
                                         border: Border.all(
-                                          color: Color.fromARGB(
+                                          color: const Color.fromARGB(
                                               255, 204, 204, 205),
                                         )),
                                     child: Padding(
@@ -338,10 +321,9 @@ class _ProfilePageState extends State<EditProfilePage>
                   children: [
                     Expanded(
                       child: CustomTextField(
-                        initialValue: '',
                         // onSaved: (v) {
                         //   _firstName = v;
-                        // },
+
                         obscureText: false,
                         labelText: 'First Name',
                         borderColor: const Color.fromARGB(255, 204, 204, 205),
@@ -368,7 +350,7 @@ class _ProfilePageState extends State<EditProfilePage>
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -410,14 +392,14 @@ class _ProfilePageState extends State<EditProfilePage>
                   child: CSCPicker(
                     dropdownDecoration: BoxDecoration(
                       border: Border.all(
-                        color: Color.fromARGB(255, 204, 204, 205),
+                        color: const Color.fromARGB(255, 204, 204, 205),
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     disabledDropdownDecoration: BoxDecoration(
-                      color: Color.fromARGB(255, 239, 238, 238),
+                      color: const Color.fromARGB(255, 239, 238, 238),
                       border: Border.all(
-                        color: Color.fromARGB(255, 204, 204, 205),
+                        color: const Color.fromARGB(255, 204, 204, 205),
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),

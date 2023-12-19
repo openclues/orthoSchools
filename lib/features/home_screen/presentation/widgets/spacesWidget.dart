@@ -109,7 +109,7 @@ class RecommendedSpaceCard extends StatelessWidget {
         child: Stack(
           children: [
             Image.network(
-              recommendedSpace.cover!,
+              recommendedSpace.cover ?? "",
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -138,7 +138,7 @@ class RecommendedSpaceCard extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
-                            recommendedSpace.name!,
+                            recommendedSpace.name ?? "",
                             textAlign: TextAlign.start,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -230,10 +230,10 @@ class RecommendedSpaceCard extends StatelessWidget {
                               ),
                               const Spacer(),
                               JoinButton(
-                                isJoined: recommendedSpace.isJoined!,
-                                spaceId: recommendedSpace.id!,
+                                isJoined: recommendedSpace.isJoined ?? false,
+                                spaceId: recommendedSpace.id ?? 0,
                                 isAllowedToJoin:
-                                    recommendedSpace.isAllowedToJoin!,
+                                    recommendedSpace.isAllowedToJoin ?? false,
                               ),
                             ],
                           ),

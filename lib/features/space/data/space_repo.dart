@@ -10,9 +10,15 @@ class SpaceRepo {
     return response;
   }
 
-  Future<Response> getMySpaces() async {
-    var response = await RequestHelper.get('myspaces/');
-    return response;
+  Future<Response> getMySpaces({String? userId}) async {
+    if (userId != null) {
+      var response = await RequestHelper.get('myspaces/?id=$userId');
+      print("myspaces/?id=$userId");
+      return response;
+    } else {
+      var response = await RequestHelper.get('myspaces/');
+      return response;
+    }
   }
 
   //add post

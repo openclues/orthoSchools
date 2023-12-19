@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:azsoon/features/home_screen/data/models/recommended_spaces_model.dart';
 import 'package:azsoon/features/space/data/space_model.dart';
 import 'package:azsoon/features/space/data/space_repo.dart';
 import 'package:bloc/bloc.dart';
@@ -19,11 +20,13 @@ class MySpacesBloc extends Bloc<MySpacesEvent, MySpacesState> {
     on<LoadMySpaces>((event, emit) async {
       emit(const MySpacesLoading());
       try {
-        var response = await spaceRepo.getMySpaces();
+        var response = await spaceRepo.getMySpaces(
+          userId: event.userId == null ? null : event.userId.toString(),
+        );
         if (response.statusCode == 200) {
-          List<Space> spaces = [];
+          List<RecommendedSpace> spaces = [];
           for (var item in jsonDecode(response.body)) {
-            spaces.add(Space.fromJson(item));
+            spaces.add(RecommendedSpace.fromJson(item));
           }
           emit(MySpacesLoaded(spaces: spaces));
         } else {

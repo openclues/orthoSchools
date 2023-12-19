@@ -186,7 +186,7 @@ class ProfileLoadedWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                " ${profileModel!.title ?? ""}${profileModel!.user!.firstName} ${profileModel!.user!.lastName}",
+                "${profileModel!.user!.firstName} ${profileModel!.user!.lastName}",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -233,11 +233,11 @@ class ProfileLoadedWidget extends StatelessWidget {
         //bio
         if (profileModel!.bio != null && profileModel!.bio!.isNotEmpty)
           // const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Text(
-              'I am a Flutter developer with 2 years of experience in mobile development',
-              style: TextStyle(
+              profileModel!.bio!,
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -245,18 +245,18 @@ class ProfileLoadedWidget extends StatelessWidget {
               textAlign: TextAlign.start,
             ),
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () {},
-              child: const Text('Edit Profile')),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        //   child: ElevatedButton(
+        //       style: ElevatedButton.styleFrom(
+        //         primary: primaryColor,
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(5),
+        //         ),
+        //       ),
+        //       onPressed: () {},
+        //       child: const Text('Edit Profile')),
+        // ),
 
         // tabs bar
       ],

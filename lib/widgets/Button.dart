@@ -28,8 +28,8 @@ class CustomButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
         side: BorderSide(
-          color:
-              borderColor ?? Color(0XFF8174CC), // Use default if not provided
+          color: borderColor ??
+              const Color(0XFF8174CC), // Use default if not provided
         ),
       ),
       onPressed: onpress,

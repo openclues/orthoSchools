@@ -8,7 +8,10 @@ sealed class MySpacesEvent extends Equatable {
 }
 
 class LoadMySpaces extends MySpacesEvent {
-  const LoadMySpaces();
+  final int? userId;
+  const LoadMySpaces({
+    this.userId,
+  });
   @override
   List<Object> get props => [];
 }

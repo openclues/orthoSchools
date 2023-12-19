@@ -8,12 +8,13 @@ import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 
+import '../../home_screen/data/models/recommended_spaces_model.dart';
 import '../bloc/add_post_bloc.dart';
 import '../bloc/my_spaces_bloc.dart';
 import '../data/space_model.dart';
 
 class AddPostScreen extends StatefulWidget {
-  final Space? space;
+  final RecommendedSpace? space;
   const AddPostScreen({super.key, this.space});
 
   @override
@@ -21,7 +22,7 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  Space? selectedSpace;
+  RecommendedSpace? selectedSpace;
   List<XFile> images = [];
   String? content;
 

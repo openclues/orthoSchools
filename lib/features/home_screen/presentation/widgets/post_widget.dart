@@ -50,7 +50,7 @@ class SpacePostWidget extends StatelessWidget {
                     arguments: {
                       "userId": post.user!.id,
                       "isNav": false,
-                    } );
+                    });
               },
               child: Row(
                 children: [
@@ -169,7 +169,8 @@ class SpacePostWidget extends StatelessWidget {
                       title: Row(
                         children: [
                           Text(
-                           LocalStorage.timeAgo(DateTime.parse(post.createdAt!)),
+                            LocalStorage.timeAgo(
+                                DateTime.parse(post.createdAt!)),
                             style: const TextStyle(
                                 color: Colors.grey, fontSize: 11),
                           ),

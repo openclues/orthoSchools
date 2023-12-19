@@ -1,12 +1,21 @@
+import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
+import 'package:azsoon/features/profile/bloc/activities_bloc.dart';
+import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
 import 'package:azsoon/screens/EditProfilePage.dart';
 import 'package:azsoon/widgets/Button.dart';
 import 'package:azsoon/widgets/IndicatorShape.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../features/profile/bloc/profile_bloc.dart';
 
 //192.168.1.52
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final bool? isNav;
+  final int? userId;
+
+  const ProfilePage({super.key, this.isNav, this.userId});
   static const String routeName = '/profilepage';
 
   @override
@@ -25,87 +34,97 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    buildProfile(context);
+    var profilestate = context.watch<ProfileBloc>().state;
+    buildListners(profilestate);
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final double coverHeight = screenHeight / 3.7;
-    final double profilePictureHeight = 60;
+    const double profilePictureHeight = 60;
     final double top = coverHeight - profilePictureHeight / 1.5;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: ListView(children: [
-          // buildCoverImage(coverHeight),
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              Container(
-                child: buildCoverImage(coverHeight),
-              ),
-              Positioned(
-                top: top,
-                left: 10,
-                child: buildProfilePicture(profilePictureHeight),
-              ),
-            ],
-          ),
+    if (profilestate is ProfileLoaded) {
+      return Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: ListView(children: [
+            // buildCoverImage(coverHeight),
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  child: buildCoverImage(coverHeight),
+                ),
+                Positioned(
+                  top: top,
+                  left: 10,
+                  child: buildProfilePicture(profilePictureHeight),
+                ),
+              ],
+            ),
 
-          Container(
-            padding: EdgeInsets.only(top: top / 1.5, right: 10, left: 10),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Sara Hossam Mohamed',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  //bio
-                  Text(
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.grey)),
+            Container(
+              padding: EdgeInsets.only(top: top / 1.5, right: 10, left: 10),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      '${profilestate.profileModel!.user!.firstName!} ${profilestate.profileModel!.user!.lastName!}',
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    //bio
 
-                  SizedBox(
-                    height: 15,
-                  ),
-                  CustomButton(
-                    buttonText: 'Edit Profile',
-                    buttonColor: Color(0XFFF4F4F4),
-                    borderColor: Color(0XFFF4F4F4),
-                    textColor: Colors.black,
-                    height: 43,
-                    onpress: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const EditProfilePage()),
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Divider(
-                    thickness: 1,
-                    color: Color(0XFFF4F4F4),
-                  ),
+                    Text(profilestate.profileModel!.bio ?? "",
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.grey)),
 
-                  tab_bar_tabs(),
-                  //view of the tabs
-                  tab_sections_view(),
-                ]),
-          ),
-        ]),
-      ),
-    );
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+                    if (profilestate.profileModel!.isme == true)
+                      CustomButton(
+                        buttonText: 'Edit Profile',
+                        buttonColor: const Color(0XFFF4F4F4),
+                        borderColor: const Color(0XFFF4F4F4),
+                        textColor: Colors.black,
+                        height: 43,
+                        onpress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                      value: context.read<ProfileBloc>(),
+                                      child: const EditProfilePage(),
+                                    )),
+                          );
+                        },
+                      ),
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+                    const Divider(
+                      thickness: 1,
+                      color: Color(0XFFF4F4F4),
+                    ),
+
+                    tab_bar_tabs(),
+                    //view of the tabs
+                    tab_sections_view(),
+                  ]),
+            ),
+          ]),
+        ),
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 
   Widget buildCoverImage(double coverHight) {
@@ -132,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage>
       child: CircleAvatar(
         radius: profilePictureHeight -
             4, // adjust the inner radius to leave room for the border
-        backgroundImage: AssetImage('assets/images/profile.jpeg'),
+        backgroundImage: const AssetImage('assets/images/profile.jpeg'),
       ),
     );
   }
@@ -147,7 +166,10 @@ class _ProfilePageState extends State<ProfilePage>
           //content of spaces
           spaces(),
           //content of basic info
-          activites(),
+          BlocProvider(
+            create: (context) => ActivitiesBloc(),
+            child: activites(),
+          ),
           //content of certificates
           courses(),
         ],
@@ -157,22 +179,22 @@ class _ProfilePageState extends State<ProfilePage>
 
   Padding tab_bar_tabs() {
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 10),
       child: TabBar(
-        indicator: DotIndicator(),
-        unselectedLabelColor: Color.fromARGB(255, 156, 156, 156),
-        indicatorColor: Color(0XFF8174CC),
+        indicator: const DotIndicator(),
+        unselectedLabelColor: const Color.fromARGB(255, 156, 156, 156),
+        indicatorColor: const Color(0XFF8174CC),
         controller: _tabController,
         labelColor: Colors.black,
-        labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+        labelStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
         tabs: [
-          Tab(
+          const Tab(
             text: 'spaces',
           ),
-          Tab(
+          const Tab(
             text: 'activities',
           ),
-          Tab(
+          const Tab(
             text: 'courses',
           ),
         ],
@@ -181,34 +203,67 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget spaces() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListView(
-        children: [],
-      ),
+    return BlocBuilder<MySpacesBloc, MySpacesState>(
+      builder: (context, state) {
+        if (state is MySpacesInitial) {
+          context.read<MySpacesBloc>().add(LoadMySpaces(
+                userId: widget.userId,
+              ));
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is MySpacesLoaded) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Container(
+              height: 300,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: state.spaces.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    height: 100,
+                    child: RecommendedSpaceCard(
+                        recommendedSpace: state.spaces[index]),
+                  );
+                },
+              ),
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
   Widget activites() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ListView.builder(
-        itemCount: spaceNames.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            onTap: () {
-              //go to the ingo of the activity
-            },
-            title: Text(spaceNames[index]),
-            subtitle: Text("You joined the space '${spaceNames[index]}'"),
-            trailing: Image.asset(
-              'assets/images/spacePhoto.png',
-              width: 40,
-            ), // Replace with your image
-            // Add any other widgets or customizations as needed
+    return BlocBuilder<ActivitiesBloc, ActivitiesState>(
+      builder: (context, state) {
+        if (state is ActivitiesInitial) {
+          context.read<ActivitiesBloc>().add(LoadActvites());
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ActivitiesLoaded) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            child: ListView.builder(
+              itemCount: state.activities.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "You ${state.activities[index].verb} ${state.activities[index].targetContentTypeName}  ${state.activities[index].actionObject}"),
+                );
+              },
+            ),
           );
-        },
-      ),
+        } else if (state is ActivitiesError) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
@@ -220,4 +275,23 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
   }
+
+  void buildProfile(BuildContext context) {
+    context.read<ProfileBloc>().add(LoadProfileData(id: widget.userId));
+  }
+
+  void buildListners(ProfileState state) {
+    if (state is ProfileError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 }
+
+
+
+// maryim

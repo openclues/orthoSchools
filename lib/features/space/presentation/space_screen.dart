@@ -110,7 +110,6 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                           ))
                                       .toList(),
                                 )
-                          
                               ],
                             ),
                           ),
@@ -330,19 +329,19 @@ class _SpaceScreenState extends State<SpaceScreen> {
                     ),
                   ],
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.space.posts!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    List<LatestUpdatedPost> posts =
-                        state.space.posts!.reversed.toList();
-                    posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-                    return SpacePostWidget(
-                      post: posts[index],
-                    );
-                  },
-                ),
+                // ListView.builder(
+                //   shrinkWrap: true,
+                //   physics: const NeverScrollableScrollPhysics(),
+                //   itemCount: state.space.posts!.length,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     List<LatestUpdatedPost> posts =
+                //         state.space.posts!.reversed.toList();
+                //     posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                //     return SpacePostWidget(
+                //       post: posts[index],
+                //     );
+                //   },
+                // ),
                 //space description
               ],
             ),

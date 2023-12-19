@@ -30,19 +30,26 @@ class RequestHelper {
 
 // ...
 
-  static Future<http.Response> get(String endpoint) async {
+  static Future<http.Response> get(
+    String endpoint,
+  ) async {
     String url = _baseUrl + endpoint;
+    print(url);
     String? authToken = await getAuthToken();
-    print(authToken.toString() + "authToken");
 
     if (authToken != null) {
       // Authenticated request with header
-      var response = await http
-          .get(Uri.parse(url), headers: {"Authorization": "Token $authToken"});
+      //add data to the body
+
+      var response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Token $authToken"},
+      );
 
       return response;
     } else {
       // Unauthenticated request without header
+
       var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         // If the request is successful, cache the response with a validity of 3 hours
@@ -93,14 +100,39 @@ class RequestHelper {
 
   static Future<http.Response> put(
     String endpoint,
-    dynamic data,
-  ) async {
+    dynamic data, {
+    Map<String, XFile?>? files,
+  }) async {
     String url = _baseUrl + endpoint;
 
     String? authToken = await getAuthToken();
 
     if (authToken != null) {
-      // authenticated request with header
+      if (files != null && files.isNotEmpty) {
+        // var request = http.MultipartRequest('PATCH', Uri.parse(url));
+        files.forEach((key, file) async {
+          if (file != null) {
+            Map<String, String> headers = {"Content-Type": "application/json"};
+            headers["Authorization"] = "Token $authToken";
+            var request = http.MultipartRequest('PATCH', Uri.parse(url));
+
+            var multipartFile = await http.MultipartFile.fromPath(
+              key,
+              file.path,
+            );
+            data[key] = multipartFile;
+            request.headers.addAll(headers);
+            // request.fields.addAll(
+            //     data.map((key, value) => MapEntry(key, value.toString())));
+            request.files.add(multipartFile);
+            var response = await request.send();
+            print(data.toString() + "data");
+            print(response.toString());
+            // request.files.add(multipartFile);
+          }
+        });
+      }
+
       return http.patch(Uri.parse(url),
           headers: {"Authorization": "Token $authToken"}, body: data);
     } else {

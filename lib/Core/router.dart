@@ -10,6 +10,7 @@ import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:azsoon/features/loading/presentation/data/screens/loading_screen.dart';
 import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart';
 import 'package:azsoon/features/space/bloc/load_post_bloc.dart';
+import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
 import 'package:azsoon/features/space/presentation/post_screen.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
 import 'package:azsoon/features/verification/persentation/screens/verification_pro_request_screen.dart';
@@ -62,9 +63,19 @@ class AppRouter {
       case ProfileScreen.routeName:
         var arguments = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => ProfileBloc(),
-                  child: ProfileScreen(
+            builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => ProfileBloc(),
+                    ),
+                    BlocProvider(
+                      create: (context) => MySpacesBloc(),
+                    ),
+                    BlocProvider(
+                      create: (context) => JoinSpaceBloc(),
+                    ),
+                  ],
+                  child: ProfilePage(
                     userId: arguments['userId'],
                     isNav: arguments['isNav'] ?? false,
                   ),

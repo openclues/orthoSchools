@@ -12,7 +12,7 @@ final class MySpacesInitial extends MySpacesState {}
 
 
 class MySpacesLoaded extends MySpacesState {
-  final List<Space> spaces;
+  final List<RecommendedSpace> spaces;
   const MySpacesLoaded({required this.spaces});
   @override
   List<Object> get props => [spaces];

@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:azsoon/model/user-info.dart';
+import 'package:equatable/equatable.dart';
 
 import 'user_profile_model.dart';
 
-class Profile {
+class Profile extends Equatable {
   Profile({
     this.title,
     this.bio,
@@ -19,17 +20,17 @@ class Profile {
     this.cardId,
   });
 
-  String? title;
-  String? bio;
-  String? studyIn;
-  String? cover;
-  bool? isme;
-  String? cardId;
-  String? profileImage;
-  DateTime? birthDate;
-  String? placeOfWork;
-  UserModel? user;
-  String? speciality;
+  final String? title;
+  final String? bio;
+  final String? studyIn;
+  final String? cover;
+  final bool? isme;
+  final String? cardId;
+  final String? profileImage;
+  final DateTime? birthDate;
+  final String? placeOfWork;
+  final UserModel? user;
+  final String? speciality;
 
   factory Profile.fromRawJson(String str) => Profile.fromJson(json.decode(str));
 
@@ -37,7 +38,7 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
         title: json["title"],
-        cardId: json["card_id"],
+        cardId: json["id_card"],
         isme: json["is_me"],
         bio: json["bio"],
         studyIn: json["study_in"],
@@ -63,6 +64,22 @@ class Profile {
         "place_of_work": placeOfWork,
         "speciality": speciality,
       };
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        title,
+        bio,
+        studyIn,
+        cover,
+        profileImage,
+        birthDate,
+        placeOfWork,
+        speciality,
+        isme,
+        user,
+        cardId
+      ];
 }
 
 class MyProfile extends Profile {}

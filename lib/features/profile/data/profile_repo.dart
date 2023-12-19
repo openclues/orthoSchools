@@ -8,8 +8,11 @@ class ProfileRepo {
     return response;
   }
 
-  Future<Response> getMyProfile(){
+  Future<Response> getMyProfile() {
     return RequestHelper.get('myprofile');
+  }
 
+  Future<Response> getMyActivity() {
+    return RequestHelper.get('myactivities/');
   }
 }

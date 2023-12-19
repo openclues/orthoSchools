@@ -17,7 +17,7 @@ class SpaceLoading extends SpaceState {
 
 class SpaceLoaded extends SpaceState {
   // final Space spaceModel;
-  final Space space;
+  final RecommendedSpace space;
   const SpaceLoaded(
     // this.spaceModel,
     this.space,
