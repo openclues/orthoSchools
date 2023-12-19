@@ -496,15 +496,12 @@ class ImageWidget extends StatelessWidget {
       ),
       height: 150,
       width: LocalStorage.getcreenSize(context).width / 2,
-      child: Hero(
-        tag: image!,
-        child: ClipRect(
-          child: ClipRRect(
-            borderRadius: borderRadius ?? BorderRadius.circular(0),
-            child: Image.network(
-              image!,
-              fit: BoxFit.cover,
-            ),
+      child: ClipRect(
+        child: ClipRRect(
+          borderRadius: borderRadius ?? BorderRadius.circular(0),
+          child: Image.network(
+            image!,
+            fit: BoxFit.cover,
           ),
         ),
       ),
