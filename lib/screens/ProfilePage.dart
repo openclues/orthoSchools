@@ -1,4 +1,5 @@
 import 'package:azsoon/screens/EditProfilePage.dart';
+import 'package:azsoon/screens/NewProfile_page.dart';
 import 'package:azsoon/widgets/Button.dart';
 import 'package:azsoon/widgets/IndicatorShape.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const EditProfilePage()),
+                            builder: (context) => const NewProfile_Page()),
                       );
                     },
                   ),

@@ -22,6 +22,7 @@ import 'package:page_animation_transition/page_animation_transition.dart';
 import '../features/blog/presentation/screens/blog.dart';
 import '../features/profile/bloc/profile_bloc.dart';
 import '../features/space/bloc/space_bloc.dart';
+import '../screens/NewProfile_page.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -58,6 +59,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case ProfilePage.routeName:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case NewProfile_Page.routeName:
+        return MaterialPageRoute(builder: (_) => const NewProfile_Page());
       case SpaceScreen.routeName:
         int spaceId = settings.arguments as int;
         return MaterialPageRoute(
