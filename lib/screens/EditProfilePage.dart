@@ -4,6 +4,9 @@ import 'package:azsoon/widgets/TextField.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../features/profile/bloc/profile_bloc.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -25,6 +28,8 @@ class _ProfilePageState extends State<EditProfilePage>
   TextEditingController cityController = TextEditingController();
   TextEditingController dateOfBirsthController = TextEditingController();
   TextEditingController fileNameController = TextEditingController();
+
+  String? _firstName;
 
   String? selectedCountry;
   String? selectedState;
@@ -52,18 +57,15 @@ class _ProfilePageState extends State<EditProfilePage>
           textColor: Colors.white,
           height: 45,
           onpress: () {
-            print(firstNameController.text);
-            print(lastNameController.text);
-            print(phoneController.text);
-            print(dateOfBirsthController.text);
-            print(selectedCountry);
-            print(selectedState);
-            print(selectedCity);
-            print(bioController.text);
-            print(workplaceController.text);
-            print(studyInController.text);
-            print(_certificates);
-            print(titleSelectd);
+            globalKey.currentState!.save();
+            // BlocProvider.of<ProfileBloc>(context).add(EditProfileEvent(
+            //     firstName: _firstName,
+            //     lastName: lastNameController.text,
+            //     title: titleSelectd,
+            //     bio: bioController.text,
+            //     email: emailtController.text,
+            //     phone: phoneController.text,
+            //     address: cityController.text));
 
             //saving edited data
           },
@@ -73,13 +75,16 @@ class _ProfilePageState extends State<EditProfilePage>
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(bottom: 0),
-        child:
-            ListView(physics: const NeverScrollableScrollPhysics(), children: [
-          //tabs
-          tab_bar_tabs(),
-          //view of the tabs
-          tab_sections_view(),
-        ]),
+        child: Form(
+          child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                //tabs
+                tab_bar_tabs(),
+                //view of the tabs
+                tab_sections_view(),
+              ]),
+        ),
       ),
     );
   }
@@ -266,173 +271,190 @@ class _ProfilePageState extends State<EditProfilePage>
   }
 
   Widget basic_info() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 15),
-      child: ListView(
-        children: [
-          Form(
-            child: Container(
-              child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 30, bottom: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: ['Dr', 'Prof', 'None']
-                        .map((e) => Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // setState(() {
-                                    //   titleSelectd = e;
-                                    // });
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: e == titleSelectd
-                                            ? const Color(0XFF8174CC)
-                                            : Colors.transparent,
-                                        border: Border.all(
-                                          color: const Color.fromARGB(
-                                              255, 204, 204, 205),
-                                        )),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(7.0),
-                                      child: Text(
-                                        e,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 15),
+          child: ListView(
+            children: [
+              Form(
+                child: Container(
+                  child: Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30, bottom: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: ['Dr', 'Prof', 'None']
+                            .map((e) => Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // setState(() {
+                                        //   titleSelectd = e;
+                                        // });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             color: e == titleSelectd
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontSize: 17),
+                                                ? const Color(0XFF8174CC)
+                                                : Colors.transparent,
+                                            border: Border.all(
+                                              color: const Color.fromARGB(
+                                                  255, 204, 204, 205),
+                                            )),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(7.0),
+                                          child: Text(
+                                            e,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: e == titleSelectd
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontSize: 17),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        // onSaved: (v) {
-                        //   _firstName = v;
-
-                        obscureText: false,
-                        labelText: 'First Name',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        controller: firstNameController,
-                        hintText: "",
+                                ))
+                            .toList(),
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: NewCustomTextField(
+                            initialValue: (state as ProfileLoaded)
+                                .profileModel!
+                                .user!
+                                .firstName,
+                            onSaved: (v) {
+                              _firstName = v;
+                            },
+                            // initialValue: ,
+                            obscureText: false,
+                            labelText: 'First Name',
+                            borderColor:
+                                const Color.fromARGB(255, 204, 204, 205),
+                            textfiledColor: Colors.white,
+                            // controller: firstNameController,
+                            // hintText: "",
+                          ),
+                        ),
+                        const SizedBox(
+                            width: 16), // Adjust the spacing between fields
+                        Expanded(
+                          child: CustomTextField(
+                            initialValue: (state)
+                                .profileModel!
+                                .user!
+                                .lastName,
+                            // onSaved: (v) {
+                            //   _lastName = v;
+                            // },
+                            obscureText: false,
+                            labelText: 'Last Name',
+                            borderColor:
+                                const Color.fromARGB(255, 204, 204, 205),
+                            textfiledColor: Colors.white,
+                            controller: lastNameController,
+                            hintText: "",
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
-                        width: 16), // Adjust the spacing between fields
-                    Expanded(
-                      child: CustomTextField(
-                        initialValue: '',
-                        // onSaved: (v) {
-                        //   _lastName = v;
-                        // },
-                        obscureText: false,
-                        labelText: 'Last Name',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        controller: lastNameController,
-                        hintText: "",
-                      ),
+                      height: 10,
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        initialValue: '',
-                        // onSaved: (v) {
-                        //   _phone = v;
-                        // },
-                        obscureText: false,
-                        labelText: 'Phone Number',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        controller: phoneController,
-                        hintText: "",
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            initialValue: '',
+                            // onSaved: (v) {
+                            //   _phone = v;
+                            // },
+                            obscureText: false,
+                            labelText: 'Phone Number',
+                            borderColor:
+                                const Color.fromARGB(255, 204, 204, 205),
+                            textfiledColor: Colors.white,
+                            controller: phoneController,
+                            hintText: "",
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: CustomTextField(
+                            initialValue: '',
+                            // onSaved: (v) {
+                            //   _dateOfBirth = v;
+                            // },
+                            obscureText: false,
+                            labelText: 'Date Of Birth',
+                            borderColor:
+                                const Color.fromARGB(255, 204, 204, 205),
+                            textfiledColor: Colors.white,
+                            controller: dateOfBirsthController,
+                            hintText: "",
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: CustomTextField(
-                        initialValue: '',
-                        // onSaved: (v) {
-                        //   _dateOfBirth = v;
-                        // },
-                        obscureText: false,
-                        labelText: 'Date Of Birth',
-                        borderColor: const Color.fromARGB(255, 204, 204, 205),
-                        textfiledColor: Colors.white,
-                        controller: dateOfBirsthController,
-                        hintText: "",
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 40),
-                  child: CSCPicker(
-                    dropdownDecoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 204, 204, 205),
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    disabledDropdownDecoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 239, 238, 238),
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 204, 204, 205),
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    layout: Layout.vertical,
-                    // flagState: CountryFlag.DISABLE,
-                    onCountryChanged: (country) {
-                      setState(() {
-                        selectedCountry = country;
-                      });
-                    },
-                    onStateChanged: (state) {
-                      setState(() {
-                        selectedState = state;
-                      });
-                    },
-                    onCityChanged: (city) {
-                      setState(() {
-                        selectedCity = city;
-                      });
-                    },
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 40, 0, 40),
+                      child: CSCPicker(
+                        dropdownDecoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 204, 204, 205),
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        disabledDropdownDecoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 239, 238, 238),
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 204, 204, 205),
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        layout: Layout.vertical,
+                        // flagState: CountryFlag.DISABLE,
+                        onCountryChanged: (country) {
+                          setState(() {
+                            selectedCountry = country;
+                          });
+                        },
+                        onStateChanged: (state) {
+                          setState(() {
+                            selectedState = state;
+                          });
+                        },
+                        onCityChanged: (city) {
+                          setState(() {
+                            selectedCity = city;
+                          });
+                        },
 
-                    countryDropdownLabel: "Country",
-                    stateDropdownLabel: "State",
-                    cityDropdownLabel: "City",
-                    //dropdownDialogRadius: 30,
-                    //searchBarRadius: 30,
-                  ),
+                        countryDropdownLabel: "Country",
+                        stateDropdownLabel: "State",
+                        cityDropdownLabel: "City",
+                        //dropdownDialogRadius: 30,
+                        //searchBarRadius: 30,
+                      ),
+                    ),
+                  ]),
                 ),
-              ]),
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

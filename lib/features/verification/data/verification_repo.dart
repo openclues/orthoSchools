@@ -18,16 +18,22 @@ class VerificationRepo {
       XFile? cardId,
       String? speciality,
       String? studyIn}) async {
-    var response = await RequestHelper.put(ApiEndpoints.updateProfile, {
-      // 'first_name': firstName,
-      // 'last_name': lastName,
-      // 'speciality': speciality,
-      // 'study_in': studyIn,
-      // 'selfie': selfie
-    }, files: {
-      'id_card': cardId,
-      'selfie': selfie
-    });
+    Map<String, String>? data;
+    if (firstName != null) {
+      data = {'first_name': firstName};
+    }
+    if (lastName != null) {
+      data = {'last_name': lastName};
+    }
+    if (speciality != null) {
+      data = {'speciality': speciality};
+    }
+    if (studyIn != null) {
+      data = {'study_in': studyIn};
+    }
+
+    var response = await RequestHelper.put(ApiEndpoints.updateProfile, data,
+        files: {'id_card': cardId, 'selfie': selfie});
     return response;
   }
 }

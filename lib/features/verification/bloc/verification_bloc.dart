@@ -32,7 +32,6 @@ class VerificationBloc extends Bloc<VerificationEvent, VerificationState> {
           cardId: event.cardId,
           selfie: event.selfie);
       if (response.statusCode == 200) {
-        print(response.body + "ppsdfsdf");
         var profile = Profile.fromJson(jsonDecode(response.body));
         print(profile.cardId);
 

@@ -122,8 +122,9 @@ class RequestHelper {
             );
             data[key] = multipartFile;
             request.headers.addAll(headers);
-            // request.fields.addAll(
-            //     data.map((key, value) => MapEntry(key, value.toString())));
+            print(data.toString() + "data");
+            request.fields.addAll(
+                data.map((key, value) => MapEntry(key, value.toString())));
             request.files.add(multipartFile);
             var response = await request.send();
             print(data.toString() + "data");
@@ -132,7 +133,7 @@ class RequestHelper {
           }
         });
       }
-
+      print(data.toString() + "data");
       return http.patch(Uri.parse(url),
           headers: {"Authorization": "Token $authToken"}, body: data);
     } else {

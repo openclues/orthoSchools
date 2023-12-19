@@ -12,3 +12,4 @@ class LoadActvites extends ActivitiesEvent {
   @override
   List<Object> get props => [];
 }
+

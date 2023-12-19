@@ -96,6 +96,7 @@ class RecommendedSpaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(left: 8),
       width: MediaQuery.of(context).size.width * 0.8,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
