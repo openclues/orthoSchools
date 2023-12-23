@@ -49,6 +49,8 @@ class AppRouter {
           ),
           pageAnimationType: BottomToTopTransition(),
         );
+      case My_Account_Settings.routeName:
+        return MaterialPageRoute(builder: (_) => const My_Account_Settings());
       case ResetPassword.routeName:
         return MaterialPageRoute(builder: (_) => const ResetPassword());
       case SecondStep.routeName:

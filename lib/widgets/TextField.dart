@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final String? labelText;
   final Icon? fieldicon;
   void Function(String?)? onSaved;
+  void Function()? onTap;
   final IconButton? iconButton;
   final Color? textfiledColor;
   final TextEditingController? controller;
@@ -13,11 +14,14 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   String? initialValue;
   final int? maxLines;
+  final bool? readOnly;
   // final String? intialValue;
 
   CustomTextField(
       {super.key,
       this.hintText,
+      this.readOnly,
+      this.onTap,
       this.onSaved,
       this.labelText,
       this.fieldicon,
@@ -50,6 +54,8 @@ class CustomTextField extends StatelessWidget {
             height: 4,
           ),
           TextFormField(
+            readOnly: readOnly ?? false,
+            onTap: onTap,
             onSaved: onSaved,
             initialValue: initialValue,
             //was TextField

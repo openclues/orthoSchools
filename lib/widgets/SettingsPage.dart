@@ -1,10 +1,18 @@
+import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/widgets/Button.dart';
+import 'package:azsoon/widgets/TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../Core/local_storage.dart';
 import '../features/loading/presentation/data/screens/loading_screen.dart';
 
-//
+String? birthDate;
+String? name;
+String? surname;
+String? phoneNumber;
+String? newPassword;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -54,9 +62,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ],
                           ),
                           child: SettingsTile.navigation(
+                            onPressed: (_) {
+                              Navigator.of(context)
+                                  .pushNamed('/myAccountSettings');
+                            },
                             trailing: Icon(Icons.arrow_forward_ios),
                             leading: Icon(Icons.person_pin),
-                            title: Text('Account Settings'),
+                            title: Text('My Account Settings'),
                           ),
                         ),
                       ),
@@ -240,5 +252,340 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+}
+
+class My_Account_Settings extends StatefulWidget {
+  static const String routeName = '/myAccountSettings';
+  const My_Account_Settings({super.key});
+
+  @override
+  State<My_Account_Settings> createState() => _My_Account_SettingsState();
+}
+
+class _My_Account_SettingsState extends State<My_Account_Settings> {
+  final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
+  bool passwordVisibilty = true;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Form(
+        key: globalKey,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          child: ListView(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(0, 2),
+                      blurRadius: 1,
+                      spreadRadius: 0.2,
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    trailing: Icon(Icons.edit_outlined),
+                    title: Text('Name Surname'),
+                    subtitle: Text('Sara kaya'),
+                    children: <Widget>[
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CustomTextField(
+                              textfiledColor: Colors.white, // Use Colors.white
+                              borderColor: Colors.grey,
+                              obscureText: false,
+                              labelText: 'Name',
+                            ),
+                            CustomTextField(
+                              textfiledColor: Colors.white, // Use Colors.white
+                              obscureText: false,
+                              borderColor: Colors.grey,
+                              labelText: 'Surname',
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              width: double.infinity,
+                              buttonText: 'Save',
+                              height: 45,
+                              onpress: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(0, 2),
+                      blurRadius: 1,
+                      spreadRadius: 0.2,
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    trailing: Icon(Icons.email_outlined),
+                    title: Text('E-mail'),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('sara.kaya@gmail.com'),
+                          SizedBox(
+                            height: 13,
+                          ),
+                          CustomButton(
+                            buttonText: 'E-mail address confirm',
+                            height: 45,
+                            onpress: () {},
+                          ),
+                        ]),
+                    children: <Widget>[],
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(0, 2),
+                      blurRadius: 1,
+                      spreadRadius: 0.2,
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    trailing: Icon(Icons.edit_outlined),
+                    title: Text('Password'),
+                    subtitle: Text('********'),
+                    children: <Widget>[
+                      Container(
+                        padding:
+                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CustomTextField(
+                              obscureText: passwordVisibilty,
+                              labelText: 'Password',
+                              iconButton: IconButton(
+                                padding:
+                                    const EdgeInsetsDirectional.only(end: 12.0),
+                                icon: passwordVisibilty
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordVisibilty = !passwordVisibilty;
+                                  });
+                                },
+                              ),
+                              borderColor:
+                                  const Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              hintText:
+                                  "password must be at least 8 characters.",
+                            ),
+                            CustomTextField(
+                              obscureText: passwordVisibilty,
+                              labelText: 'Confirm Password',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              hintText: "both passwords must match",
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              width: double.infinity,
+                              buttonText: 'Save',
+                              height: 45,
+                              onpress: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(0, 2),
+                      blurRadius: 1,
+                      spreadRadius: 0.2,
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    trailing: Icon(Icons.edit_outlined),
+                    title: Text('Birth Date'),
+                    subtitle: Text(birthDate!),
+                    children: <Widget>[
+                      Container(
+                        padding:
+                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CustomTextField(
+                              readOnly: true,
+                              obscureText: passwordVisibilty,
+                              labelText: 'Birh Date',
+                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              textfiledColor: Colors.white,
+                              hintText: birthDate,
+                              onSaved: (date) {
+                                birthDate = date;
+                              },
+                              onTap: () {
+                                selectDate();
+                              },
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              width: double.infinity,
+                              buttonText: 'Save',
+                              height: 45,
+                              onpress: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      offset: Offset(0, 2),
+                      blurRadius: 1,
+                      spreadRadius: 0.2,
+                    ),
+                  ],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    trailing: Icon(Icons.edit_outlined),
+                    title: Text('Phone Number'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('+90 55 23 684 008'),
+                        TextButton(onPressed: () {}, child: Text('Confirmed'))
+                      ],
+                    ),
+                    children: <Widget>[
+                      Container(
+                        padding:
+                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            InternationalPhoneNumberInput(
+                              onInputChanged: (PhoneNumber number) {
+                                print(number.phoneNumber);
+                              },
+                              onInputValidated: (bool value) {
+                                print(value);
+                              },
+                              selectorConfig: SelectorConfig(
+                                selectorType: PhoneInputSelectorType.DIALOG,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CustomButton(
+                              width: double.infinity,
+                              buttonText: 'Save',
+                              height: 45,
+                              onpress: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> selectDate() async {
+    DateTime? selectedBirthDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100));
+    if (selectedBirthDate != null) {
+      birthDate = selectedBirthDate.toString().split(" ")[0];
+      setState(() {});
+    }
   }
 }

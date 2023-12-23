@@ -1,4 +1,4 @@
-import 'package:azsoon/screens/EditProfilePage.dart';
+// import 'package:azsoon/screens/EditProfilePage.dart';
 import 'package:azsoon/screens/NewProfile_page.dart';
 import 'package:azsoon/widgets/Button.dart';
 import 'package:azsoon/widgets/IndicatorShape.dart';

@@ -51,6 +51,7 @@ dependencies:
   http: ^1.1.0
   iconly: ^1.0.1
   image_picker: ^1.0.4
+  intl_phone_number_input: ^0.7.4
   lottie: ^2.7.0
   page_animation_transition: ^1.0.0
   progress_dialog_null_safe: ^1.0.7
