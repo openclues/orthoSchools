@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: AppRouter.generateRoute,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: debugDisableShadows,
-      theme: ThemeData(),
+      theme: ThemeData(fontFamily: 'Ubuntu'),
+      //ThemeData(),
     );
   }
 }

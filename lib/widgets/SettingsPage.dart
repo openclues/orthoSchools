@@ -8,7 +8,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../Core/local_storage.dart';
 import '../features/loading/presentation/data/screens/loading_screen.dart';
 
-String? birthDate;
+String birthDate = '';
 String? name;
 String? surname;
 String? phoneNumber;
@@ -469,7 +469,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   child: ExpansionTile(
                     trailing: Icon(Icons.edit_outlined),
                     title: Text('Birth Date'),
-                    subtitle: Text(birthDate!),
+                    subtitle: Text(birthDate),
                     children: <Widget>[
                       Container(
                         padding:
@@ -485,7 +485,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                               textfiledColor: Colors.white,
                               hintText: birthDate,
                               onSaved: (date) {
-                                birthDate = date;
+                                birthDate = date!;
                               },
                               onTap: () {
                                 selectDate();
