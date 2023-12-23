@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:azsoon/features/profile/data/my_profile_model.dart';
+import 'package:equatable/equatable.dart';
 
 class UserProfile extends Profile {
 
@@ -10,7 +11,7 @@ class UserProfile extends Profile {
   
 }
 
-class UserModel {
+class UserModel extends Equatable {
   int? id;
   String? email;
   String? firstName;
@@ -66,6 +67,25 @@ class UserModel {
       isVerified: map['isVerified'],
       isVerifiedPro: map['isVerifiedPro'],
     );
+
+
+  }
+
+  @override
+  List<Object?> get props {
+    return [
+      id,
+      email,
+      firstName,
+      lastName,
+      userRole,
+      phone,
+      address,
+      isBanned,
+      isSuspend,
+      isVerified,
+      isVerifiedPro,
+    ];
   }
 
   String toJson() => json.encode(toMap());

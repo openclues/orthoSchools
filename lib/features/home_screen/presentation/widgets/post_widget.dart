@@ -117,11 +117,10 @@ class SpacePostWidget extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, PostScreen.routeName,
-                arguments: post.id);
+            Navigator.pushNamed(context, PostScreen.routeName, arguments: post);
           },
           child: Container(
-            margin: const EdgeInsets.only(bottom: 10, left: 10, right: 0),
+            margin: const EdgeInsets.only(left: 10, right: 0),
             decoration: const BoxDecoration(
               // boxShadow: ,
               color: Colors.white,
@@ -155,7 +154,7 @@ class SpacePostWidget extends StatelessWidget {
                                 color: Colors.grey),
                           // Icon(Icons.more_vert),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(.0),
                             child: JoinButton(
                               isJoined: post.isJoined!,
                               spaceId: post.space!,
@@ -199,16 +198,16 @@ class SpacePostWidget extends StatelessWidget {
                     PostImagesWidhet(
                       post: post,
                     ),
-                    const SizedBox(height: 10), // Add space between widgets
+                    // const SizedBox(height: 10), // Add space between widgets
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(0),
                       child: Text(
                         post.content!,
                         textAlign: TextAlign.justify,
                         maxLines: 2,
                         overflow: TextOverflow.fade,
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           overflow: TextOverflow.ellipsis,
                           color: Color.fromARGB(255, 0, 0, 0),
                         ),
@@ -218,7 +217,7 @@ class SpacePostWidget extends StatelessWidget {
 
                     Row(
                       children: [
-                        Text("see comments ( ${post.comments!.length} )",
+                        Text("see comments ( ${post.commentsCount} )",
                             style: const TextStyle(
                                 fontSize: 15, color: Colors.grey)),
                         const Spacer(),

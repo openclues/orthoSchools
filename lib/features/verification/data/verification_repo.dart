@@ -19,11 +19,14 @@ class VerificationRepo {
       String? speciality,
       String? studyIn}) async {
     Map<String, String>? data;
+
+    Map<String, XFile> files = {};
+    data = {};
     if (firstName != null) {
       data = {'first_name': firstName};
     }
     if (lastName != null) {
-      data = {'last_name': lastName};
+      data.addEntries([MapEntry('last_name', lastName)]);
     }
     if (speciality != null) {
       data = {'speciality': speciality};
@@ -31,9 +34,17 @@ class VerificationRepo {
     if (studyIn != null) {
       data = {'study_in': studyIn};
     }
+    if (cardId != null) {
+      files = {'card_id': cardId};
+    }
+    if (selfie != null) {
+      // files = {'selfie': selfie};
+    }
 
-    var response = await RequestHelper.put(ApiEndpoints.updateProfile, data,
-        files: {'id_card': cardId, 'selfie': selfie});
+    print(data);
+
+    var response =
+        await RequestHelper.put(ApiEndpoints.updateProfile, data, files: files);
     return response;
   }
 }

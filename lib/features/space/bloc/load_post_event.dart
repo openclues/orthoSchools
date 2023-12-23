@@ -15,3 +15,11 @@ class LoadPost extends LoadPostEvent {
   List<Object> get props => [postId];
 }
 
+
+
+class LoadPostComments extends LoadPostEvent {
+  final String postId;
+  const LoadPostComments({required this.postId});
+  @override
+  List<Object> get props => [postId];
+}

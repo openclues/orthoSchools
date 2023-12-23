@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Core/network/endpoints.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -98,7 +99,7 @@ class RequestHelper {
     }
   }
 
-  static Future<http.Response> put(
+  static Future<Response> put(
     String endpoint,
     dynamic data, {
     Map<String, XFile?>? files,
@@ -109,36 +110,40 @@ class RequestHelper {
 
     if (authToken != null) {
       if (files != null && files.isNotEmpty) {
-        // var request = http.MultipartRequest('PATCH', Uri.parse(url));
+        var request = http.MultipartRequest('PATCH', Uri.parse(url));
+        request.headers["Authorization"] = "Token $authToken";
+
         files.forEach((key, file) async {
           if (file != null) {
-            Map<String, String> headers = {"Content-Type": "application/json"};
-            headers["Authorization"] = "Token $authToken";
-            var request = http.MultipartRequest('PATCH', Uri.parse(url));
-
             var multipartFile = await http.MultipartFile.fromPath(
               key,
               file.path,
             );
-            data[key] = multipartFile;
-            request.headers.addAll(headers);
-            print(data.toString() + "data");
-            request.fields.addAll(
-                data.map((key, value) => MapEntry(key, value.toString())));
             request.files.add(multipartFile);
-            var response = await request.send();
-            print(data.toString() + "data");
-            print(response.toString());
-            // request.files.add(multipartFile);
           }
         });
+
+        if (data != null) {
+          request.fields.addAll(data.map((key, value) =>
+              MapEntry(key, value is String ? value : json.encode(value))));
+        }
+
+        try {
+          var response = await request.send();
+          return await http.Response.fromStream(response);
+        } catch (e) {
+          throw Exception('Failed to send request with files and data');
+        }
+      } else {
+        // No files, send data only
+        return http.patch(Uri.parse(url),
+            headers: {"Authorization": "Token $authToken"},
+            body: data);
       }
-      print(data.toString() + "data");
-      return http.patch(Uri.parse(url),
-          headers: {"Authorization": "Token $authToken"}, body: data);
     } else {
-      // unauthenticated request without header
-      return http.put(Uri.parse(url), body: json.encode(data));
+      // Unauthenticated request without header
+      return http.put(Uri.parse(url),
+          body: data != null ? json.encode(data) : null);
     }
   }
 

@@ -9,7 +9,9 @@ class JoinSpaceBloc extends Bloc<JoinSpaceEvent, JoinSpaceState> {
   JoinSpaceBloc() : super(JoinSpaceInitial()) {
     JoinSpaceRepo joinSpaceRepo = JoinSpaceRepo();
     on<JoinSpace>((event, emit) async {
+
       emit(JoinSpaceLoading(spaceId: event.spaceId));
+      
       var response = await joinSpaceRepo.joinSpace(event.spaceId);
       if (response.statusCode == 200) {
         emit(JoinSpaceSuccess(

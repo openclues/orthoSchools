@@ -11,8 +11,10 @@ class ProfileRepo {
   Future<Response> getMyProfile() {
     return RequestHelper.get('myprofile');
   }
-
   Future<Response> getMyActivity() {
     return RequestHelper.get('myactivities/');
   }
+
+
+
 }

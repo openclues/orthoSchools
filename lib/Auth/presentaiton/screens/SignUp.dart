@@ -73,19 +73,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Create an Account',
                       style: TextStyle(
                           fontSize: 24.0, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    Text(
+                    const Text(
                       "I'm a subhead that goes with a story.",
                       style: TextStyle(
                           fontSize: 14.0,
-                          color: const Color.fromARGB(255, 109, 109, 109)),
+                          color: Color.fromARGB(255, 109, 109, 109)),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,19 +94,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: CustomTextField(
                             obscureText: false,
                             labelText: 'First Name',
-                            borderColor: Color.fromARGB(255, 176, 176, 176),
+                            borderColor: const Color.fromARGB(255, 176, 176, 176),
                             textfiledColor: Colors.white,
                             controller: firstNameController,
                             hintText: "First Name",
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                             width: 16), // Adjust the spacing between fields
                         Expanded(
                           child: CustomTextField(
                             obscureText: false,
                             labelText: 'Last Name',
-                            borderColor: Color.fromARGB(255, 176, 176, 176),
+                            borderColor: const Color.fromARGB(255, 176, 176, 176),
                             textfiledColor: Colors.white,
                             controller: lastNameController,
                             hintText: "Last Name",
@@ -117,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomTextField(
                       obscureText: false,
                       labelText: 'Email',
-                      borderColor: Color.fromARGB(255, 176, 176, 176),
+                      borderColor: const Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: emailController,
                       hintText: "e-email address",
@@ -125,10 +125,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomTextField(
                       obscureText: passwordVisibilty,
                       labelText: 'Password',
-                      borderColor: Color.fromARGB(255, 176, 176, 176),
+                      borderColor: const Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: passwordController,
-                      hintText: "Password",
+                      hintText: "password must be at least 8 characters.",
                       iconButton: IconButton(
                         padding: const EdgeInsetsDirectional.only(end: 12.0),
                         icon: passwordVisibilty
@@ -143,11 +143,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     CustomTextField(
                       obscureText: passwordVisibilty,
-                      labelText: 'Re-Passowrd',
-                      borderColor: Color.fromARGB(255, 176, 176, 176),
+                      labelText: 'Confirm Passowrd',
+                      borderColor: const Color.fromARGB(255, 176, 176, 176),
                       textfiledColor: Colors.white,
                       controller: rePassowrdController,
-                      hintText: "Re-Password",
+                      hintText: "both passwords must match",
                     ),
                     // CheckboxListTile(
                     //   contentPadding: EdgeInsets.all(0),
@@ -173,12 +173,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     //     });
                     //   },
                     // ),
-                    SizedBox(
+                    const SizedBox(
                       height: 3.0,
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 MaterialButton(
@@ -188,7 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Color(0XFF8174CC), // Use default if not provided
                     ),
                   ),
@@ -204,11 +204,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               fontSize: 18),
                           textAlign: TextAlign.center,
                         )
-                      : CircularProgressIndicator(
+                      : const CircularProgressIndicator(
                           color: Colors.white,
                         ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Center(
@@ -217,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.of(context).pushNamed('/signIn');
                   },
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       children: [
                         TextSpan(
                           text: 'have an account?  ',

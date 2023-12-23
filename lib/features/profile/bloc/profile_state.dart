@@ -12,12 +12,19 @@ final class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final Profile? profileModel;
-  final MyProfile? myProfileModel;
-  const ProfileLoaded({this.profileModel, this.myProfileModel});
+  final Profile profileModel;
+  const ProfileLoaded({required this.profileModel});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [profileModel];
+
+  ProfileLoaded copyWith({
+    Profile? profileModel,
+  }) {
+    return ProfileLoaded(
+      profileModel: profileModel ?? this.profileModel,
+    );
+  }
 }
 
 class ProfileError extends ProfileState {

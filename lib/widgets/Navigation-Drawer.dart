@@ -1,3 +1,4 @@
+import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/Providers/userInfoProvider.dart';
@@ -7,6 +8,7 @@ import 'package:azsoon/features/verification/persentation/screens/verification_p
 import 'package:azsoon/screens/ProfilePage.dart';
 import 'package:azsoon/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../model/userinfoClass.dart';
 // import '../Providers/DrawerNavProvider.dart';
@@ -58,7 +60,7 @@ class NavigationDrawer extends StatelessWidget {
   Widget buildMenuItems(BuildContext context) {
     print(context.read<LoadingBlocBloc>().state);
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(0),
       child: Column(
         children: [
           const SizedBox(
@@ -70,46 +72,137 @@ class NavigationDrawer extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamed(VerificationProRequestScreen.routeName);
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      offset: const Offset(0, 2),
-                      blurRadius: 1,
-                      spreadRadius: 0.2,
-                    ),
-                  ],
-                ),
-                child: ListTile(
-                  // trailing: Icon(
-                  //   Icons.verified,
-                  //   color: Colors.blue,
-                  // ),
-                  leading: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 0.5),
-                            blurRadius: 1)
-                      ],
-                    ),
-                    child: Image.asset('assets/images/verified-account.png',
-                        height: 25),
+              child: DrawerItem(
+                title: 'Become a verified pro',
+                leading: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0, 0.5),
+                          blurRadius: 1)
+                    ],
                   ),
-                  title: const Text(
-                    'Become a verified pro',
+                  child: Image.asset('assets/images/verified-account.png',
+                      height: 25),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            //about
+            GestureDetector(
+              onTap: () {
+                // Navigator.of(context).pushNamed(VerificationProRequestScreen.routeName);
+              },
+              child: DrawerItem(
+                title: 'About us',
+                leading: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0, 0.5),
+                          blurRadius: 1)
+                    ],
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.buildingCircleCheck,
+                    color: primaryColor,
                   ),
                 ),
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 5,
+            ),
+            //saved posts and favorite posts
+            GestureDetector(
+              onTap: () {
+                // Navigator.of(context).pushNamed(VerificationProRequestScreen.routeName);
+              },
+              child: DrawerItem(
+                title: 'Saved Posts',
+                leading: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0, 0.5),
+                          blurRadius: 1)
+                    ],
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.bookmark,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: 5,
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigator.of(context).pushNamed(VerificationProRequestScreen.routeName);
+              },
+              child: DrawerItem(
+                title: 'Favorite Posts',
+                leading: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0, 0.5),
+                          blurRadius: 1)
+                    ],
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.heart,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: 5,
+            ),
+
+            //help center   and notifications
+            GestureDetector(
+              onTap: () {
+                // Navigator.of(context).pushNamed(VerificationProRequestScreen.routeName);
+              },
+              child: DrawerItem(
+                title: 'Help Center',
+                leading: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0, 0.5),
+                          blurRadius: 1)
+                    ],
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.questionCircle,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
             ),
             // Container(
             //   decoration: BoxDecoration(
@@ -242,6 +335,42 @@ class NavigationDrawer extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class DrawerItem extends StatelessWidget {
+  final String title;
+  final Widget leading;
+  const DrawerItem({
+    required this.title,
+    required this.leading,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          // borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              offset: const Offset(0, 2),
+              blurRadius: 1,
+              spreadRadius: 0.2,
+            ),
+          ],
+        ),
+        child: ListTile(
+            title: Text(
+              title,
+            ),
+            // trailing: Icon(
+            //   Icons.verified,
+            //   color: Colors.blue,
+            // ),
+            leading: leading));
   }
 }
 

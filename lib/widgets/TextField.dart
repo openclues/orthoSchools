@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller!.text = initialValue ?? '';
+    // controller!.text = initialValue ?? '';
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: Column(
@@ -42,7 +42,7 @@ class CustomTextField extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              labelText!,
+              labelText ?? '',
               style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w500,
@@ -54,10 +54,10 @@ class CustomTextField extends StatelessWidget {
           ),
           TextFormField(
             onSaved: onSaved,
-            // initialValue: initialValue,
+            initialValue: initialValue,
             //was TextField
             maxLines: maxLines,
-            controller: controller!,
+            controller: controller,
             obscureText: obscureText,
             // controller: initialValue != null || initialValue!.isNotEmpty
             //     ? null
@@ -69,8 +69,8 @@ class CustomTextField extends StatelessWidget {
               prefixIcon: fieldicon,
               hintText: hintText,
               hintStyle: const TextStyle(color: Color(0XFF939199)),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 17, horizontal: 10),
+              contentPadding: const EdgeInsets.all(
+                  17), //symmetric(vertical: 17, horizontal: 10),
               filled: true,
               fillColor: textfiledColor,
               border: OutlineInputBorder(
@@ -131,7 +131,7 @@ class NewCustomTextField extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              labelText!,
+              labelText ?? '',
               style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w500,

@@ -3,6 +3,7 @@ import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Providers/DrawerNavProvider.dart';
 import 'package:azsoon/Providers/moreUserInfoProvider.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
+import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +19,15 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   // initialize the shared preferences
   runApp(
-    BlocProvider(
-      create: (context) => LoadingBlocBloc(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoadingBlocBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );

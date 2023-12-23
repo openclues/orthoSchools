@@ -48,4 +48,12 @@ class SpaceRepo {
     var response = await RequestHelper.get('post/$postId');
     return response;
   }
+
+
+
+
+
+  Future<Response> getPostComments(String postId){
+    return RequestHelper.get('api/post-comments/?id=$postId');
+  }
 }

@@ -12,11 +12,23 @@ class HomeScreenInitial extends HomeScreenState {}
 class HomeScreenLoading extends HomeScreenState {}
 
 class HomeScreenLoaded extends HomeScreenState {
-  final HomeScreenModel homeScreenModel;
-  const HomeScreenLoaded({required this.homeScreenModel});
+ final List<RecommendedSpace> recommendedSpaces;
+final PageModel<LatestUpdatedPost> posts;
+
+  const HomeScreenLoaded({required this.recommendedSpaces, required this.posts});
 
   @override
-  List<Object> get props => [homeScreenModel];
+  List<Object> get props => [recommendedSpaces];
+
+  HomeScreenLoaded copyWith({
+    List<RecommendedSpace>? recommendedSpaces,
+    PageModel<LatestUpdatedPost>? posts,
+  }) {
+    return HomeScreenLoaded(
+      recommendedSpaces: recommendedSpaces ?? this.recommendedSpaces,
+      posts: posts ?? this.posts,
+    );
+  }
 }
 
 class HomeScreenError extends HomeScreenState {

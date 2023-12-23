@@ -9,8 +9,9 @@ sealed class ProfileEvent extends Equatable {
 
 class LoadProfileData extends ProfileEvent {
   final int? id;
+  final ProfileLoaded? profileLoaded;
 
-  const LoadProfileData({this.id});
+  const LoadProfileData({this.id, this.profileLoaded});
 
   @override
   List<Object> get props => [];
@@ -26,6 +27,8 @@ class SetInitialProfileData extends ProfileEvent {
 }
 
 class EditProfileEvent extends ProfileEvent {
+  final ProfileLoaded profileLoaded;
+
   final String? firstName;
   final String? lastName;
   final String? title;
@@ -33,13 +36,23 @@ class EditProfileEvent extends ProfileEvent {
   final String? email;
   final String? phone;
   final String? address;
+  final XFile? cardId;
 
   const EditProfileEvent(
       {this.firstName,
+      this.cardId,
       this.lastName,
+      required this.profileLoaded,
       this.title,
       this.bio,
       this.email,
       this.phone,
       this.address});
+}
+
+class LoadMyProfile extends ProfileEvent {
+  const LoadMyProfile();
+
+  @override
+  List<Object> get props => [];
 }

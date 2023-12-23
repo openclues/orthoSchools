@@ -32,3 +32,27 @@ class LoadPostLoading extends LoadPostState {
   @override
   List<Object> get props => [];
 }
+
+
+class LoadPostCommentsLoaded extends LoadPostState {
+  final PageModel<Comment> comments;
+  const LoadPostCommentsLoaded({required this.comments});
+  @override
+  List<Object> get props => [comments];
+}
+
+
+class LoadPostCommentsError extends LoadPostState {
+  final String message;
+  const LoadPostCommentsError({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+
+class LoadPostCommentsLoading extends LoadPostState {
+  const LoadPostCommentsLoading();
+  @override
+  List<Object> get props => [];
+}
+

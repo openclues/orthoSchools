@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:iconly/iconly.dart';
+import 'package:loadmore/loadmore.dart';
 import 'package:provider/provider.dart';
 import '../features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import '../features/home_screen/presentation/widgets/post_widget.dart';
@@ -31,7 +32,7 @@ class _PostWidgetState extends State<PostWidget> {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
         if (state is HomeScreenLoaded) {
-          if (state.homeScreenModel.latestUpdatedPostsFromRecommended != null) {
+          if (state.posts.results.isNotEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -46,17 +47,28 @@ class _PostWidgetState extends State<PostWidget> {
                     textAlign: TextAlign.start,
                   ),
                 ),
-                ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: state.homeScreenModel
-                      .latestUpdatedPostsFromRecommended!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return SpacePostWidget(
-                      post: state.homeScreenModel
-                          .latestUpdatedPostsFromRecommended![index],
-                    );
+                LoadMore(
+                  isFinish: true,
+                  onLoadMore: () async {
+                    if (state.posts.next != null) {
+                      context.read<HomeScreenBloc>().add(LoadMorePosts(
+                          nextUrl: state.posts.next!, homeLoaded: state));
+                    } else {
+                      return false;
+                    }
+
+                    return true;
                   },
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: state.posts.results.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return SpacePostWidget(
+                        post: state.posts.results[index],
+                      );
+                    },
+                  ),
                 ),
               ],
             );
@@ -422,56 +434,37 @@ class PostImagesWidhet extends StatelessWidget {
             ],
           ),
         );
+      } else {
+        return Container();
       }
-      return SizedBox(
-          // height: LocalStorage.getcreenSize(context).height * 0.3,
 
-          child: StaggeredGrid.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 2,
-        // crossAxisSpacing: 4,
-        children: const [
-          StaggeredGridTile.count(
-            crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
-            child: Text('data'),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
-            child: Text('data'),
-          ),
-        ],
-      )
+      //  FlutterCarousel(
+      //   options: CarouselOptions(
+      //     // height: 400.0,
 
-          //  FlutterCarousel(
-          //   options: CarouselOptions(
-          //     // height: 400.0,
-
-          //     showIndicator: true,
-          //     slideIndicator: const CircularSlideIndicator(
-          //         padding: EdgeInsets.only(bottom: 10),
-          //         // indicatorBorderWidth: 2,
-          //         indicatorRadius: 5,
-          //         currentIndicatorColor: primaryColor,
-          //         indicatorBackgroundColor: Colors.white,
-          //         indicatorBorderColor: Colors.amber),
-          //   ),
-          //   items: post.postImages!.map((i) {
-          //     return Builder(
-          //       builder: (BuildContext context) {
-          //         return Container(
-          //             width: MediaQuery.of(context).size.width,
-          //             // margin: const EdgeInsets.symmetric(horizontal: 2),
-          //             child: Image.network(
-          //               i.image!,
-          //               fit: BoxFit.fitWidth,
-          //             ));
-          //       },
-          //     );
-          //   }).toList(),
-          // ),
-          );
+      //     showIndicator: true,
+      //     slideIndicator: const CircularSlideIndicator(
+      //         padding: EdgeInsets.only(bottom: 10),
+      //         // indicatorBorderWidth: 2,
+      //         indicatorRadius: 5,
+      //         currentIndicatorColor: primaryColor,
+      //         indicatorBackgroundColor: Colors.white,
+      //         indicatorBorderColor: Colors.amber),
+      //   ),
+      //   items: post.postImages!.map((i) {
+      //     return Builder(
+      //       builder: (BuildContext context) {
+      //         return Container(
+      //             width: MediaQuery.of(context).size.width,
+      //             // margin: const EdgeInsets.symmetric(horizontal: 2),
+      //             child: Image.network(
+      //               i.image!,
+      //               fit: BoxFit.fitWidth,
+      //             ));
+      //       },
+      //     );
+      //   }).toList(),
+      // ),
     } else {
       return Container();
     }

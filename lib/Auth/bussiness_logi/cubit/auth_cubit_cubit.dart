@@ -1,11 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:azsoon/Auth/data/reposotery/auth_repo.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:bloc/bloc.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../../Core/network/request_helper.dart';
 
 part 'auth_cubit_state.dart';
 
@@ -17,9 +22,6 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
   void login(String password, String email) async {
     try {
       emit(AuthLoading());
-      print(password);
-      print(email);
-
       var response = await authRepo.loginUser(password, email);
 
       if (response.statusCode == 200) {
@@ -28,8 +30,27 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
         print(databody['auth_token']);
         String token = databody['auth_token'] as String;
         LocalStorage.saveAuthToken(token);
-        // Save token to shared preferences
 
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+        String deviceId = '';
+
+        if (Platform.isAndroid) {
+          AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+          deviceId = androidInfo.id;
+        } else if (Platform.isIOS) {
+          IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+          deviceId = iosInfo.identifierForVendor!;
+        }
+        print("++++++++++++++++++++++++++++++FFFFFFFFFF+");
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        String? fcmToken = await messaging.getToken();
+
+        var responses = await RequestHelper.post(
+            'register-device', {"device_id": deviceId, "fcm_token": fcmToken});
+
+        print(
+            "+++++++++++++++++++++++++++++++ REGISTER DONE ${responses.body}");
         emit(AuthLoggedIn(token));
       } else if (response.statusCode == 400) {
         print(response.statusCode);

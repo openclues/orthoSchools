@@ -7,6 +7,7 @@ import 'package:azsoon/features/home_screen/data/models/recommended_spaces_model
 import 'package:azsoon/features/home_screen/presentation/widgets/spaceCardComponents.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesData.dart';
 import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
+import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
@@ -26,10 +27,10 @@ class _SpacesListState extends State<SpacesList> {
 
   @override
   Widget build(BuildContext context) {
+    print(context.read<LoadingBlocBloc>().state);
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
-        if (state is HomeScreenLoaded &&
-            state.homeScreenModel.recommendedSpaces!.isNotEmpty) {
+        if (state is HomeScreenLoaded && state.recommendedSpaces!.isNotEmpty) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -63,11 +64,10 @@ class _SpacesListState extends State<SpacesList> {
                               LocalStorage.getcreenSize(context).width * 0.01,
                         ),
                         for (int i = 0;
-                            i < state.homeScreenModel.recommendedSpaces!.length;
+                            i < state.recommendedSpaces!.length;
                             i++)
                           RecommendedSpaceCard(
-                            recommendedSpace:
-                                state.homeScreenModel.recommendedSpaces![i],
+                            recommendedSpace: state.recommendedSpaces![i],
                           ),
                         SizedBox(
                           width:

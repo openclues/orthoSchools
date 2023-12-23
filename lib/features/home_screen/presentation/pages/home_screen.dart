@@ -375,34 +375,35 @@ class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
               ),
             ),
             floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
+                FloatingActionButtonLocation.miniCenterDocked,
             floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
             bottomNavigationBar: AnimatedBottomNavigationBar(
-              backgroundColor: primaryColor,
-              inactiveColor: Colors.grey[400],
-              activeColor: Colors.white,
-              blurEffect: true,
-              gapLocation: GapLocation.center,
-              notchSmoothness: NotchSmoothness.softEdge,
-              leftCornerRadius: 20,
-              safeAreaValues: const SafeAreaValues(top: true),
-              // scaleFactor: double.maxFinite,
-              // splashRadius: 32,
-              elevation: 20,
-              rightCornerRadius: 20,
-              icons: [
-                _currentIndex == 0 ? IconlyBold.home : IconlyLight.home,
-                _currentIndex == 1 ? IconlyBold.category : IconlyLight.category,
-                _currentIndex == 2 ? IconlyBold.profile : IconlyLight.profile,
-                _currentIndex == 3 ? IconlyBold.setting : IconlyLight.setting,
-              ],
-              activeIndex: _currentIndex,
-              onTap: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-            ),
+                backgroundColor: primaryColor,
+                inactiveColor: Colors.grey[400],
+                activeColor: Colors.white,
+                blurEffect: true,
+                gapLocation: GapLocation.center,
+                notchSmoothness: NotchSmoothness.softEdge,
+                leftCornerRadius: 20,
+                safeAreaValues: const SafeAreaValues(top: true),
+                // scaleFactor: double.maxFinite,
+                // splashRadius: 32,
+                elevation: 20,
+                rightCornerRadius: 20,
+                icons: [
+                  _currentIndex == 0 ? IconlyBold.home : IconlyLight.home,
+                  _currentIndex == 1
+                      ? IconlyBold.category
+                      : IconlyLight.category,
+                  _currentIndex == 2 ? IconlyBold.profile : IconlyLight.profile,
+                  _currentIndex == 3 ? IconlyBold.setting : IconlyLight.setting,
+                ],
+                activeIndex: _currentIndex,
+                onTap: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                }),
             appBar: buildAppBar(context),
             drawer: appdrawer.NavigationDrawer(),
             body: _widgetOptions[_currentIndex]),

@@ -7,9 +7,8 @@ class LatestUpdatedPost {
   final String? spacenName;
   final int? space;
   final bool? isJoined;
-  final PostUser? user;
-  final List<dynamic>?
-      comments; // You might want to create a class for comments if needed
+  final PostCommentUser? user;
+  final int? commentsCount;
   final List<dynamic>?
       postFiles; // You might want to create a class for post files if needed
   final List<PostImage>?
@@ -25,7 +24,7 @@ class LatestUpdatedPost {
     required this.space,
     required this.user,
     required this.isAllowedToJoin,
-    required this.comments,
+    required this.commentsCount,
     required this.postFiles,
     required this.postImages,
     required this.createdAt,
@@ -41,8 +40,8 @@ class LatestUpdatedPost {
       isJoined: json['is_joined'],
       isAllowedToJoin: json['is_allowed_to_join'],
       space: json['space'],
-      user: PostUser.fromJson(json['user']),
-      comments: json['comments'],
+      user: PostCommentUser.fromJson(json['user']),
+      commentsCount: json['comments_count'],
       postFiles: json['post_files'],
       postImages: json['post_images'] == null
           ? []
@@ -53,21 +52,21 @@ class LatestUpdatedPost {
   }
 }
 
-class PostUser {
+class PostCommentUser {
   int? id;
   String? firstName;
   String? lastName;
   String? profileImage;
 
-  PostUser({
+  PostCommentUser({
     required this.id,
     required this.firstName,
     required this.lastName,
     required this.profileImage,
   });
 
-  factory PostUser.fromJson(Map<String, dynamic> json) {
-    return PostUser(
+  factory PostCommentUser.fromJson(Map<String, dynamic> json) {
+    return PostCommentUser(
       id: json['id'],
       firstName: json['first_name'],
       lastName: json['last_name'],

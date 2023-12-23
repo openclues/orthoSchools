@@ -32,7 +32,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     return BlocListener<AddPostBloc, AddPostState>(
       listener: (context, state) {
         if (state is AddPostLoaded) {
-          
           Navigator.of(context).pop();
         }
       },
@@ -190,7 +189,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           content: content!,
                           images: images));
                     },
-                    child: const Text('Post')),
+                    child: const Text('Post',
+                        style: TextStyle(fontSize: 20, color: Colors.white))),
               )
             ],
           ),

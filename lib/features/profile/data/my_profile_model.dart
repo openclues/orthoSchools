@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:azsoon/model/user-info.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:azsoon/model/user-info.dart';
 
 import 'user_profile_model.dart';
 
 class Profile extends Equatable {
-  Profile({
+  const Profile({
     this.title,
     this.bio,
     this.studyIn,
@@ -66,7 +67,6 @@ class Profile extends Equatable {
       };
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         title,
         bio,
@@ -80,6 +80,34 @@ class Profile extends Equatable {
         user,
         cardId
       ];
+
+  Profile copyWith({
+    String? title,
+    String? bio,
+    String? studyIn,
+    String? cover,
+    bool? isme,
+    String? cardId,
+    String? profileImage,
+    DateTime? birthDate,
+    String? placeOfWork,
+    UserModel? user,
+    String? speciality,
+  }) {
+    return Profile(
+      title: title ?? this.title,
+      bio: bio ?? this.bio,
+      studyIn: studyIn ?? this.studyIn,
+      cover: cover ?? this.cover,
+      isme: isme ?? this.isme,
+      cardId: cardId ?? this.cardId,
+      profileImage: profileImage ?? this.profileImage,
+      birthDate: birthDate ?? this.birthDate,
+      placeOfWork: placeOfWork ?? this.placeOfWork,
+      user: user ?? this.user,
+      speciality: speciality ?? this.speciality,
+    );
+  }
 }
 
 class MyProfile extends Profile {}
