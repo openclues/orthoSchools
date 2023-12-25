@@ -122,11 +122,6 @@ class BlogPostScreen extends StatelessWidget {
                         showCodeBlock: false,
                         axis: Axis.horizontal,
                         controller: _controller,
-                        buttonOptions: const QuillToolbarButtonOptions(
-                          backgroundColor: QuillToolbarColorButtonOptions(
-                              iconTheme: QuillIconTheme(
-                                  iconSelectedColor: primaryColor)),
-                        ),
                         embedButtons: FlutterQuillEmbeds.toolbarButtons())),
               ),
             ),

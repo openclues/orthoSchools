@@ -20,14 +20,15 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
   AuthCubitCubit() : super(AuthCubitInitial());
 
   void login(String password, String email) async {
+    emit(AuthLoading());
+
     try {
-      emit(AuthLoading());
-      var response = await authRepo.loginUser(password, email);
+      var response = await authRepo
+          .loginUser(password, email)
+          .timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        print("=====================${response.body}");
         final databody = jsonDecode(response.body);
-        print(databody['auth_token']);
         String token = databody['auth_token'] as String;
         LocalStorage.saveAuthToken(token);
 
@@ -42,12 +43,11 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
           IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
           deviceId = iosInfo.identifierForVendor!;
         }
-        print("++++++++++++++++++++++++++++++FFFFFFFFFF+");
         FirebaseMessaging messaging = FirebaseMessaging.instance;
         String? fcmToken = await messaging.getToken();
 
         var responses = await RequestHelper.post(
-            'register-device', {"device_id": deviceId, "fcm_token": fcmToken});
+            'register-device/', {"device_id": deviceId, "fcm_token": fcmToken});
 
         print(
             "+++++++++++++++++++++++++++++++ REGISTER DONE ${responses.body}");
@@ -80,8 +80,9 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
       print(firstName);
       print(lastName);
 
-      var response =
-          await authRepo.signUpUser(password, email, firstName, lastName);
+      var response = await authRepo
+          .signUpUser(password, email, firstName, lastName)
+          .timeout(Duration(seconds: 30));
       if (response.statusCode == 201) {
         print("=====================${response.body}");
         final databody = jsonDecode(response.body);

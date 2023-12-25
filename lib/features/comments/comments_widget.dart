@@ -20,6 +20,8 @@ class Comments_Widget extends StatelessWidget {
     this.onLikePressed,
     this.onDislikePressed,
   }) : super(key: key);
+
+  // bool showReplyTextField = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,11 +53,19 @@ class Comments_Widget extends StatelessWidget {
                   fontSize: 16),
             ),
           ),
+
+          //show list of listile of replyes
+
+          //show textfiled if the replybutton is true
+
           Row(
             children: [
               TextButton.icon(
                   onPressed: () {
                     //open a textfiled in the same comment container and type then
+                    // setState(() {
+                    //   showReplyTextField = !showReplyTextField;
+                    // });
                   },
                   icon: const Icon(Icons.reply),
                   label: const Text('Reply')),
@@ -78,9 +88,6 @@ class Comments_Widget extends StatelessWidget {
     );
   }
 }
-
-
-
 
 // import 'package:azsoon/Core/colors.dart';
 // import 'package:flutter/material.dart';

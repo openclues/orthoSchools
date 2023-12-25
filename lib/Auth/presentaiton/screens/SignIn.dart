@@ -29,6 +29,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   static String? userEmailAddress;
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool? isChecked = false;
   bool passwordVisibilty = true;
   TextEditingController emailController = TextEditingController();
@@ -41,7 +42,9 @@ class _SignInScreenState extends State<SignInScreen> {
         listener: (context, state) {
       if (state is AuthLoggedIn) {
         Navigator.of(context).pushReplacementNamed(LoadingScreen.routeName);
-      } else if (state is AuthError) {}
+      } else if (state is AuthError) {
+        SnackBarWidget.buildSnacBarFail(state.errorMessage, context);
+      }
     }, builder: (context, state) {
       return buildSignInForm(context);
     });
@@ -56,54 +59,68 @@ class _SignInScreenState extends State<SignInScreen> {
             padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
             child: ListView(
               children: [
-                Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        height: LocalStorage.getcreenSize(context).height * 0.4,
-                        child: Image.asset(
-                          ImagePath.dentistImage,
-                          fit: BoxFit.contain,
-                          // width: 250.0,
-                          // height: 100.0,
+                Form(
+                  key: formKey,
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          height:
+                              LocalStorage.getcreenSize(context).height * 0.4,
+                          child: Image.asset(
+                            ImagePath.dentistImage,
+                            fit: BoxFit.contain,
+                            // width: 250.0,
+                            // height: 100.0,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextField(
-                      obscureText: false,
-                      labelText: 'Email',
-                      borderColor: const Color.fromARGB(255, 176, 176, 176),
-                      textfiledColor: Colors.white,
-                      controller: emailController,
-                      hintText: "Email Address",
-                    ),
-                    CustomTextField(
-                      obscureText: passwordVisibilty,
-                      labelText: 'Password',
-                      iconButton: IconButton(
-                        padding: const EdgeInsetsDirectional.only(end: 12.0),
-                        icon: passwordVisibilty
-                            ? const Icon(Icons.visibility_off)
-                            : const Icon(Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            passwordVisibilty = !passwordVisibilty;
-                          });
-                        },
+                      const SizedBox(
+                        height: 20,
                       ),
-                      borderColor: const Color.fromARGB(255, 176, 176, 176),
-                      textfiledColor: Colors.white,
-                      controller: passwordController,
-                      hintText: "Password",
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ],
+                      CustomTextField(
+                        validator: (b) {
+                          if (b!.isEmpty) {
+                            return 'please enter your email';
+                          }
+                        },
+                        obscureText: false,
+                        labelText: 'Email',
+                        borderColor: const Color.fromARGB(255, 176, 176, 176),
+                        textfiledColor: Colors.white,
+                        controller: emailController,
+                        hintText: "Email Address",
+                      ),
+                      CustomTextField(
+                        validator: (v) {
+                          if (v!.isEmpty) {
+                            return 'please enter your password';
+                          }
+                        },
+                        obscureText: passwordVisibilty,
+                        labelText: 'Password',
+                        iconButton: IconButton(
+                          padding: const EdgeInsetsDirectional.only(end: 12.0),
+                          icon: passwordVisibilty
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              passwordVisibilty = !passwordVisibilty;
+                            });
+                          },
+                        ),
+                        borderColor: const Color.fromARGB(255, 176, 176, 176),
+                        textfiledColor: Colors.white,
+                        controller: passwordController,
+                        hintText: "Password",
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -120,10 +137,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   onPressed: () {
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBarWidget.faliure('Operation failed'),
-                    // );
-                    checkRequiredData(context);
+                    if (formKey.currentState!.validate()) {
+                      checkRequiredData(context);
+                    }
                   },
                   child: state is! AuthLoading
                       ? const Text(
@@ -192,18 +208,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
 //checking for empty fileds
   Future<void> checkRequiredData(BuildContext context) async {
-    if (passwordController.text.isEmpty || emailController.text.isEmpty) {
-      Fluttertoast.showToast(
-          msg: 'please fill out all fields',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: const Color.fromARGB(255, 166, 221, 247),
-          textColor: Colors.black,
-          fontSize: 16.0);
-      return;
-    }
-    print('=============================');
     context
         .read<AuthCubitCubit>()
         .login(passwordController.text.trim(), emailController.text.trim());

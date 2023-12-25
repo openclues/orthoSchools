@@ -17,10 +17,12 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.help_outline))],
+        title: const Text(''),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline))
+        ],
       ),
-      body: firstStep(),
+      body: const firstStep(),
     );
   }
 }
@@ -40,30 +42,32 @@ class _firstStepState extends State<firstStep> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
       child: ListView(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              Text(
+              const Text(
                 'Reset password',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              Text(
+              const Text(
                 'Enter the email associated with your account and we\'ll send and email with instructions to reset your password.',
                 style: TextStyle(color: Colors.grey, fontSize: 19),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               CustomTextField(
+                validator: (p0) =>
+                    p0!.isEmpty ? 'Please enter your email' : null,
                 obscureText: false,
                 labelText: 'Email address',
                 borderColor: const Color.fromARGB(255, 176, 176, 176),
@@ -71,7 +75,7 @@ class _firstStepState extends State<firstStep> {
                 controller: emailController,
                 hintText: "example@example.com",
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               CustomButton(
@@ -102,11 +106,13 @@ class SecondStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.help_outline))],
+        title: const Text(''),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline))
+        ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
         child: ListView(
           children: [
             Column(
@@ -115,19 +121,19 @@ class SecondStep extends StatelessWidget {
                   'assets/images/Mail sent-rafiki.png',
                   width: 300,
                 ),
-                Text(
+                const Text(
                   'Check your mail',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   'We have sent a password recover instructions to your email.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey, fontSize: 19),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Container(
@@ -171,31 +177,33 @@ class _ThirdStepState extends State<ThirdStep> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.help_outline))],
+        title: const Text(''),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline))
+        ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
         child: ListView(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                Text(
+                const Text(
                   'Create new password',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                Text(
+                const Text(
                   'Your new password must be different from previous used passwords.',
                   style: TextStyle(color: Colors.grey, fontSize: 19),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 CustomTextField(
@@ -220,12 +228,12 @@ class _ThirdStepState extends State<ThirdStep> {
                 CustomTextField(
                   obscureText: passwordVisibilty,
                   labelText: 'Confirm Password',
-                  borderColor: Color.fromARGB(255, 176, 176, 176),
+                  borderColor: const Color.fromARGB(255, 176, 176, 176),
                   textfiledColor: Colors.white,
                   controller: confirmPassowrdController,
                   hintText: "both passwords must match",
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 CustomButton(
