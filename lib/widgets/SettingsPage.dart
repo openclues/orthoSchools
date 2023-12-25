@@ -67,9 +67,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               Navigator.of(context)
                                   .pushNamed('/myAccountSettings');
                             },
-                            trailing: Icon(Icons.arrow_forward_ios),
-                            leading: Icon(Icons.person_pin),
-                            title: Text('My Account Settings'),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                            leading: const Icon(Icons.person_pin),
+                            title: const Text('My Account Settings'),
                           ),
                         ),
                       ),
@@ -274,11 +274,11 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
       body: Form(
         key: globalKey,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           child: ListView(
             children: [
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -286,7 +286,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 1,
                       spreadRadius: 0.2,
                     ),
@@ -297,13 +297,13 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    trailing: Icon(Icons.edit_outlined),
-                    title: Text('Name Surname'),
-                    subtitle: Text('Sara kaya'),
+                    trailing: const Icon(Icons.edit_outlined),
+                    title: const Text('Name Surname'),
+                    subtitle: const Text('Sara kaya'),
                     children: <Widget>[
                       Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                            const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -319,7 +319,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                               borderColor: Colors.grey,
                               labelText: 'Surname',
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             CustomButton(
@@ -336,7 +336,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -344,7 +344,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 1,
                       spreadRadius: 0.2,
                     ),
@@ -355,13 +355,13 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    trailing: Icon(Icons.email_outlined),
-                    title: Text('E-mail'),
+                    trailing: const Icon(Icons.email_outlined),
+                    title: const Text('E-mail'),
                     subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('sara.kaya@gmail.com'),
-                          SizedBox(
+                          const Text('sara.kaya@gmail.com'),
+                          const SizedBox(
                             height: 13,
                           ),
                           CustomButton(
@@ -375,7 +375,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -383,7 +383,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 1,
                       spreadRadius: 0.2,
                     ),
@@ -394,13 +394,13 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    trailing: Icon(Icons.edit_outlined),
-                    title: Text('Password'),
-                    subtitle: Text('********'),
+                    trailing: const Icon(Icons.edit_outlined),
+                    title: const Text('Password'),
+                    subtitle: const Text('********'),
                     children: <Widget>[
                       Container(
                         padding:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -428,11 +428,11 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                             CustomTextField(
                               obscureText: passwordVisibilty,
                               labelText: 'Confirm Password',
-                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              borderColor: const Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
                               hintText: "both passwords must match",
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             CustomButton(
@@ -449,7 +449,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -457,7 +457,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 1,
                       spreadRadius: 0.2,
                     ),
@@ -468,13 +468,13 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    trailing: Icon(Icons.edit_outlined),
-                    title: Text('Birth Date'),
+                    trailing: const Icon(Icons.edit_outlined),
+                    title: const Text('Birth Date'),
                     subtitle: Text(birthDate),
                     children: <Widget>[
                       Container(
                         padding:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -482,7 +482,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                               readOnly: true,
                               obscureText: passwordVisibilty,
                               labelText: 'Birh Date',
-                              borderColor: Color.fromARGB(255, 176, 176, 176),
+                              borderColor: const Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
                               hintText: birthDate,
                               onSaved: (date) {
@@ -492,7 +492,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                                 selectDate();
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             CustomButton(
@@ -509,7 +509,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -517,7 +517,7 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                       blurRadius: 1,
                       spreadRadius: 0.2,
                     ),
@@ -528,19 +528,19 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    trailing: Icon(Icons.edit_outlined),
-                    title: Text('Phone Number'),
+                    trailing: const Icon(Icons.edit_outlined),
+                    title: const Text('Phone Number'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('+90 55 23 684 008'),
-                        TextButton(onPressed: () {}, child: Text('Confirmed'))
+                        const Text('+90 55 23 684 008'),
+                        TextButton(onPressed: () {}, child: const Text('Confirmed'))
                       ],
                     ),
                     children: <Widget>[
                       Container(
                         padding:
-                            EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -552,11 +552,11 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                               onInputValidated: (bool value) {
                                 print(value);
                               },
-                              selectorConfig: SelectorConfig(
+                              selectorConfig: const SelectorConfig(
                                 selectorType: PhoneInputSelectorType.DIALOG,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             CustomButton(
