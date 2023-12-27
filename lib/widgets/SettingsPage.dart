@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -8,6 +9,8 @@ import 'package:azsoon/widgets/TextField.dart';
 
 import '../Core/local_storage.dart';
 import '../features/loading/presentation/data/screens/loading_screen.dart';
+import '../features/profile/bloc/profile_bloc.dart';
+import '../features/space/bloc/cubit/verify_email_cubit.dart';
 
 String birthDate = '';
 String? name;
@@ -109,7 +112,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   activeSwitchColor: const Color(0XFFA29CEC),
                                   onToggle: (value) {},
                                   initialValue: true,
-                                  leading: const Icon(Icons.notifications_outlined),
+                                  leading:
+                                      const Icon(Icons.notifications_outlined),
                                   title: const Text('Notifications'),
                                 ),
                               ],
@@ -141,8 +145,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SettingsTile.navigation(
                                   trailing: const Icon(Icons.arrow_forward_ios),
-                                  leading:
-                                      const Icon(Icons.stacked_bar_chart_outlined),
+                                  leading: const Icon(
+                                      Icons.stacked_bar_chart_outlined),
                                   title: const Text('Data and Permissions'),
                                 ),
                                 SettingsTile.navigation(
@@ -174,12 +178,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               children: [
                                 SettingsTile.navigation(
                                   trailing: const Icon(Icons.arrow_forward_ios),
-                                  leading: const Icon(Icons.privacy_tip_outlined),
+                                  leading:
+                                      const Icon(Icons.privacy_tip_outlined),
                                   title: const Text('Help Center'),
                                 ),
                                 SettingsTile.navigation(
                                   trailing: const Icon(Icons.arrow_forward_ios),
-                                  leading: const Icon(Icons.help_center_outlined),
+                                  leading:
+                                      const Icon(Icons.help_center_outlined),
                                   title: const Text('FAQ'),
                                 ),
                                 SettingsTile.navigation(
@@ -203,8 +209,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       SettingsTile(
                         title: Container(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 0),
                           decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 215, 82, 82),
                             borderRadius: BorderRadius.circular(10),
@@ -302,8 +308,8 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     subtitle: const Text('Sara kaya'),
                     children: <Widget>[
                       Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -335,44 +341,177 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      offset: const Offset(0, 2),
-                      blurRadius: 1,
-                      spreadRadius: 0.2,
-                    ),
-                  ],
-                ),
-                child: Theme(
-                  data: ThemeData(
-                    dividerColor: Colors.transparent,
-                  ),
-                  child: ExpansionTile(
-                    trailing: const Icon(Icons.email_outlined),
-                    title: const Text('E-mail'),
-                    subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('sara.kaya@gmail.com'),
-                          const SizedBox(
-                            height: 13,
+              BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  if (state is ProfileInitial) {
+                    context.read<ProfileBloc>().add(const LoadMyProfile());
+                  }
+                  if (state is ProfileLoaded) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.white),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(0, 2),
+                            blurRadius: 1,
+                            spreadRadius: 0.2,
                           ),
-                          CustomButton(
-                            buttonText: 'E-mail address confirm',
-                            height: 45,
-                            onpress: () {},
+                        ],
+                      ),
+                      child: Theme(
+                        data: ThemeData(
+                          dividerColor: Colors.transparent,
+                        ),
+                        child: ExpansionTile(
+                          trailing: const Icon(Icons.email_outlined),
+                          title: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('E-mail'),
+                              if (state.profileModel.user!.isVerified == false)
+                                //show warning
+                                const Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                        "You have to confirm your email address",
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 12)),
+                                  ),
+                                ),
+                            ],
                           ),
-                        ]),
-                    children: <Widget>[],
-                  ),
-                ),
+                          subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(state.profileModel.user!.email!),
+                                const SizedBox(
+                                  height: 13,
+                                ),
+                                BlocListener<VerifyEmailCubit,
+                                    VerifyEmailState>(
+                                  listener: (context, state) {
+                                    if (state is EmailVerificationFailed) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content:
+                                            Text('Email verification failed'),
+                                      ));
+                                    }
+                                  },
+                                  child: BlocBuilder<VerifyEmailCubit,
+                                      VerifyEmailState>(
+                                    builder: (context, state) {
+                                      if (state is EmailVerificationLoading) {
+                                        return const Row(
+                                          children: [
+                                            CircularProgressIndicator(),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text('Sending code to email',
+                                                style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontSize: 12)),
+                                          ],
+                                        );
+                                      }
+                                      if (state is EmailVerified) {
+                                        return const Text('Email verified',
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 12));
+                                      }
+                                      if (state is EmialCodeSent) {
+                                        GlobalKey<FormState> globalKey =
+                                            GlobalKey<FormState>();
+                                        String? code;
+                                        return Form(
+                                          key: globalKey,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  // height: 20,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    border: Border.all(
+                                                        color: Colors.grey),
+                                                  ),
+                                                  child: TextFormField(
+                                                    validator: (value) => value!
+                                                            .isEmpty
+                                                        ? 'Please enter code'
+                                                        : null,
+                                                    decoration: InputDecoration(
+                                                      contentPadding:
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      hintText: 'Enter code',
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                    ),
+                                                    onSaved: (value) {
+                                                      code = value!;
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    if (globalKey.currentState!
+                                                        .validate()) {
+                                                      globalKey.currentState!
+                                                          .save();
+                                                      context
+                                                          .read<
+                                                              VerifyEmailCubit>()
+                                                          .verifyEmail(code!);
+                                                    }
+                                                  },
+                                                  child: const Text('Verify')),
+                                            ],
+                                          ),
+                                        );
+                                      }
+
+                                      return CustomButton(
+                                        buttonText: 'Send code to email',
+                                        height: 40,
+                                        onpress: () {
+                                          context
+                                              .read<VerifyEmailCubit>()
+                                              .sendCodeToEmail();
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ]),
+                          children: const <Widget>[],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -399,8 +538,8 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     subtitle: const Text('********'),
                     children: <Widget>[
                       Container(
-                        padding:
-                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        padding: const EdgeInsets.only(
+                            left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -428,7 +567,8 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                             CustomTextField(
                               obscureText: passwordVisibilty,
                               labelText: 'Confirm Password',
-                              borderColor: const Color.fromARGB(255, 176, 176, 176),
+                              borderColor:
+                                  const Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
                               hintText: "both passwords must match",
                             ),
@@ -473,8 +613,8 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                     subtitle: Text(birthDate),
                     children: <Widget>[
                       Container(
-                        padding:
-                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        padding: const EdgeInsets.only(
+                            left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -482,7 +622,8 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                               readOnly: true,
                               obscureText: passwordVisibilty,
                               labelText: 'Birh Date',
-                              borderColor: const Color.fromARGB(255, 176, 176, 176),
+                              borderColor:
+                                  const Color.fromARGB(255, 176, 176, 176),
                               textfiledColor: Colors.white,
                               hintText: birthDate,
                               onSaved: (date) {
@@ -534,17 +675,17 @@ class _My_Account_SettingsState extends State<My_Account_Settings> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text('+90 55 23 684 008'),
-                        TextButton(onPressed: () {}, child: const Text('Confirmed'))
+                        TextButton(
+                            onPressed: () {}, child: const Text('Confirmed'))
                       ],
                     ),
                     children: <Widget>[
                       Container(
-                        padding:
-                            const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        padding: const EdgeInsets.only(
+                            left: 15, right: 15, bottom: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            
                             InternationalPhoneNumberInput(
                               onInputChanged: (PhoneNumber number) {
                                 print(number.phoneNumber);

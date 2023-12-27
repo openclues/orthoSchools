@@ -63,9 +63,9 @@ class UserModel extends Equatable {
       phone: map['phone'],
       address: map['address'],
       isBanned: map['isBanned'],
-      isSuspend: map['isSuspend'],
-      isVerified: map['isVerified'],
-      isVerifiedPro: map['isVerifiedPro'],
+      isSuspend: map['is_suspend'],
+      isVerified: map['is_verified'],
+      isVerifiedPro: map['is_verified_pro'],
     );
 
 

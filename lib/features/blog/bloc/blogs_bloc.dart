@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:azsoon/features/blog/data/blog_repo.dart';
 import 'package:azsoon/features/blog/data/models/blog_model.dart';
@@ -9,13 +10,20 @@ part 'blogs_event.dart';
 part 'blogs_state.dart';
 
 class BlogsBloc extends Bloc<BlogsEvent, BlogsState> {
+  String? category;
+  bool? following;
+
   BlogRepo blogRepo = BlogRepo();
   BlogsBloc() : super(BlogsInitial()) {
     on<BlogsEvent>((event, emit) {});
     on<LoadBlogs>((event, emit) async {
-      print('LoadBlogs');
-      emit(BlogsLoading());
-      var response = await blogRepo.getBlogList(event.page);
+      if (event.category != null || event.following != null) {
+        emit(BlogsFiltering());
+      } else {
+        emit(BlogsLoading());
+      }
+      var response = await blogRepo.getBlogList(event.page,
+          category: event.category, following: event.following);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         var blogs = PaginationBlogListModel.fromJson(data);

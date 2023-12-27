@@ -4,10 +4,12 @@ import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 
+import '../../blog/data/models/blog_model.dart';
 import '../../home_screen/data/models/recommended_spaces_model.dart';
 import '../bloc/add_post_bloc.dart';
 import '../bloc/my_spaces_bloc.dart';
@@ -15,7 +17,9 @@ import '../data/space_model.dart';
 
 class AddPostScreen extends StatefulWidget {
   final RecommendedSpace? space;
-  const AddPostScreen({super.key, this.space});
+  final PostModel? blogPost;
+
+  const AddPostScreen({super.key, this.space, this.blogPost});
 
   @override
   State<AddPostScreen> createState() => _AddPostScreenState();
@@ -174,6 +178,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   ),
                 ),
               ),
+
               Container(
                 width: MediaQuery.of(context).size.width / 1.1,
                 child: ElevatedButton(
@@ -187,7 +192,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       context.read<AddPostBloc>().add(AddPostToSpace(
                           spaceId: selectedSpace!.id.toString(),
                           content: content!,
-                          images: images));
+                          images: images,
+                          blogpost: widget.blogPost?.id));
                     },
                     child: const Text('Post',
                         style: TextStyle(fontSize: 20, color: Colors.white))),
@@ -242,7 +248,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ),
                   ),
             Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: widget.blogPost == null
+                  ? MediaQuery.of(context).size.height / 2
+                  : 100,
               // margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -266,8 +274,68 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 ),
               ),
             ),
+            //if blog post is not null preview it
+            if (widget.blogPost != null)
+              BlogPostPreview(blogPost: widget.blogPost)
           ],
         ),
+      ),
+    );
+  }
+}
+
+class BlogPostPreview extends StatefulWidget {
+  final PostModel? blogPost;
+  BlogPostPreview({super.key, required this.blogPost});
+
+  @override
+  State<BlogPostPreview> createState() => _BlogPostPreviewState();
+}
+
+class _BlogPostPreviewState extends State<BlogPostPreview> {
+  final QuillController _controller = QuillController.basic();
+
+  //get plan text from delta
+  @override
+  Widget build(BuildContext context) {
+    _controller!.document = Document.fromDelta(widget.blogPost!.content);
+
+    //remove images from delta
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Container(
+          //   height: 200,
+          //   width: MediaQuery.of(context).size.width,
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(10),
+          //     image: DecorationImage(
+          //       image: NetworkImage(widget.blogPost!.cover!),
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.blogPost!.title!,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(_controller!.document.toPlainText().length > 100
+                ? _controller!.document.toPlainText().substring(0, 100) + "..."
+                : _controller!.document.toPlainText()),
+          ),
+        ],
       ),
     );
   }

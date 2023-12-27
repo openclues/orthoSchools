@@ -15,7 +15,7 @@ class AddPostBloc extends Bloc<AddPostEvent, AddPostState> {
     on<AddPostToSpace>((event, emit) async {
       emit(const AddPostLoading());
       var response =
-          await spaceRepo.addPost(event.spaceId, event.content, event.images);
+          await spaceRepo.addPost(event.spaceId, event.content, event.images , event.blogpost);
       if (response.statusCode == 201) {}
       emit(const AddPostLoaded());
     });

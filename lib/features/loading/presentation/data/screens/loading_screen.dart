@@ -28,7 +28,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
         listener: (context, state) async {
           // Navigator.of(context)
           if (state is UserIsSignedIn) {
-            //UNCOMMENT THIS
             Navigator.of(context).pushNamedAndRemoveUntil(
                 HomeScreenPage.routeName, (route) => false);
           }

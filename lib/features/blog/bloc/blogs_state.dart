@@ -10,6 +10,7 @@ sealed class BlogsState extends Equatable {
 final class BlogsInitial extends BlogsState {}
 
 final class BlogsLoading extends BlogsState {}
+final class BlogsFiltering extends BlogsState {}
 
 final class BlogsLoaded extends BlogsState {
   final PaginationBlogListModel blogs;

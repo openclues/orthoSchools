@@ -1,4 +1,6 @@
 //abstract spacepost class
+import '../../../blog/data/models/blog_model.dart';
+
 class LatestUpdatedPost {
   final int? id;
   final String? title;
@@ -8,6 +10,7 @@ class LatestUpdatedPost {
   final int? space;
   final bool? isJoined;
   final PostCommentUser? user;
+  final PostModel? blogPost;
   final int? commentsCount;
   final List<dynamic>?
       postFiles; // You might want to create a class for post files if needed
@@ -21,6 +24,7 @@ class LatestUpdatedPost {
     required this.content,
     required this.isJoined,
     required this.spacenName,
+    required this.blogPost,
     required this.space,
     required this.user,
     required this.isAllowedToJoin,
@@ -35,6 +39,9 @@ class LatestUpdatedPost {
     return LatestUpdatedPost(
       id: json['id'],
       spacenName: json['space_name'],
+      blogPost: json['blogPost'] == null
+          ? null
+          : PostModel.fromJson(json['blogPost']),
       title: json['title'],
       content: json['content'],
       isJoined: json['is_joined'],

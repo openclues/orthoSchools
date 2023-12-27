@@ -11,7 +11,7 @@ class CenterNextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _topMoveAnimation =
+    final topMoveAnimation =
         Tween<Offset>(begin: const Offset(0, 5), end: const Offset(0, 0))
             .animate(CurvedAnimation(
       parent: animationController,
@@ -49,7 +49,7 @@ class CenterNextButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SlideTransition(
-            position: _topMoveAnimation,
+            position: topMoveAnimation,
             child: AnimatedBuilder(
               animation: animationController,
               builder: (context, child) => AnimatedOpacity(
@@ -63,7 +63,7 @@ class CenterNextButton extends StatelessWidget {
             ),
           ),
           SlideTransition(
-            position: _topMoveAnimation,
+            position: topMoveAnimation,
             child: AnimatedBuilder(
               animation: animationController,
               builder: (context, child) => Padding(

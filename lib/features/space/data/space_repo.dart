@@ -6,13 +6,15 @@ import 'space_model.dart';
 
 class SpaceRepo {
   Future<Response> getSpace(String id) async {
-    var response = await RequestHelper.get('space/${id}');
+    var response = await RequestHelper.get('space/$id');
     return response;
   }
 
   Future<Response> getMySpaces({String? userId}) async {
     if (userId != null) {
       var response = await RequestHelper.get('myspaces/?id=$userId');
+      print(response.body);
+
       print("myspaces/?id=$userId");
       return response;
     } else {
@@ -22,8 +24,8 @@ class SpaceRepo {
   }
 
   //add post
-  Future<Response> addPost(
-      String spaceId, String? content, List<XFile>? images) async {
+  Future<Response> addPost(String spaceId, String? content, List<XFile>? images,
+      int? blogpost) async {
     List<MultipartFile> imageFiles = [];
     if (images != null) {
       for (var image in images) {
@@ -34,6 +36,7 @@ class SpaceRepo {
     var response = await RequestHelper.post(
         'postcreate/',
         {
+          'blogpost': blogpost,
           'space': spaceId,
           'content': content,
           'title': "dspfksdpf",
@@ -49,11 +52,16 @@ class SpaceRepo {
     return response;
   }
 
-
-
-
-
-  Future<Response> getPostComments(String postId){
+  Future<Response> getPostComments(String postId) {
     return RequestHelper.get('api/post-comments/?id=$postId');
   }
+
+  Future<Response> getSpacePosts(String spaceId, {String? filter}) {
+    filter == "null" ? "recent" : filter;
+    return RequestHelper.get('space/posts/?id=$spaceId&filter=$filter');
+  }
+
+
+
+
 }

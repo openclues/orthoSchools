@@ -23,7 +23,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     on<LoadHomeScreenData>((event, emit) async {
       try {
         var response = await homeScreenRepo.getHomeScreenData();
-
+        print(response.body);
         if (response.statusCode == 200) {
           var decodedResponse = jsonDecode(response.body);
           List<RecommendedSpace> recommendedSpaces = [];
@@ -38,6 +38,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
 
           if (postsResponse.statusCode == 200) {
             var decodedResponse = jsonDecode(postsResponse.body);
+            print(decodedResponse);
             PageModel<LatestUpdatedPost> pageModel =
                 PageModel<LatestUpdatedPost>.fromJson(decodedResponse,
                     (json) => LatestUpdatedPost.fromJson(json));
@@ -78,7 +79,6 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
                 next: pageModel.next,
                 count: pageModel.count,
                 previous: pageModel.previous)));
-
       } else if (response.statusCode == 401) {
         emit(const HomeScreenNotAuthenticated(
             message: 'Your session has expired'));

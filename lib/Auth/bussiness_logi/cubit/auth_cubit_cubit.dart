@@ -26,10 +26,11 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
       var response = await authRepo
           .loginUser(password, email)
           .timeout(Duration(seconds: 10));
-
+      print(response.body);
       if (response.statusCode == 200) {
         final databody = jsonDecode(response.body);
         String token = databody['auth_token'] as String;
+
         LocalStorage.saveAuthToken(token);
 
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -83,6 +84,8 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
       var response = await authRepo
           .signUpUser(password, email, firstName, lastName)
           .timeout(Duration(seconds: 30));
+      print(response.body);
+
       if (response.statusCode == 201) {
         print("=====================${response.body}");
         final databody = jsonDecode(response.body);
@@ -119,6 +122,7 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
         emit(AuthError('Invalid credentials'));
       }
     } catch (e) {
+      print(e.toString());
       emit(AuthError('An error occurred: $e'));
     }
   }

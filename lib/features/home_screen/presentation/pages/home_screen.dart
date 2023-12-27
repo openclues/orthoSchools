@@ -22,6 +22,7 @@ import '../../../../Auth/presentaiton/screens/SignIn.dart';
 import '../../../../screens/ProfilePage.dart';
 import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
 import '../../../space/bloc/add_post_bloc.dart';
+import '../../../space/bloc/cubit/verify_email_cubit.dart';
 import '../../../space/bloc/my_spaces_bloc.dart';
 import 'blogs_home_screen.dart';
 
@@ -92,136 +93,136 @@ AppBar buildAppBar(BuildContext context) {
   bool isVisible = true;
 
   return AppBar(
-    bottom: PreferredSize(
-      preferredSize: const Size(30, 50),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 8.0,
-        ),
-        child: Visibility(
-          visible: isVisible,
-          child: Container(
-            decoration: BoxDecoration(
-              color: primaryColor,
+      bottom: PreferredSize(
+        preferredSize: const Size(30, 50),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            bottom: 8.0,
+          ),
+          child: Visibility(
+            visible: isVisible,
+            child: Container(
+              decoration: BoxDecoration(
+                color: primaryColor,
 
-              // borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(0, 2),
-                  blurRadius: 1,
-                  spreadRadius: 0.2,
-                ),
-              ],
-            ),
-            child: ListTile(
-              trailing: IconButton(
-                icon: const Icon(Icons.close),
-                color: Colors.white,
-                onPressed: () {
-                  // setState(() {
-                  //   isVisible = false;
-                  // });// not working
-                },
-              ),
-              leading: const Icon(
-                IconlyLight.danger,
-                color: Colors.redAccent,
-              ),
-              title: const Row(
-                children: [
-                  Text(
-                    'Verify your account !',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                // borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: const Offset(0, 2),
+                    blurRadius: 1,
+                    spreadRadius: 0.2,
                   ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-    ),
-    iconTheme: const IconThemeData(color: Color.fromARGB(255, 47, 47, 47)),
-    elevation: 0,
-    centerTitle: true,
-    leading: Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Builder(
-          builder: (context) => IconButton(
-            onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        //
-        Expanded(
-          child: Image.asset(
-            'assets/images/drimage.png',
-            height: 100,
-          ),
-        )
-      ],
-    ),
-    backgroundColor: Colors.white,
-    actions: [
-      // IconButton(
-      //     onPressed: () async {
-      //       await LocalStorage.removeAuthToken().then((_) {
-      //         if (context.mounted) {
-      //           Navigator.of(context)
-      //               .pushReplacementNamed(LoadingScreen.routeName);
-      //         }
-      //       });
-      //     },
-      //     icon: Icon(Icons.logout)),
-      // IconButton(
-      //     onPressed: () async {
-      //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
-      //     },
-      //     icon: Icon(Icons.folder)),
-      IconButton(onPressed: () {}, icon: const Icon(IconlyLight.search)),
-      Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            const Icon(
-              IconlyLight.notification,
-            ),
-            Positioned(
-              right: 0,
-              top: 0,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(2.0),
-                      child: Text(
-                        '+10',
-                        style: TextStyle(color: Colors.white, fontSize: 8),
+              child: ListTile(
+                trailing: IconButton(
+                  icon: const Icon(Icons.close),
+                  color: Colors.white,
+                  onPressed: () {
+                    // setState(() {
+                    //   isVisible = false;
+                    // });// not working
+                  },
+                ),
+                leading: const Icon(
+                  IconlyLight.danger,
+                  color: Colors.redAccent,
+                ),
+                title: const Row(
+                  children: [
+                    Text(
+                      'Verify your account !',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )),
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+            ),
+          ),
         ),
       ),
-    ],
-    title: Image.asset(
-      'assets/images/logo.png',
-      height: 40,
-    ),
-  );
+      iconTheme: const IconThemeData(color: Color.fromARGB(255, 47, 47, 47)),
+      elevation: 0,
+      centerTitle: true,
+      leading: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          //
+          Expanded(
+            child: Image.asset(
+              'assets/images/drimage.png',
+              height: 100,
+            ),
+          )
+        ],
+      ),
+      backgroundColor: Colors.white,
+      actions: [
+        // IconButton(
+        //     onPressed: () async {
+        //       await LocalStorage.removeAuthToken().then((_) {
+        //         if (context.mounted) {
+        //           Navigator.of(context)
+        //               .pushReplacementNamed(LoadingScreen.routeName);
+        //         }
+        //       });
+        //     },
+        //     icon: Icon(Icons.logout)),
+        // IconButton(
+        //     onPressed: () async {
+        //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
+        //     },
+        //     icon: Icon(Icons.folder)),
+        IconButton(onPressed: () {}, icon: const Icon(IconlyLight.search)),
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              const Icon(
+                IconlyLight.notification,
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                      padding: const EdgeInsets.all(1),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Text(
+                          '+10',
+                          style: TextStyle(color: Colors.white, fontSize: 8),
+                        ),
+                      )),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+      title: Image.asset(
+        'assets/images/logo.png',
+        height: 40,
+      ));
 }
 
 class HomeScreenLoadedScreen extends StatefulWidget {
@@ -251,7 +252,10 @@ List<Widget> _widgetOptions = <Widget>[
       userId: null,
     ),
   ),
-  SettingsScreen()
+  BlocProvider(
+    create: (context) => VerifyEmailCubit(),
+    child: SettingsScreen(),
+  )
 ];
 
 class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
@@ -442,7 +446,7 @@ class HomeScreenTab extends StatelessWidget {
                   Text('Spaces',
                       style: TextStyle(
                           color: primaryColor,
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold)),
                   SizedBox(
                     width: 5,
@@ -466,7 +470,7 @@ class HomeScreenTab extends StatelessWidget {
                   Text('Blogs',
                       style: TextStyle(
                           color: primaryColor,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold)),
                   SizedBox(
                     width: 5,

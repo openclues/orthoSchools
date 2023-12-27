@@ -2,14 +2,13 @@ import 'package:azsoon/Core/bloc_observer.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Providers/DrawerNavProvider.dart';
 import 'package:azsoon/Providers/moreUserInfoProvider.dart';
+import 'package:azsoon/features/categories/bloc/categories_bloc.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
 import 'package:azsoon/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-import './Providers/userInfoProvider.dart';
 import 'Core/router.dart';
 
 void main() async {
@@ -17,6 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorage.init();
   // initialize firebase
+  ProfileBloc profileBloc = ProfileBloc();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //register observers
   Bloc.observer = MyBlocObserver();
@@ -30,6 +30,10 @@ void main() async {
         BlocProvider(
           create: (context) => ProfileBloc(),
         ),
+        BlocProvider(
+          create: (context) => CategoriesBloc(),
+        ),
+        BlocProvider(create: (context) => profileBloc),
       ],
       child: const MyApp(),
     ),

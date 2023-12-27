@@ -8,7 +8,8 @@ class WelcomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _firstHalfAnimation =
-        Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0)).animate(
+        Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0))
+            .animate(
       CurvedAnimation(
         parent: animationController,
         curve: const Interval(
@@ -19,7 +20,8 @@ class WelcomeView extends StatelessWidget {
       ),
     );
     final _secondHalfAnimation =
-        Tween<Offset>(begin: const Offset(0, 0), end: const Offset(-1, 0)).animate(
+        Tween<Offset>(begin: const Offset(0, 0), end: const Offset(-1, 0))
+            .animate(
       CurvedAnimation(
         parent: animationController,
         curve: const Interval(
@@ -63,9 +65,10 @@ class WelcomeView extends StatelessWidget {
               SlideTransition(
                 position: _welcomeImageAnimation,
                 child: Container(
-                  constraints: const BoxConstraints(maxWidth: 350, maxHeight: 350),
+                  constraints:
+                      const BoxConstraints(maxWidth: 350, maxHeight: 350),
                   child: Image.asset(
-                    'assets/introduction_animation/welcome.png',
+                    'assets/introduction_animation/doctors.png',
                     fit: BoxFit.contain,
                   ),
                 ),

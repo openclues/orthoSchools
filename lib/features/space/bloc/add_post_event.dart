@@ -12,8 +12,9 @@ class AddPostToSpace extends AddPostEvent {
   final String content;
   final String spaceId;
   final List<XFile> images;
+  final int? blogpost;
   const AddPostToSpace(
-      {required this.content, required this.spaceId, required this.images});
+      {required this.content, required this.spaceId, required this.images, this.blogpost});
   @override
   List<Object> get props => [content, spaceId];
 }

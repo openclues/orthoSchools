@@ -2,7 +2,6 @@ import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/features/profile/bloc/activities_bloc.dart';
 import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
-import 'package:azsoon/screens/EditProfilePage.dart';
 import 'package:azsoon/screens/NewProfile_page.dart';
 import 'package:azsoon/widgets/Button.dart';
 import 'package:azsoon/widgets/IndicatorShape.dart';
@@ -40,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     buildProfile(context);
     var profilestate = context.watch<ProfileBloc>().state;
-    ;
+    
     // buildListners(profilestate);
 
     double screenWidth = MediaQuery.of(context).size.width;

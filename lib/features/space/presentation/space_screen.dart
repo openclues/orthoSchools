@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../home_screen/presentation/widgets/post_widget.dart';
 import '../bloc/add_post_bloc.dart';
+import '../bloc/bloc/load_space_oists_bloc.dart';
 import '../bloc/my_spaces_bloc.dart';
 
 class SpaceScreen extends StatefulWidget {
@@ -278,57 +279,13 @@ class _SpaceScreenState extends State<SpaceScreen> {
                 ),
                 //posts
 
-                Row(
-                  children: [
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Container(
-                              height: 200,
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Sort By',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Divider(),
-                                    Text(
-                                      'Most Recent',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Divider(),
-                                    Text(
-                                      'Most Popular',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      icon: const Icon(
-                        IconlyLight.filter,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ],
+                BlocProvider(
+                  create: (context) => LoadSpaceOistsBloc(),
+                  child: SpacePostsList(
+                    spaceId: state.space.id,
+                  ),
                 ),
+                //load space posts.
                 // ListView.builder(
                 //   shrinkWrap: true,
                 //   physics: const NeverScrollableScrollPhysics(),
@@ -342,45 +299,128 @@ class _SpaceScreenState extends State<SpaceScreen> {
                 //     );
                 //   },
                 // ),
-                //space description
+                // space description
               ],
             ),
           );
         } else {
-          return const Center(
-            child: Text('Error'),
-          );
+          return Center(child: Text(state.toString() + 'error occured'));
         }
       },
     );
   }
 }
 
-class ExpandableWithIconArrowWidget extends StatefulWidget {
-  final Widget? child;
-  const ExpandableWithIconArrowWidget({super.key, this.child});
+class SpacePostsList extends StatefulWidget {
+  final int? spaceId;
+  const SpacePostsList({super.key, required this.spaceId});
 
   @override
-  State<ExpandableWithIconArrowWidget> createState() =>
-      _ExpandableWithIconArrowWidgetState();
+  State<SpacePostsList> createState() => _SpacePostsListState();
 }
 
-class _ExpandableWithIconArrowWidgetState
-    extends State<ExpandableWithIconArrowWidget> {
-  bool isExpanded = false;
+class _SpacePostsListState extends State<SpacePostsList> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-            onPressed: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
+    if (context.read<LoadSpaceOistsBloc>().state is LoadSpaceOistsInitial) {
+      context
+          .read<LoadSpaceOistsBloc>()
+          .add(LoadSpaceOists(widget.spaceId, null));
+    }
+    return ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        height: 200,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Sort By',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Divider(),
+                              Text(
+                                'Most Recent',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Divider(),
+                              Text(
+                                'Most Popular',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(
+                  IconlyLight.filter,
+                  color: primaryColor,
+                ),
+              ),
+            ],
+          ),
+          BlocBuilder<LoadSpaceOistsBloc, LoadSpaceOistsState>(
+            builder: (context, state) {
+              if (state is LoadSpaceOistsInitial) {
+                return Center(
+                  child: Text(state.toString()),
+                );
+              }
+              if (state is LoadSpacePostsLoading) {
+                return Center(
+                  child: Column(
+                    children: [
+                      Text(state.toString()),
+                      const CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    ],
+                  ),
+                );
+              } else if (state is LoadSpaceLoaded) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: state.posts.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Text(state.posts[index].title!);
+                  },
+                );
+              } else {
+                return Center(
+                  child: Text(state.toString()),
+                );
+              }
             },
-            icon: const Icon(Icons.arrow_drop_down)),
-        if (isExpanded) widget.child!
-      ],
-    );
+          ),
+        ]);
   }
 }

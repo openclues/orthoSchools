@@ -1,22 +1,13 @@
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
-import 'package:azsoon/Providers/moreUserInfoProvider.dart';
-import 'package:azsoon/Providers/userInfoProvider.dart';
 import 'package:azsoon/features/home_screen/data/models/latest_updated_posts_model.dart';
-import 'package:azsoon/features/home_screen/data/models/recommended_spaces_model.dart';
 import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
-import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart';
-import 'package:azsoon/features/space/presentation/space_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:iconly/iconly.dart';
 import 'package:loadmore/loadmore.dart';
 import 'package:provider/provider.dart';
 import '../features/home_screen/presentation/bloc/home_screen_bloc.dart';
 import '../features/home_screen/presentation/widgets/post_widget.dart';
-import 'Navigation-Drawer.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget({super.key});

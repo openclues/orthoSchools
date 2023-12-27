@@ -164,7 +164,7 @@ class CommentsWidget extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(state.comments.results[index].text),
-                  leading: CircleAvatar(
+                  leading: const CircleAvatar(
                     backgroundImage: NetworkImage(
                       'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
                     ),
@@ -203,7 +203,7 @@ class _PostLoadedWidgetState extends State<PostLoadedWidget> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           child: Column(
             children: [
-              PostHeaderWidget(),
+              const PostHeaderWidget(),
               PostImagesWidhet(post: widget.post),
               Padding(
                 padding: const EdgeInsets.only(

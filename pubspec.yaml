@@ -63,6 +63,7 @@ dependencies:
   progress_dialog_null_safe: ^1.0.7
   quds_popup_menu: ^0.0.1+1
   settings_ui: ^2.0.2
+  share_plus: ^7.2.1
   shared_preferences: ^2.2.2
   tab_container: ^2.0.0
   text_area: ^0.0.3

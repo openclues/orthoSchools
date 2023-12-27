@@ -3,8 +3,8 @@ import 'package:http/http.dart';
 
 class JoinSpaceRepo {
   Future<Response> joinSpace(int spaceId) async {
-    var response = await RequestHelper.put(
-        'joinspace/$spaceId', {"id": spaceId.toString()});
+    var response =
+        await RequestHelper.put('joinspace/', {"id": spaceId.toString()});
     return response;
   }
 }

@@ -12,7 +12,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final Color borderColor;
   final bool obscureText;
-final String? Function(String?)? validator;
+  final String? Function(String?)? validator;
   String? initialValue;
 
   final int? maxLines;
@@ -60,7 +60,10 @@ final String? Function(String?)? validator;
               suffixIcon: iconButton,
               prefixIcon: fieldicon,
               hintText: hintText,
-              hintStyle: const TextStyle(color: Color(0XFF939199)),
+              hintStyle: const TextStyle(
+                color: Color.fromARGB(255, 194, 193, 199),
+                fontSize: 14.0,
+              ),
               contentPadding: const EdgeInsets.symmetric(
                   horizontal: 15), //symmetric(vertical: 17, horizontal: 10),
               filled: true,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../../../Core/colors.dart';
-import '../../../../widgets/Navigation-Drawer.dart';
 import '../../../../widgets/Post.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../space/presentation/post_screen.dart';
@@ -177,9 +176,16 @@ class SpacePostWidget extends StatelessWidget {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, SpaceScreen.routeName,
-                                    arguments: post.space);
+                                if (post.isAllowedToJoin == true) {
+                                  Navigator.pushNamed(
+                                      context, SpaceScreen.routeName,
+                                      arguments: post.space);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "You are not allowed to join this space")));
+                                }
                               },
                               child: Text(
                                 ' in ${post.spacenName}',

@@ -1,3 +1,4 @@
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Core/network/endpoints.dart';
 import 'package:http/http.dart';
 
@@ -11,6 +12,9 @@ class HomeScreenRepo {
 
   Future<Response> getHomeScreenPosts() async {
     var response = await RequestHelper.get('api/home-posts/');
+    print(await RequestHelper.getAuthToken());
+    print("++++++++++++++++++++++++++++++++++");
+    print(response.body);
     return response;
   }
 

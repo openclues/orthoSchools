@@ -11,6 +11,7 @@ import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:azsoon/features/loading/presentation/data/screens/loading_screen.dart';
 import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart';
+import 'package:azsoon/features/space/bloc/cubit/verify_email_cubit.dart';
 import 'package:azsoon/features/space/bloc/load_post_bloc.dart';
 import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
 import 'package:azsoon/features/space/presentation/post_screen.dart';
@@ -59,7 +60,11 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => const IntroductionAnimationScreen());
       case My_Account_Settings.routeName:
-        return MaterialPageRoute(builder: (_) => const My_Account_Settings());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => VerifyEmailCubit(),
+                  child: My_Account_Settings(),
+                ));
       case ResetPassword.routeName:
         return MaterialPageRoute(builder: (_) => const ResetPassword());
       case SecondStep.routeName:

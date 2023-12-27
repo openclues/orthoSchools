@@ -4,11 +4,19 @@ import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/network/endpoints.dart';
 import 'package:azsoon/features/blog/data/models/blog_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
+import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
+import 'package:page_animation_transition/page_animation_transition.dart';
+
+import '../../../space/bloc/add_post_bloc.dart';
+import '../../../space/bloc/my_spaces_bloc.dart';
+import '../../../space/presentation/add_post.dart';
 
 class BlogPostScreen extends StatelessWidget {
   static const String routeName = '/blogPost';
@@ -32,8 +40,64 @@ class BlogPostScreen extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(children: [
-            // const Spacer(),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        offset: const Offset(0, 2),
+                        blurRadius: 5)
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "40",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      const SizedBox(width: 5),
+                      const Icon(
+                        IconlyLight.heart,
+                        color: primaryColor,
+                      ),
+                    ],
+                  ),
+                )),
+            Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        offset: const Offset(0, 2),
+                        blurRadius: 5)
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "40",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      const SizedBox(width: 5),
+                      const Icon(
+                        IconlyLight.chat,
+                        color: primaryColor,
+                      ),
+                    ],
+                  ),
+                )),
+            const Spacer(),
+
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -61,34 +125,131 @@ class BlogPostScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 20),
-            Container(
-              child: Row(
-                children: [
-                  const Icon(
-                    IconlyLight.heart,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    "20",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  const SizedBox(width: 20),
-                  const Icon(
-                    FontAwesomeIcons.comment,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    "5",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  const SizedBox(width: 10),
-                  const Icon(
-                    IconlyLight.send,
-                  ),
-                ],
-              ),
-            ),
+            // const SizedBox(width: 20),
+
+            Builder(builder: (context) {
+              return GestureDetector(
+                onTap: () {
+                  //show bottom sheet for user to choose betwween sharing the blog in a space post or to other applications
+
+                  showModalBottomSheet(
+                      context: context,
+                      builder: ((_) {
+                        return Container(
+                            // height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 5)
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  onTap: () async {
+                                    await Navigator.of(context).push(
+                                        PageAnimationTransition(
+                                            pageAnimationType:
+                                                BottomToTopTransition(),
+                                            page: MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      MySpacesBloc(),
+                                                ),
+                                                BlocProvider(
+                                                  create: (context) =>
+                                                      AddPostBloc(),
+                                                ),
+                                              ],
+                                              child: AddPostScreen(
+                                                  blogPost: blogPostModel),
+                                            )));
+                                  },
+                                  leading: const Icon(
+                                    FontAwesomeIcons.spaceShuttle,
+                                    color: primaryColor,
+                                  ),
+                                  title: const Text("Share to Space"),
+                                ),
+                                const ListTile(
+                                  leading: Icon(
+                                    FontAwesomeIcons.facebook,
+                                    color: primaryColor,
+                                  ),
+                                  title: Text("Share to Facebook"),
+                                ),
+                                const ListTile(
+                                  leading: Icon(
+                                    FontAwesomeIcons.twitter,
+                                    color: primaryColor,
+                                  ),
+                                  title: Text("Share to Twitter"),
+                                ),
+                                const ListTile(
+                                  leading: Icon(
+                                    FontAwesomeIcons.whatsapp,
+                                    color: primaryColor,
+                                  ),
+                                  title: Text("Share to Whatsapp"),
+                                ),
+                                const ListTile(
+                                  leading: Icon(
+                                    FontAwesomeIcons.telegram,
+                                    color: primaryColor,
+                                  ),
+                                  title: Text("Share to Telegram"),
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    //convert post delta to plain text
+                                    // COPY
+                                    Clipboard.setData(ClipboardData(
+                                        text: _controller.document
+                                            .toPlainText()));
+                                  },
+                                  leading: const Icon(
+                                    FontAwesomeIcons.copy,
+                                    color: primaryColor,
+                                  ),
+                                  title: const Text("Copy post text"),
+                                ),
+                              ],
+                            ));
+                      }));
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade300,
+                            offset: const Offset(0, 2),
+                            blurRadius: 5)
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Share",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          const Icon(
+                            IconlyLight.send,
+                            color: primaryColor,
+                          ),
+                        ],
+                      ),
+                    )),
+              );
+            }),
           ]),
         ),
       ),
