@@ -1,16 +1,31 @@
-# azsoon
+# OrthSchool
 
-A new Flutter project.
+"Orthschool" is a community platform designed specifically for dentists, providing them with a space to connect, share knowledge, and collaborate. The platform offers various features tailored to the needs of dental professionals, including user profiles, spaces for discussions and collaboration, and a blogging platform for sharing insights and experiences.
 
-## Getting Started
+Features: Contains all application features
+├── /Auth/
+│ ├── Bussiness_logic : Contains the logic of the authantication functions
+│ ├── Data: Contains models & repos of the auth feature
+│ └── Presentation : Contains all the ui screens & widgets
+└── /become_premium : Contains Become permiuem features
+└── /blog : Blog Feature
+│ ├── bloc : Contains Blog Logic and Articles management cubit
+│ ├── Data: Contains models & repos of the Blog feature.
+│ ├── Presentation: Contains UI screens and widget for the blog folder.
+└── /category : Categories logic to load around the application.
+└── /home_screen : Home Screen Feature
+│ ├── bloc : Contains Home screen logic for showing the spaces feeds
+│ ├── Data: Contains models & repos of the Home Screen feature.
+│ ├── Presentation: Contains UI screens and widget for the Homescreen feature.
+└── /loading : loading && splash feature
+└── /Notification : UI screen and notifications logic
+└── /Profile : Profile Ui && logic  
+└── /Profile : Profile Ui && logic  
+└── /Space : Space Feature Ui && logic  
+└── /Verification : Vertification Feature Ui && logic
 
-This project is a starting point for a Flutter application.
+3rd party services: - Firebase :
+I will add your accounts as admins in the project on firebase.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Any Further information about the code just contact me.
