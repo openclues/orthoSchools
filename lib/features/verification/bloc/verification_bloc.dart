@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:azsoon/features/profile/data/my_profile_model.dart';
 import 'package:azsoon/features/verification/data/verification_repo.dart';
@@ -19,7 +18,8 @@ class VerificationBloc extends Bloc<VerificationEvent, VerificationState> {
       var response = await repo.loadProfileData();
       print("load profile data");
       if (response.statusCode == 200) {
-        var profile = Profile.fromJson(jsonDecode(response.body));
+        var profile =
+            Profile.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
         emit(VerificationLoaded(profile: profile));
       }
     });
@@ -32,7 +32,8 @@ class VerificationBloc extends Bloc<VerificationEvent, VerificationState> {
           cardId: event.cardId,
           selfie: event.selfie);
       if (response.statusCode == 200) {
-        var profile = Profile.fromJson(jsonDecode(response.body));
+        var profile =
+            Profile.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
         print(profile.cardId);
 
         emit((state as VerificationLoaded).copyWith(

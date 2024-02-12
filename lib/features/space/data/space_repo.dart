@@ -2,7 +2,6 @@ import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'space_model.dart';
 
 class SpaceRepo {
   Future<Response> getSpace(String id) async {
@@ -24,26 +23,33 @@ class SpaceRepo {
   }
 
   //add post
-  Future<Response> addPost(String spaceId, String? content, List<XFile>? images,
-      int? blogpost) async {
+  Future<Response> addPost(
+    String spaceId,
+    String? content,
+    List<XFile>? images,
+    int? blogpost,
+    XFile? video,
+  ) async {
     List<MultipartFile> imageFiles = [];
     if (images != null) {
       for (var image in images) {
         imageFiles.add(await MultipartFile.fromPath('post_images', image.path));
       }
     }
-
+    print(video);
     var response = await RequestHelper.post(
         'postcreate/',
         {
-          'blogpost': blogpost,
+          'blogPost': blogpost,
           'space': spaceId,
           'content': content,
           'title': "dspfksdpf",
           "post_files": [],
-        },
+        }..removeWhere((key, value) => value == null),
         files: images,
-        filesKey: 'post_images');
+        extrafiles: video != null ? [video] : [],
+        filesKey: 'post_images',
+        extraFilesKey: 'video');
     return response;
   }
 
@@ -60,8 +66,4 @@ class SpaceRepo {
     filter == "null" ? "recent" : filter;
     return RequestHelper.get('space/posts/?id=$spaceId&filter=$filter');
   }
-
-
-
-
 }

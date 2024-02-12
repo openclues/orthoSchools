@@ -1,30 +1,36 @@
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
-import 'package:azsoon/features/blog/bloc/blogs_bloc.dart';
-import 'package:azsoon/features/home_screen/presentation/bloc/home_screen_bloc.dart';
+import 'package:azsoon/features/Auth/presentaiton/screens/SignIn.dart';
+import 'package:azsoon/features/blog/presentation/screens/articles_feed.dart';
+import 'package:azsoon/features/home_screen/presentation/pages/spaces_feed_screen.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
-import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
 import 'package:azsoon/features/loading/presentation/data/screens/loading_screen.dart';
-import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
-import 'package:azsoon/features/profile/presentation/screens/profile_screen.dart';
+import 'package:azsoon/features/premiem_zone/presentation/prem_screen.dart';
 import 'package:azsoon/features/space/presentation/add_post.dart';
 import 'package:azsoon/features/space/presentation/space_screen.dart';
-import 'package:azsoon/widgets/Post.dart';
-import 'package:azsoon/widgets/SettingsPage.dart';
+import 'package:azsoon/common_widgets/Post.dart';
+import 'package:azsoon/common_widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
-import 'package:tab_container/tab_container.dart';
-import '../../../../Auth/presentaiton/screens/SignIn.dart';
-import '../../../../screens/ProfilePage.dart';
-import '../../../../widgets/Navigation-Drawer.dart' as appdrawer;
+import '../../../blog/bloc/articles_feed_bloc.dart';
+import '../../../profile/bloc/profile_bloc.dart';
 import '../../../space/bloc/add_post_bloc.dart';
 import '../../../space/bloc/cubit/verify_email_cubit.dart';
 import '../../../space/bloc/my_spaces_bloc.dart';
-import 'blogs_home_screen.dart';
+import '../../../space/join_space/bloc/join_space_bloc.dart';
+import '../../bloc/home_screen_bloc.dart';
+import '../discover_screen.dart';
+import '../widgets/add_space_post_blog_article_button.dart';
+import '../widgets/app-bar.dart';
+import '../widgets/home_screen_header.dart';
+import '../widgets/navigation_indicator.dart';
+import '../widgets/navigation_item_widget.dart';
 
 class HomeScreenPage extends StatefulWidget {
   static const String routeName = '/home';
@@ -34,13 +40,15 @@ class HomeScreenPage extends StatefulWidget {
   State<HomeScreenPage> createState() => _HomeScreenPageState();
 }
 
-int _currentIndex = 0;
-
 class _HomeScreenPageState extends State<HomeScreenPage> {
   @override
+  // void didChangeDependencies() {
+  // context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
+  //   super.didChangeDependencies();
+  // }
   void initState() {
     context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
-    print('initState');
+
     super.initState();
   }
 
@@ -55,14 +63,10 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             }
           });
         }
-        // TODO: implement listener
       },
       child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
         builder: (context, state) {
           if (state is HomeScreenInitial) {
-            // BlocProvider.of<HomeScreenBloc>(context).add(
-            //   const LoadHomeScreenData(),
-            // );
             return const LoadingWidget();
           } else if (state is HomeScreenLoading) {
             return const Scaffold(
@@ -89,142 +93,6 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 }
 
-AppBar buildAppBar(BuildContext context) {
-  bool isVisible = true;
-
-  return AppBar(
-      bottom: PreferredSize(
-        preferredSize: const Size(30, 50),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            bottom: 8.0,
-          ),
-          child: Visibility(
-            visible: isVisible,
-            child: Container(
-              decoration: BoxDecoration(
-                color: primaryColor,
-
-                // borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    offset: const Offset(0, 2),
-                    blurRadius: 1,
-                    spreadRadius: 0.2,
-                  ),
-                ],
-              ),
-              child: ListTile(
-                trailing: IconButton(
-                  icon: const Icon(Icons.close),
-                  color: Colors.white,
-                  onPressed: () {
-                    // setState(() {
-                    //   isVisible = false;
-                    // });// not working
-                  },
-                ),
-                leading: const Icon(
-                  IconlyLight.danger,
-                  color: Colors.redAccent,
-                ),
-                title: const Row(
-                  children: [
-                    Text(
-                      'Verify your account !',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      iconTheme: const IconThemeData(color: Color.fromARGB(255, 47, 47, 47)),
-      elevation: 0,
-      centerTitle: true,
-      leading: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          //
-          Expanded(
-            child: Image.asset(
-              'assets/images/drimage.png',
-              height: 100,
-            ),
-          )
-        ],
-      ),
-      backgroundColor: Colors.white,
-      actions: [
-        // IconButton(
-        //     onPressed: () async {
-        //       await LocalStorage.removeAuthToken().then((_) {
-        //         if (context.mounted) {
-        //           Navigator.of(context)
-        //               .pushReplacementNamed(LoadingScreen.routeName);
-        //         }
-        //       });
-        //     },
-        //     icon: Icon(Icons.logout)),
-        // IconButton(
-        //     onPressed: () async {
-        //       Navigator.of(context).pushNamed(BlogWritingScreen.routeName);
-        //     },
-        //     icon: Icon(Icons.folder)),
-        IconButton(onPressed: () {}, icon: const Icon(IconlyLight.search)),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              const Icon(
-                IconlyLight.notification,
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                      padding: const EdgeInsets.all(1),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(2.0),
-                        child: Text(
-                          '+10',
-                          style: TextStyle(color: Colors.white, fontSize: 8),
-                        ),
-                      )),
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-      title: Image.asset(
-        'assets/images/logo.png',
-        height: 40,
-      ));
-}
-
 class HomeScreenLoadedScreen extends StatefulWidget {
   const HomeScreenLoadedScreen({super.key});
 
@@ -233,307 +101,177 @@ class HomeScreenLoadedScreen extends StatefulWidget {
 }
 
 List<Widget> _widgetOptions = <Widget>[
-  const HomeScreenTab(),
-  const Scaffold(
-    body: Center(
-      child: Text('Profile'),
-    ),
-  ),
-  MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context) => ProfileBloc(),
-      ),
-      BlocProvider(
-        create: (context) => MySpacesBloc(),
-      ),
-    ],
-    child: const ProfilePage(
-      userId: null,
-    ),
+  const SpacesFeedScreen(),
+  const Scaffold(body: DiscoverScreen()),
+  BlocProvider(
+    create: (context) => ArticlesFeedBloc(),
+    child: const ArticlesFeedScreen(),
   ),
   BlocProvider(
     create: (context) => VerifyEmailCubit(),
-    child: SettingsScreen(),
-  )
+    child: const SettingsScreen(),
+  ),
+  const PremiumZone(),
 ];
 
 class _HomeScreenLoadedScreenState extends State<HomeScreenLoadedScreen> {
   bool isVisible = true;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return BlocListener<JoinSpaceBloc, JoinSpaceState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is JoinSpaceSuccess) {
+          context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
+          // await Future.delayed(const Duration(seconds: 1), () {});
           Navigator.pushNamed(context, SpaceScreen.routeName,
-              arguments: state.spaceId);
+              arguments: state.space);
         }
       },
-      child: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-            // backgroundColor: const Color.fromARGB(255, 242, 242, 242),
-            floatingActionButton: FloatingActionButton(
-              splashColor: Colors.white,
-              backgroundColor: primaryColor,
-              onPressed: () async {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return SizedBox(
-                      height: 300,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Create Post',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Divider(),
-                            ListTile(
-                              onTap: () async {
-                                await Navigator.of(context).push(
-                                    PageAnimationTransition(
-                                        pageAnimationType:
-                                            BottomToTopTransition(),
-                                        page: MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider(
-                                              create: (context) =>
-                                                  MySpacesBloc(),
-                                            ),
-                                            BlocProvider(
-                                              create: (context) =>
-                                                  AddPostBloc(),
-                                            ),
-                                          ],
-                                          child: const AddPostScreen(),
-                                        )));
-                              },
-                              leading: const Icon(
-                                IconlyLight.home,
-                                color: primaryColor,
-                              ),
-                              title: const Text('In a Space'),
-                              subtitle: const Text(
-                                  'Post in a space you are a member of'),
-                            ),
-                            Builder(builder: (context) {
-                              return ListTile(
-                                onTap: () {
-                                  //show another modal to tell user that he is not verified yet so he can not post on a blog. and ask him verify his account first
+      child: BlocListener<AddPostBloc, AddPostState>(
+          listener: (context, state) {
+            if (state is AddPostLoaded) {
+              // Navigator.pushReplacementNamed(context, SpaceScreen.routeName,
+              //     arguments: state.);
 
-                                  showBottomSheet(
-                                      context: context,
-                                      builder: (_) {
-                                        return Container(
-                                          height: 200,
-                                          child: Column(
-                                            children: [
-                                              const Text(
-                                                  'You are not verified yet'),
-                                              const Text(
-                                                  'Please verify your account first'),
-                                              ElevatedButton(
-                                                  onPressed: () {},
-                                                  child: const Text('Verify'))
-                                            ],
-                                          ),
-                                        );
-                                      });
+              context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
 
-                                  // Navigator.pop(context);
-                                  // Navigator.pushNamed(
-                                  //     context, SpaceScreen.routeName,
-                                  //     arguments: 2);
-                                },
-                                leading: const Icon(
-                                  IconlyLight.home,
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+          },
+          child: Scaffold(
+              backgroundColor: bodyColor,
+              floatingActionButton: const AddSpacePostBlogButton(),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              floatingActionButtonAnimator:
+                  FloatingActionButtonAnimator.scaling,
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        offset: const Offset(0, 0),
+                        blurRadius: 1,
+                        spreadRadius: 0.2,
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8, right: 8, left: 8, bottom: 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //create 4 buttons
+
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _currentIndex = 0;
+                              });
+                            },
+                            child: BottomNavigationItem(
+                                activeWidget: const Icon(
+                                  IconlyBold.home,
                                   color: primaryColor,
                                 ),
-                                title: const Text('In a Blog'),
-                                subtitle: const Text('Post in your blog'),
-                              );
-                            }),
-                          ],
+                                inactiveWidget: Icon(IconlyLight.home,
+                                    color: Colors.grey[400]),
+                                isSelected: _currentIndex == 0)),
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _currentIndex = 1;
+                              });
+                            },
+                            child: BottomNavigationItem(
+                                activeWidget: const Icon(
+                                  IconlyBold.category,
+                                  color: primaryColor,
+                                ),
+                                inactiveWidget: Icon(IconlyLight.category,
+                                    color: Colors.grey[400]),
+                                isSelected: _currentIndex == 1)),
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _currentIndex = 2;
+                              });
+                            },
+                            child: BottomNavigationItem(
+                                activeWidget: const Icon(
+                                  FontAwesomeIcons.newspaper,
+                                  color: primaryColor,
+                                ),
+                                inactiveWidget: Icon(FontAwesomeIcons.newspaper,
+                                    color: Colors.grey[400]),
+                                isSelected: _currentIndex == 2)),
+
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _currentIndex = 3;
+                              });
+                            },
+                            child: BottomNavigationItem(
+                                activeWidget: const Icon(IconlyBold.setting,
+                                    color: primaryColor, size: 30),
+                                inactiveWidget: Icon(
+                                  IconlyLight.setting,
+                                  color: Colors.grey[400],
+                                  size: 30,
+                                ),
+                                isSelected: _currentIndex == 3)),
+
+                        Visibility(
+                          visible: context.read<ProfileBloc>().state
+                                      is ProfileLoaded &&
+                                  (context.read<ProfileBloc>().state
+                                              as ProfileLoaded)
+                                          .profileModel
+                                          .user!
+                                          .userRole ==
+                                      2
+                              ? true
+                              : false,
+                          child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _currentIndex = 4;
+                                });
+                              },
+                              child: BottomNavigationItem(
+                                  activeWidget: Image.asset(
+                                    'assets/images/verified-account.png',
+                                    height: 30,
+                                  ),
+                                  inactiveWidget: Image.asset(
+                                      'assets/images/verified-account.png',
+                                      height: 30,
+                                      color: Colors.grey[400]),
+                                  isSelected: _currentIndex == 4)),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: const Icon(
-                IconlyBold.plus,
-                // opticalSize: 1.5,
-                semanticLabel: 'Add',
-                size: 30,
-                color: Colors.white,
+
+                        // Column(
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.miniCenterDocked,
-            floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-            bottomNavigationBar: AnimatedBottomNavigationBar(
-                backgroundColor: primaryColor,
-                inactiveColor: Colors.grey[400],
-                activeColor: Colors.white,
-                blurEffect: true,
-                gapLocation: GapLocation.center,
-                notchSmoothness: NotchSmoothness.softEdge,
-                leftCornerRadius: 20,
-                safeAreaValues: const SafeAreaValues(top: true),
-                // scaleFactor: double.maxFinite,
-                // splashRadius: 32,
-                elevation: 20,
-                rightCornerRadius: 20,
-                icons: [
-                  _currentIndex == 0 ? IconlyBold.home : IconlyLight.home,
-                  _currentIndex == 1
-                      ? IconlyBold.category
-                      : IconlyLight.category,
-                  _currentIndex == 2 ? IconlyBold.profile : IconlyLight.profile,
-                  _currentIndex == 3 ? IconlyBold.setting : IconlyLight.setting,
-                ],
-                activeIndex: _currentIndex,
-                onTap: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                }),
-            appBar: buildAppBar(context),
-            drawer: appdrawer.NavigationDrawer(),
-            body: _widgetOptions[_currentIndex]),
-      ),
+
+              //     }),
+              appBar: buildAppBar(context),
+              body: _widgetOptions[_currentIndex])),
     );
   }
 }
 
-class HomeScreenTab extends StatelessWidget {
-  const HomeScreenTab({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: TabContainer(
-        childPadding: const EdgeInsets.all(0),
-        // childDuration: const Duration(milliseconds: 0),
-        // tabCurve: Curves.easeIn,
-        tabExtent: 35,
-        tabEdge: TabEdge.left,
-        colors: [
-          Colors.grey[200]!,
-          Colors.grey[200]!,
-        ],
-        tabs: const [
-          RotatedBox(
-            quarterTurns: 3,
-            child: Padding(
-              padding: EdgeInsets.all(.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Spaces',
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Icon(
-                    IconlyLight.activity,
-                    color: primaryColor,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          RotatedBox(
-            quarterTurns: 3,
-            child: Padding(
-              padding: EdgeInsets.all(0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text('Blogs',
-                      style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Icon(
-                    IconlyLight.document,
-                    color: primaryColor,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-        childCurve: Curves.easeIn,
-        isStringTabs: false,
-        children: [
-          const HomeScreenSpaceTab(),
-          BlocProvider(
-            create: (context) => BlogsBloc(),
-            child: const HomeScreebBlogTab(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class HomeScreenSpaceTab extends StatelessWidget {
-  const HomeScreenSpaceTab({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      backgroundColor: primaryColor,
-      color: Colors.white,
-      onRefresh: () async {
-        context.read<HomeScreenBloc>().add(const LoadHomeScreenData());
-      },
-      child: BlocListener<JoinSpaceBloc, JoinSpaceState>(
-        listener: (context, state) {
-          if (state is JoinSpaceSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Joined space successfully'),
-              ),
-            );
-          } else if (state is JoinSpaceError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Something went wrong'),
-              ),
-            );
-          }
-        },
-        child: ListView(
-          children: const [
-            SpacesList(),
-            PostWidget(),
-          ],
-        ),
-      ),
-    );
-  }
-}

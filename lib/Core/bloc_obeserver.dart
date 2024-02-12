@@ -5,21 +5,21 @@ class MyBlocObserver extends BlocObserver {
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
     //print event
-    print(event.toString() + " event");
+    print("$event event");
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
     //print transition
-    print(transition.toString() + " transition");
+    print("$transition transition");
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
     //print error
-    print(error.toString() + " error");
+    print("$error error");
     // Custom logic for handling errors
   }
 }

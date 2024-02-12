@@ -10,6 +10,7 @@ sealed class BlogsState extends Equatable {
 final class BlogsInitial extends BlogsState {}
 
 final class BlogsLoading extends BlogsState {}
+
 final class BlogsFiltering extends BlogsState {}
 
 final class BlogsLoaded extends BlogsState {
@@ -20,8 +21,6 @@ final class BlogsLoaded extends BlogsState {
   @override
   List<Object> get props => [blogs];
 }
-
-
 
 final class BlogErr extends BlogsState {
   final String message;

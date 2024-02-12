@@ -1,6 +1,5 @@
 import 'package:http/http.dart';
 
-import '../../../../../Core/network/endpoints.dart';
 import '../../../../../Core/network/request_helper.dart';
 
 class VerifyEmailRepo {

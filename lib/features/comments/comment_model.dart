@@ -1,14 +1,20 @@
+import 'package:equatable/equatable.dart';
+
 import '../home_screen/data/models/latest_updated_posts_model.dart';
 
-class Comment {
+class Comment extends Equatable {
   final int id;
   final String text;
   final String created_at;
+  final int? parentLikes;
+  final int? commentLikes;
   final PostCommentUser user;
   final List<Comment> comments;
 
-  Comment(
+  const Comment(
       {required this.id,
+      required this.parentLikes,
+      required this.commentLikes,
       required this.text,
       required this.created_at,
       required this.user,
@@ -17,6 +23,8 @@ class Comment {
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['id'],
+      parentLikes: json['object_likes_count'],
+      commentLikes: json['likesCount'],
       text: json['text'],
       created_at: json['created_at'],
       user: PostCommentUser.fromJson(json['user']),
@@ -26,6 +34,38 @@ class Comment {
               json['comments'].map((x) => Comment.fromJson(x))),
     );
   }
+
+  Comment copyWith({
+    int? id,
+    String? text,
+    String? created_at,
+    int? parentLikes,
+    int? commentLikes,
+    PostCommentUser? user,
+    List<Comment>? comments,
+  }) {
+    print("${commentLikes}psdkfp[ksd]");
+    return Comment(
+      id: id ?? this.id,
+      text: text ?? this.text,
+      created_at: created_at ?? this.created_at,
+      parentLikes: parentLikes ?? this.parentLikes,
+      commentLikes: commentLikes ?? this.commentLikes,
+      user: user ?? this.user,
+      comments: comments ?? this.comments,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        text,
+        created_at,
+        parentLikes,
+        commentLikes,
+        user,
+        comments,
+      ];
 }
 
 // [

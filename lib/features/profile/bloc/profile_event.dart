@@ -7,15 +7,15 @@ sealed class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadProfileData extends ProfileEvent {
-  final int? id;
-  final ProfileLoaded? profileLoaded;
+// class LoadProfileData extends ProfileEvent {
+//   final int? id;
+//   final ProfileLoaded? profileLoaded;
 
-  const LoadProfileData({this.id, this.profileLoaded});
+//   const LoadProfileData({this.id, this.profileLoaded});
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class SetInitialProfileData extends ProfileEvent {
   final int id;
@@ -55,4 +55,16 @@ class LoadMyProfile extends ProfileEvent {
 
   @override
   List<Object> get props => [];
+}
+
+
+
+class UpdateProfileLocally extends ProfileEvent {
+  final Profile newProfile;
+  final ProfileLoaded profileLoaded;
+
+  const UpdateProfileLocally({required this.profileLoaded, required this.newProfile});
+
+  @override
+  List<Object> get props => [profileLoaded];
 }

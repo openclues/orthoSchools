@@ -20,3 +20,5 @@ class LoadBlogs extends BlogsEvent {
   @override
   List<Object> get props => [];
 }
+
+

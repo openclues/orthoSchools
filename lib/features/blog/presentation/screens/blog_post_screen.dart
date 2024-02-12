@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/network/endpoints.dart';
@@ -6,9 +5,8 @@ import 'package:azsoon/features/blog/data/models/blog_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_quill/quill_delta.dart';
-import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+// import 'package:flutter_quill/flutter_quill.dart';
+// import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
@@ -22,12 +20,12 @@ class BlogPostScreen extends StatelessWidget {
   static const String routeName = '/blogPost';
   final PostModel? blogPostModel;
   BlogPostScreen({super.key, this.blogPostModel});
-  final QuillController _controller = QuillController.basic();
+  // final QuillController _controller = QuillController.basic();
   //get data from delta
 
   @override
   Widget build(BuildContext context) {
-    _controller.document = Document.fromDelta(blogPostModel!.content);
+    // _controller.document = Document.fromDelta(blogPostModel!.content);
     return Scaffold(
       bottomNavigationBar: Container(
         // height: 50,
@@ -41,7 +39,7 @@ class BlogPostScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -59,7 +57,7 @@ class BlogPostScreen extends StatelessWidget {
                     children: [
                       Text(
                         "40",
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(width: 5),
                       const Icon(
@@ -86,7 +84,7 @@ class BlogPostScreen extends StatelessWidget {
                     children: [
                       Text(
                         "40",
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(width: 5),
                       const Icon(
@@ -96,7 +94,7 @@ class BlogPostScreen extends StatelessWidget {
                     ],
                   ),
                 )),
-            const Spacer(),
+            // const Spacer(),
 
             Container(
               decoration: BoxDecoration(
@@ -115,7 +113,7 @@ class BlogPostScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Save",
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const Icon(
                       IconlyLight.bookmark,
@@ -166,8 +164,8 @@ class BlogPostScreen extends StatelessWidget {
                                                       AddPostBloc(),
                                                 ),
                                               ],
-                                              child: AddPostScreen(
-                                                  blogPost: blogPostModel),
+                                              child:
+                                                  const AddPostScreen(article: null),
                                             )));
                                   },
                                   leading: const Icon(
@@ -208,9 +206,9 @@ class BlogPostScreen extends StatelessWidget {
                                   onTap: () {
                                     //convert post delta to plain text
                                     // COPY
-                                    Clipboard.setData(ClipboardData(
-                                        text: _controller.document
-                                            .toPlainText()));
+                                    // Clipboard.setData(ClipboardData(
+                                    //     text: _controller.document
+                                    //         .toPlainText()));
                                   },
                                   leading: const Icon(
                                     FontAwesomeIcons.copy,
@@ -239,7 +237,7 @@ class BlogPostScreen extends StatelessWidget {
                         children: [
                           Text(
                             "Share",
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const Icon(
                             IconlyLight.send,
@@ -262,30 +260,30 @@ class BlogPostScreen extends StatelessWidget {
                   blogPostModel!.cover!.replaceFirst('/', ""),
               fit: BoxFit.fitWidth,
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.shade300,
-                      offset: const Offset(0, 2),
-                      blurRadius: 5)
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: QuillToolbar.simple(
-                    configurations: QuillSimpleToolbarConfigurations(
-                        showHeaderStyle: true,
-                        multiRowsDisplay: false,
-                        color: Colors.white,
-                        showBackgroundColorButton: true,
-                        showCodeBlock: false,
-                        axis: Axis.horizontal,
-                        controller: _controller,
-                        embedButtons: FlutterQuillEmbeds.toolbarButtons())),
-              ),
-            ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     boxShadow: [
+            //       BoxShadow(
+            //           color: Colors.grey.shade300,
+            //           offset: const Offset(0, 2),
+            //           blurRadius: 5)
+            //     ],
+            //   ),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(18.0),
+            //     child: QuillToolbar.simple(
+            //         configurations: QuillSimpleToolbarConfigurations(
+            //             showHeaderStyle: true,
+            //             multiRowsDisplay: false,
+            //             color: Colors.white,
+            //             showBackgroundColorButton: true,
+            //             showCodeBlock: false,
+            //             axis: Axis.horizontal,
+            //             controller: _controller,
+            //             embedButtons: FlutterQuillEmbeds.toolbarButtons())),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -294,30 +292,30 @@ class BlogPostScreen extends StatelessWidget {
               ),
             ),
             // SizedBox(height: 10),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: QuillEditor(
-                  scrollController: ScrollController(),
-                  configurations: QuillEditorConfigurations(
-                    readOnly: true,
-                    enableSelectionToolbar: true,
-                    embedBuilders: FlutterQuillEmbeds.editorBuilders(
-                        imageEmbedConfigurations:
-                            const QuillEditorImageEmbedConfigurations(),
-                        videoEmbedConfigurations:
-                            const QuillEditorVideoEmbedConfigurations()
-                        // video: _videoBuilder,
-                        // image: _imageBuilder,
-                        // horizontalRule: _hrBuilder,
-                        // markdown: _mdBuilder,
+            // Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: QuillEditor(
+            //       scrollController: ScrollController(),
+            //       configurations: QuillEditorConfigurations(
+            //         readOnly: true,
+            //         enableSelectionToolbar: true,
+            //         embedBuilders: FlutterQuillEmbeds.editorBuilders(
+            //             imageEmbedConfigurations:
+            //                 const QuillEditorImageEmbedConfigurations(),
+            //             videoEmbedConfigurations:
+            //                 const QuillEditorVideoEmbedConfigurations()
+            //             // video: _videoBuilder,
+            //             // image: _imageBuilder,
+            //             // horizontalRule: _hrBuilder,
+            //             // markdown: _mdBuilder,
 
-                        ),
-                    controller: _controller,
-                    showCursor: false,
-                    autoFocus: true,
-                  ),
-                  focusNode: FocusNode(),
-                )),
+            //             ),
+            //         controller: _controller,
+            //         showCursor: false,
+            //         autoFocus: true,
+            //       ),
+            //       focusNode: FocusNode(),
+            //     )),
           ],
         ),
       ),

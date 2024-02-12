@@ -1,13 +1,14 @@
+import 'package:azsoon/features/blog/data/models/articles_model.dart';
+import 'package:azsoon/features/blog/presentation/screens/blog_screen.dart';
 import 'package:azsoon/features/categories/bloc/categories_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../../../Core/colors.dart';
 import '../../../../Core/local_storage.dart';
 import '../../../../Core/network/endpoints.dart';
-import '../../../blog/bloc/blogs_bloc.dart';
+import '../../../blog/bloc/cubit/articales_cubit_cubit.dart';
 import '../../../blog/data/models/blog_model.dart';
 import '../../../blog/presentation/screens/blog_post_screen.dart';
 
@@ -29,23 +30,27 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
       following = true;
       // });
       context
-          .read<BlogsBloc>()
-          .add(LoadBlogs(following: true, category: category));
+          .read<ArticalesCubitCubit>()
+          .loadArticles(following: following, category: category);
     }
 
     if (index == 1) {
       following = false;
-      context.read<BlogsBloc>().add(LoadBlogs(category: category));
+      context
+          .read<ArticalesCubitCubit>()
+          .loadArticles(following: following, category: category);
     }
   }
 
-  String selectedOption = 'ALL'; // Default selected option
+  String selectedOption = 'All'; // Default selected option
 
   @override
   Widget build(BuildContext context) {
-    var state = context.watch<BlogsBloc>().state;
-    if (state is BlogsInitial) {
-      context.read<BlogsBloc>().add(const LoadBlogs());
+    var state = context.watch<ArticalesCubitCubit>().state;
+    if (state is ArticalesCubitInitial) {
+      context
+          .read<ArticalesCubitCubit>()
+          .loadArticles(following: following, category: category);
     }
 
     // if (state is BlogsLoaded &&
@@ -56,13 +61,15 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
       child: ListView(
         children: [
           //switcher between following and all
+          // list of blogs
+
           Row(
             children: [
               const Text(
                 'Latest Articles',
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold),
               ),
               const Spacer(),
@@ -85,12 +92,11 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
                       setState(() {
                         selectedOption = newValue!;
                       });
-                      context.read<BlogsBloc>().add(LoadBlogs(
-                          following:
-                              selectedOption == 'FOLLOWING' ? true : null,
-                          category: category));
+                      getArticales(selectedOption == 'Following'
+                          ? 0
+                          : 1); // Set new value
                     },
-                    items: <String>['ALL', 'FOLLOWING']
+                    items: <String>['All', 'Following']
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -281,15 +287,13 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
                       onTap: (v) {
                         if (v == 0) {
                           category = null;
-                          context.read<BlogsBloc>().add(LoadBlogs(
-                                following:
-                                    selectedOption == 'FOLLOWING' ? true : null,
-                              ));
+                          context
+                              .read<ArticalesCubitCubit>()
+                              .loadArticles(following: following);
                         } else {
-                          context.read<BlogsBloc>().add(LoadBlogs(
-                              following:
-                                  selectedOption == 'FOLLOWING' ? true : null,
-                              category: state.categories![v - 1].name!));
+                          context.read<ArticalesCubitCubit>().loadArticles(
+                              following: following,
+                              category: state.categories![v - 1].name!);
                         }
                       },
                       unselectedLabelColor:
@@ -309,6 +313,7 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
                             style: TextStyle(
                                 color: primaryColor,
                                 // fontSize: 20,
+                                // fontSize: 19,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -318,7 +323,8 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
                                 style: const TextStyle(
                                     color: primaryColor,
                                     // fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                                    // fontSize: 19,
+                                    fontWeight: FontWeight.normal),
                               ),
                             ))
                       ]),
@@ -330,16 +336,24 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
               }
             },
           ),
-          BlocBuilder<BlogsBloc, BlogsState>(builder: (context, state) {
-            if (state is BlogsLoaded) {
+          BlocBuilder<ArticalesCubitCubit, ArticalesCubitState>(
+              builder: (context, state) {
+            if (state is ArticalesCubitInitial) {
+              context.read<ArticalesCubitCubit>().loadArticles();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is ArticalesLoaded) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: BlogPostsList(
-                  blogs: state.blogs.results,
-                  posts: state.blogs.latest_updated_posts_model,
+                  // blogs: state.pageModel.results,
+                  posts: state.pageModel.results,
                 ),
               );
-            } else if (state is BlogsFiltering || state is BlogsLoading) {
+            } else if (state is ArticalesCubitInitial ||
+                state is ArticalesLoading) {
               return const Column(
                 children: [
                   SizedBox(
@@ -355,17 +369,16 @@ class _HomeScreebBlogTabState extends State<HomeScreebBlogTab> {
       ),
     );
     // }
-    return const SizedBox();
   }
 }
 
 class BlogPostsList extends StatelessWidget {
-  List<PostModel>? posts;
-  List<BlogModel>? blogs;
+  List<ArticlesModel>? posts;
+  // List<BlogModel>? blogs;
 
   BlogPostsList({
     super.key,
-    required this.blogs,
+    // required this.blogs,
     required this.posts,
   });
 
@@ -377,8 +390,12 @@ class BlogPostsList extends StatelessWidget {
             shrinkWrap: true,
             itemCount: posts!.length,
             itemBuilder: (BuildContext context, int index) {
-              BlogModel blog = getBlogFromId(posts![index].blog!, blogs!);
-              return GestureDetector(
+              // BlogModel blog = getBlogFromId(posts![index].blog!, blogs!);
+              return ArticaleWidget(
+                articlesModel: posts![index],
+              );
+
+              GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, BlogPostScreen.routeName,
                       arguments: posts![index]);
@@ -386,14 +403,13 @@ class BlogPostsList extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.grey[200],
                         image: DecorationImage(
-                          image: NetworkImage(ApiEndpoints.baseUrl +
-                              posts![index].cover!.replaceFirst('/', "")),
+                          image: NetworkImage(posts![index].cover!),
                           filterQuality: FilterQuality.high,
                           fit: BoxFit.fitHeight,
                           colorFilter: ColorFilter.mode(
@@ -410,12 +426,19 @@ class BlogPostsList extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           // mainAxisSize: MainAxisSize.max,
                           children: [
-                            Text(
-                              blog.title!,
-                              style: const TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
+                            GestureDetector(
+                              onTap: () {
+                                // Navigator.pushNamed(
+                                //     context, BlogScreen.routeName,
+                                //     arguments: art);
+                              },
+                              child: Text(
+                                posts![index].blog!.title!,
+                                style: const TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                             Text(
                               posts![index].title!,
@@ -435,16 +458,20 @@ class BlogPostsList extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     maxRadius: 12,
-                                    backgroundImage: blog.user.profileImage !=
-                                            null
-                                        ? NetworkImage(ApiEndpoints.baseUrl +
-                                            blog.user.profileImage!)
-                                        : const AssetImage(
-                                                'assets/images/drimage.png')
-                                            as ImageProvider,
+                                    backgroundImage:
+                                        posts![index].blog!.cover != null
+                                            ? NetworkImage(
+                                                ApiEndpoints.baseUrl +
+                                                    posts![index]
+                                                        .blog!
+                                                        .cover!
+                                                        .replaceFirst('/', ""))
+                                            : const AssetImage(
+                                                    'assets/images/drimage.png')
+                                                as ImageProvider,
                                   ),
                                   Text(
-                                    '${blog.user.userAccount.firstName!} ${blog.user.userAccount.lastName!}',
+                                    '${posts![index].blog!.user!.userAccount.firstName} ${posts![index].blog!.user!.userAccount.lastName!}',
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -453,7 +480,7 @@ class BlogPostsList extends StatelessWidget {
                                   const Spacer(),
                                   Row(
                                     children: [
-                                      const Icon(
+                                       Icon(
                                         IconlyLight.time_circle,
                                         size: 12,
                                         color: Colors.grey,

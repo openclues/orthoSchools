@@ -6,7 +6,7 @@ class PageModel<T> extends Equatable {
   final String? previous;
   final List<T> results;
 
-  PageModel({
+  const PageModel({
     required this.count,
     required this.next,
     required this.previous,
@@ -22,8 +22,9 @@ class PageModel<T> extends Equatable {
       count: json['count'],
       next: json['next'],
       previous: json['previous'],
-      results:
-          (json['results'] as List<dynamic>).map((e) => fromJsonT(e)).toList(),
+      results: json['results'] != null || json['results'] != []
+          ? (json['results'] as List<dynamic>).map((e) => fromJsonT(e)).toList()
+          : [],
     );
   }
 

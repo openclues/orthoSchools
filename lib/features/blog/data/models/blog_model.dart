@@ -1,15 +1,17 @@
-import 'dart:convert';
-
-import 'package:flutter_quill/quill_delta.dart';
+// import 'package:flutter_quill/flutter_quill.dart';
+// import 'package:flutter_quill/quill_delta.dart';
 
 class BlogModel {
   int id;
-  List<PostModel> posts;
+  // List<PostModel> posts;
   UserModel user;
   List<CategoryModel>? category;
   String? title;
   String? description;
   String? cover;
+  int? articlesCount;
+
+  int? followersCount;
   DateTime? createdAt;
   DateTime? updatedAt;
   bool? isPublished;
@@ -18,7 +20,9 @@ class BlogModel {
 
   BlogModel({
     required this.id,
-    required this.posts,
+    // required this.posts,
+    required this.articlesCount,
+    required this.followersCount,
     required this.user,
     required this.category,
     required this.title,
@@ -32,10 +36,13 @@ class BlogModel {
   });
 
   factory BlogModel.fromJson(Map<String, dynamic> json) {
+    // print(json['is_followed'] + "spdkfp[sdkfps[dkfpsd[pf[sdk]]]]");
     return BlogModel(
       id: json['id'],
-      posts: List<PostModel>.from(
-          json['posts'].map((post) => PostModel.fromJson(post))),
+      articlesCount: json['articles_count'],
+      followersCount: json['followers_count'],
+      // posts: List<PostModel>.from(
+      //     json['posts'].map((post) => PostModel.fromJson(post))),
       user: UserModel.fromJson(json['user']),
       category: List<CategoryModel>.from(
           json['category'].map((cat) => CategoryModel.fromJson(cat))),
@@ -53,32 +60,45 @@ class BlogModel {
 
 class PostModel {
   int? id;
-  Delta content;
+  // Delta content;
   String? title;
   bool? isBanned;
   String? cover;
   DateTime? createdAt;
+  bool? isFollowed;
   DateTime? updatedAt;
   int? blog;
+  // String? plainText;
 
   PostModel({
     required this.id,
-    required this.content,
+    // required this.content,
     required this.title,
     required this.isBanned,
+    required this.isFollowed,
     required this.cover,
     required this.createdAt,
     required this.updatedAt,
     required this.blog,
+    // required this.plainText,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
       id: json['id'],
-      content: Delta.fromJson(jsonDecode(json['content'])['ops']),
+      isFollowed: json['is_followed'],
+      // content: Delta.fromJson(jsonDecode(json['content'])['ops']),
       title: json['title'],
       isBanned: json['is_banned'],
       cover: json['cover'],
+      // plainText: json['content'] != null
+      //     ? QuillController(
+      //         document: Document.fromDelta(
+      //           Delta.fromJson(jsonDecode(json['content'])['ops']),
+      // //         ),
+      //         selection: const TextSelection.collapsed(offset: 0),
+      //       ).document.toPlainText()
+      //     : "",
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       blog: json['blog'],
@@ -87,6 +107,7 @@ class PostModel {
 }
 
 class UserModel {
+  int? id;
   String? title;
   String? bio;
   String? studyIn;
@@ -106,12 +127,15 @@ class UserModel {
     this.profileImage,
     this.birthDate,
     this.placeOfWork,
+    this.id,
     this.speciality,
     required this.userAccount,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    print(json['user_account']);
     return UserModel(
+      id: json['id'],
       title: json['title'],
       bio: json['bio'],
       profileImage: json['profileImage'],

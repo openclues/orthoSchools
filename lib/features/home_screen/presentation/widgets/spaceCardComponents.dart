@@ -8,8 +8,8 @@ class CategoryComponent extends StatelessWidget {
   final IconData icon;
   final Color? IconColor;
 
-  CategoryComponent(
-      {required this.name,
+  const CategoryComponent(
+      {super.key, required this.name,
       required this.id,
       required this.icon,
       required this.IconColor});
@@ -17,8 +17,8 @@ class CategoryComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(15, 10, 0, 10),
-      padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+      margin: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+      padding: const EdgeInsets.fromLTRB(7, 4, 7, 4),
       decoration: BoxDecoration(
         border: Border.all(
             color: const Color.fromARGB(255, 48, 48, 48), width: 0.4),
@@ -31,12 +31,12 @@ class CategoryComponent extends StatelessWidget {
             color: IconColor,
             size: 15,
           ),
-          SizedBox(
+          const SizedBox(
             width: 5,
           ),
           Text(
             name!,
-            style: TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 12),
           ),
         ],
       ),

@@ -9,4 +9,10 @@ class BlogRepo {
         'blogs?page=$page${category != null ? '&category__name=$category' : ''}${following != null ? '&followed=$following' : ''}');
     return response;
   }
+
+  Future<Response> getBlogScreen(int? blogId, String? filter) async {
+    var response = await RequestHelper.get(
+        'get/blog/?blog_id=$blogId${filter != null ? '&filter=$filter' : ''}');
+    return response;
+  }
 }

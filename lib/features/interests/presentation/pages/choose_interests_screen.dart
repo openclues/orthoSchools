@@ -2,8 +2,6 @@ import 'package:animate_do/animate_do.dart';
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/interests/data/models/category_model.dart';
 import 'package:flutter/material.dart';
-import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
-import 'package:page_animation_transition/page_animation_transition.dart';
 
 import '../../../home_screen/presentation/pages/home_screen.dart';
 

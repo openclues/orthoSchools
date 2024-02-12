@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:azsoon/features/space/data/space_model.dart';
 import 'package:azsoon/features/space/data/space_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -17,7 +16,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     on<LoadSpace>((event, emit) async {
       var response = await spaceRepo.getSpace(event.id.toString());
       if (response.statusCode == 200) {
-        RecommendedSpace space = RecommendedSpace.fromJson(jsonDecode(response.body));
+        RecommendedSpace space = RecommendedSpace.fromJson(
+            jsonDecode(utf8.decode(response.bodyBytes)));
         emit(SpaceLoaded(
           space,
         ));

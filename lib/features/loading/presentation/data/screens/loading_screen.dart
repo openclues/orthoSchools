@@ -1,6 +1,7 @@
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
-import 'package:azsoon/introduction_animation/introduction_animation_screen.dart';
+import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
+import 'package:azsoon/features/Auth/presentaiton/introduction_animation/introduction_animation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,28 +19,30 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<LoadingBlocBloc>().add(const CheckUserStatus());
+    // context.read<LoadingBlocBloc>().add(const CheckUserStatus());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<LoadingBlocBloc, LoadingBlocState>(
+      body: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) async {
           // Navigator.of(context)
-          if (state is UserIsSignedIn) {
+          if (state is ProfileLoaded) {
             Navigator.of(context).pushNamedAndRemoveUntil(
                 HomeScreenPage.routeName, (route) => false);
           }
 
-          if (state is UserIsNotSignedIn) {
+          if (state is ProfileIsNotSignedIn) {
             Navigator.of(context).pushNamedAndRemoveUntil(
                 IntroductionAnimationScreen.routeName, (route) => false);
           }
         },
-        child: BlocBuilder<LoadingBlocBloc, LoadingBlocState>(
+        child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
-            if (state is LoadingBlocInitial) {
+            if (state is ProfileInitial) {
+              context.read<ProfileBloc>().add(const LoadMyProfile());
+              print('ProfileInitial');
               return const Center(
                 child: LoadingWidget(),
               );

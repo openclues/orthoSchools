@@ -16,7 +16,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
       var response = await activitiesRepo.getMyActivity();
       if (response.statusCode == 200) {
         List<Activity> activities = [];
-        for (var item in jsonDecode(response.body)) {
+        for (var item in jsonDecode(utf8.decode(response.bodyBytes))) {
           activities.add(Activity.fromJson(item));
         }
         emit(ActivitiesLoaded(activities: activities));

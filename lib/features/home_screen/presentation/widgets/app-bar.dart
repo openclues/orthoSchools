@@ -1,44 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 
-AppBar buildAppBar() {
+import '../../../../Core/colors.dart';
+import '../../../notifications/persentation/notifications_screen.dart';
+
+AppBar buildAppBar(BuildContext context) {
   return AppBar(
-    iconTheme: IconThemeData(color: const Color.fromARGB(255, 47, 47, 47)),
-    elevation: 0,
-    centerTitle: true,
-    backgroundColor: Colors.white,
-    title: TextField(
-      // controller: controller,
-      decoration: InputDecoration(
-        suffixIcon: Icon(Icons.search),
-        hintText: 'Search...',
-        hintStyle: TextStyle(color: Color(0XFF939199)),
-        contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-        filled: true,
-        fillColor: const Color(0XFFEEF3F7),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
-          borderSide: BorderSide(
-            color: Color(0XFFEEF3F7),
+
+      elevation: 0,
+      centerTitle: true,
+      backgroundColor: bodyColor,
+      actions: [
+        // IconButton(onPressed: () {}, icon: const Icon(IconlyLight.search)),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(NotificationsScreen.routeName);
+          },
+          // ignore: prefer_const_constructors
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: const Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  IconlyLight.notification,
+                ),
+              ],
+            ),
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Color(0XFFEEF3F7),
-          ),
-          borderRadius: BorderRadius.circular(25.0),
+      ],
+      title: Container(
+        // height: 100,
+        // color: primaryColor,
+        child: Image.asset(
+          'assets/images/11.png',
+          height: kTextTabBarHeight * 1.5,
+          // height: 3000,
         ),
-      ),
-    ),
-    bottom: TabBar(labelColor: Colors.grey, tabs: [
-      Tab(
-        text: 'space1',
-      ),
-      Tab(
-        text: 'space2',
-      ),
-      Tab(
-        text: 'space3',
-      ),
-    ]),
-  );
+      ));
 }

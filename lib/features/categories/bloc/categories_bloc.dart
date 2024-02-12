@@ -17,7 +17,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
       var response = await categoriesRepo.getCategories();
       List<CategoryModel> categories = [];
       if (response.statusCode == 200) {
-        for (var category in jsonDecode(response.body)) {
+        for (var category in jsonDecode(utf8.decode(response.bodyBytes))) {
           categories.add(CategoryModel.fromJson(category));
         }
         emit(CategoriesLoaded(categories: categories));

@@ -117,7 +117,7 @@ class LocalStorage {
     if (diff.inDays > 7) return "${(diff.inDays / 7).floor()} weeks ago";
     if (diff.inDays > 0) return "${diff.inDays} days ago";
     if (diff.inHours > 0) return "${diff.inHours} hours ago";
-    if (diff.inMinutes > 0) return "${diff.inMinutes} minutes ago";
+    if (diff.inMinutes > 0) return "${diff.inMinutes} mins ago";
     return "just now";
   }
 }

@@ -1,19 +1,12 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/features/home_screen/data/models/recommended_spaces_model.dart';
-import 'package:azsoon/features/home_screen/presentation/widgets/spaceCardComponents.dart';
-import 'package:azsoon/features/home_screen/presentation/widgets/spacesData.dart';
-import 'package:azsoon/features/join_space/bloc/join_space_bloc.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconly/iconly.dart';
 
-import '../../../../widgets/Post.dart';
-import '../bloc/home_screen_bloc.dart';
+import '../../../space/presentation/space_screen.dart';
+import '../../bloc/home_screen_bloc.dart';
 
 class SpacesList extends StatefulWidget {
   const SpacesList({Key? key}) : super(key: key);
@@ -30,7 +23,7 @@ class _SpacesListState extends State<SpacesList> {
     print(context.read<LoadingBlocBloc>().state);
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
-        if (state is HomeScreenLoaded && state.recommendedSpaces!.isNotEmpty) {
+        if (state is HomeScreenLoaded && state.recommendedSpaces.isNotEmpty) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -44,7 +37,8 @@ class _SpacesListState extends State<SpacesList> {
                 child: Text(
                   'Recommended Spaces',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 17,
+                    color: Color(0xff5B5C9D),
                     // fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.start,
@@ -52,8 +46,8 @@ class _SpacesListState extends State<SpacesList> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: LocalStorage.getcreenSize(context).height * 0.18,
+                child: SizedBox(
+                  height: LocalStorage.getcreenSize(context).height * 0.25,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
@@ -63,11 +57,9 @@ class _SpacesListState extends State<SpacesList> {
                           width:
                               LocalStorage.getcreenSize(context).width * 0.01,
                         ),
-                        for (int i = 0;
-                            i < state.recommendedSpaces!.length;
-                            i++)
+                        for (int i = 0; i < state.recommendedSpaces.length; i++)
                           RecommendedSpaceCard(
-                            recommendedSpace: state.recommendedSpaces![i],
+                            recommendedSpace: state.recommendedSpaces[i],
                           ),
                         SizedBox(
                           width:
@@ -97,7 +89,8 @@ class RecommendedSpaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 8),
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width * 0.9,
+      // height: MediaQuery.of(context).size.height * 0.1,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
           MediaQuery.of(context).size.height * 0.02,
@@ -112,139 +105,127 @@ class RecommendedSpaceCard extends StatelessWidget {
             Image.network(
               recommendedSpace.cover ?? "",
               width: double.infinity,
-              height: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.25,
+              // height: double.infinity,
+              colorBlendMode: BlendMode.multiply,
+              color: primaryColor.withOpacity(1),
               fit: BoxFit.cover,
             ),
+            // Container(
+            //   color:
+            //       Colors.white.withOpacity(0.5), // Adjust the opacity as needed
+            //   child: BackdropFilter(
+            //     filter: ImageFilter.blur(
+            //         sigmaX: 0.1,
+            //         sigmaY: 0.1), // Adjust the sigma values as needed
+            //     child: Container(
+            //       color: primaryColor.withOpacity(0.9),
+            //     ),
+            //   ),
+            // ),
             Container(
-              color:
-                  Colors.white.withOpacity(0.5), // Adjust the opacity as needed
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                    sigmaX: 0.3,
-                    sigmaY: 0.3), // Adjust the sigma values as needed
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // const Spacer(),
+                    Text(
+                      recommendedSpace.name ?? "",
+                      textAlign: TextAlign.start,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        // fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    Text(
+                      recommendedSpace.description ?? "",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      // textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                      ),
+                    ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   children: [
+                    //     // const Spacer(),
+                    //     Expanded(
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    //         child: Text(
+                    //           recommendedSpace.description!,
+                    //           maxLines: 2,
+                    //           overflow: TextOverflow.ellipsis,
+                    //           // textAlign: TextAlign.center,
+                    //           style: TextStyle(
+                    //             fontSize: 12,
+                    //             color: Colors.grey[300],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              onPrimary: primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                            ),
+                            onPressed: () async {
+                              await Navigator.pushNamed(
+                                  context, SpaceScreen.routeName,
+                                  arguments: recommendedSpace);
+                              // setState(() {});
+
+                              // context.read<HomeScreenBloc>().add(
+                              //     HomeScreenJoinSpaceEvent(
+                              //         recommendedSpace.id!));
+                            },
+                            child: const Text('Join Now')),
+                        const Spacer(),
+                        Text(
+                          '${recommendedSpace.membersCount}  Participants',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text(
-                            recommendedSpace.name ?? "",
-                            textAlign: TextAlign.start,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // const Spacer(),
-                      Container(
-                        // margin: const EdgeInsets.all(8),
-                        // padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Row(
-                          children: [
-                            recommendedSpace.type == "premium"
-                                ? Image.asset(
-                                    'assets/images/premium.png',
-                                    width: 30,
-                                    height: 30,
-                                  )
-                                : SizedBox()
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // const Spacer(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Text(
-                            recommendedSpace.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            // textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[300],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      // const Spacer(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Icon(
-                                    Icons.people_rounded,
-                                    color: primaryColor,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '${recommendedSpace.membersCount} members',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              JoinButton(
-                                isJoined: recommendedSpace.isJoined ?? false,
-                                spaceId: recommendedSpace.id ?? 0,
-                                isAllowedToJoin:
-                                    recommendedSpace.isAllowedToJoin ?? false,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+            recommendedSpace.type == "premium"
+                ? Align(
+                    alignment: Alignment.topRight,
+                    child: Image.asset(
+                      'assets/images/premium.png',
+                      width: 50,
+                      height: 50,
+                    ),
                   )
-                ],
-              ),
-            ),
+                : const SizedBox()
           ],
         ),
       ),

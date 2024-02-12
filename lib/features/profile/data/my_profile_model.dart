@@ -1,36 +1,53 @@
 import 'dart:convert';
 
+import 'package:azsoon/features/profile/presentation/screens/create_blog_screen.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:azsoon/model/user-info.dart';
 
+import '../../blog/data/models/articles_model.dart';
 import 'user_profile_model.dart';
 
 class Profile extends Equatable {
   const Profile({
     this.title,
     this.bio,
+    this.blog,
     this.studyIn,
     this.cover,
     this.profileImage,
     this.birthDate,
     this.placeOfWork,
+    this.selfie,
     this.speciality,
     this.isme,
+    this.certificates,
+    this.verifiedProRequest,
     this.user,
     this.cardId,
+    this.daysLeft,
+    this.city,
+    this.country,
+    this.state,
   });
 
   final String? title;
   final String? bio;
   final String? studyIn;
   final String? cover;
+  final String? selfie;
+  final VerifiedProRequest? verifiedProRequest;
   final bool? isme;
+  final BlogsModel? blog;
   final String? cardId;
+  final String? country;
+  final String? state;
+  final String? city;
   final String? profileImage;
   final DateTime? birthDate;
+  final List<Certifcate>? certificates;
   final String? placeOfWork;
   final UserModel? user;
+  final String? daysLeft;
   final String? speciality;
 
   factory Profile.fromRawJson(String str) => Profile.fromJson(json.decode(str));
@@ -41,8 +58,20 @@ class Profile extends Equatable {
         title: json["title"],
         cardId: json["id_card"],
         isme: json["is_me"],
+        city: json["city"],
+        country: json["country"],
+        state: json["state"],
+        verifiedProRequest: json["verified_pro_request"] == null
+            ? null
+            : VerifiedProRequest.fromJson(json["verified_pro_request"]),
+        selfie: json["selfie"],
+        certificates: json["certificates"] == null
+            ? null
+            : List<Certifcate>.from(
+                json["certificates"].map((x) => Certifcate.fromJson(x))),
         bio: json["bio"],
         studyIn: json["study_in"],
+        blog: json["blog"] == null ? null : BlogsModel.fromJson(json["blog"]),
         user: json["user"] == null ? null : UserModel.fromMap(json["user"]),
         cover: json["cover"],
         profileImage: json["profileImage"],
@@ -78,7 +107,9 @@ class Profile extends Equatable {
         speciality,
         isme,
         user,
-        cardId
+        cardId,
+        certificates,
+        selfie
       ];
 
   Profile copyWith({
@@ -86,6 +117,7 @@ class Profile extends Equatable {
     String? bio,
     String? studyIn,
     String? cover,
+    
     bool? isme,
     String? cardId,
     String? profileImage,
@@ -93,12 +125,14 @@ class Profile extends Equatable {
     String? placeOfWork,
     UserModel? user,
     String? speciality,
+    BlogsModel? blog,
   }) {
     return Profile(
       title: title ?? this.title,
       bio: bio ?? this.bio,
       studyIn: studyIn ?? this.studyIn,
       cover: cover ?? this.cover,
+      blog: blog ?? this.blog,
       isme: isme ?? this.isme,
       cardId: cardId ?? this.cardId,
       profileImage: profileImage ?? this.profileImage,
@@ -110,8 +144,39 @@ class Profile extends Equatable {
   }
 }
 
-class MyProfile extends Profile {}
-
-class UserMe {}
-
 // I/flutter ( 8185): {"title":null,"bio":null,"study_in":null,"cover":null,"profileImage":null,"birth_date":null,"place_of_work":null,"speciality":null,"user":{"id":3,"email":"basicdentist@test.com","first_name":"string","last_name":"string","userRole":1,"phone":"","address":"","is_banned":false,"is_suspend":false,"is_verified":false,"is_verified_pro":false}}
+class Certifcate {
+  int? id;
+  String? title;
+  String? certificateFile;
+  Certifcate({
+    this.id,
+    this.title,
+    this.certificateFile,
+  });
+
+  //from json
+  factory Certifcate.fromJson(Map<String, dynamic> json) => Certifcate(
+        id: json["id"],
+        title: json["title"],
+        certificateFile: json["certificate_file"],
+      );
+}
+
+class VerifiedProRequest {
+  final int? id;
+  final String? status;
+
+  VerifiedProRequest({required this.id, required this.status});
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "status": status,
+      };
+
+  factory VerifiedProRequest.fromJson(Map<String, dynamic> json) =>
+      VerifiedProRequest(
+        id: json["id"],
+        status: json["requestStatus"],
+      );
+}

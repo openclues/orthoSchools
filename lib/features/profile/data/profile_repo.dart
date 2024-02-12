@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import '../../../Core/network/request_helper.dart';
 
 class ProfileRepo {
-  Future<Response> getProfile(String id) async {
+  Future<Response> getProfile(int id) async {
     var response = await RequestHelper.get('visit/profile/$id');
     return response;
   }
@@ -11,10 +11,8 @@ class ProfileRepo {
   Future<Response> getMyProfile() {
     return RequestHelper.get('myprofile');
   }
+
   Future<Response> getMyActivity() {
     return RequestHelper.get('myactivities/');
   }
-
-
-
 }

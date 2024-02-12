@@ -44,7 +44,11 @@ class RequestHelper {
 
       var response = await http.get(
         Uri.parse(url),
-        headers: {"Authorization": "Token $authToken"},
+        headers: {
+          "Authorization": "Token $authToken",
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
       );
 
       return response;
@@ -60,10 +64,16 @@ class RequestHelper {
   }
 
   static Future<http.Response> post(String endpoint, Map<String, dynamic> data,
-      {bool? signup, List<XFile>? files, String? filesKey}) async {
+      {bool? signup,
+      List<XFile>? files,
+      String? filesKey,
+      List<XFile>? extrafiles,
+      String? extraFilesKey}) async {
     String url = _baseUrl + endpoint;
 
-    Map<String, String> headers = {"Content-Type": "application/json"};
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=utf-8"
+    };
     if (signup == true) {
       return http.post(Uri.parse(url), body: data);
     } else {
@@ -84,6 +94,15 @@ class RequestHelper {
           request.headers.addAll(headers);
           request.fields.addAll(
               data.map((key, value) => MapEntry(key, value.toString())));
+          if (extrafiles != null && extrafiles.isNotEmpty) {
+            extrafiles.forEach((file) async {
+              var multipartFile = await http.MultipartFile.fromPath(
+                extraFilesKey ?? 'profile_pic',
+                file.path,
+              );
+              request.files.add(multipartFile);
+            });
+          }
           var response = await request.send();
           return http.Response.fromStream(response);
         }
@@ -137,8 +156,7 @@ class RequestHelper {
       } else {
         // No files, send data only
         return http.patch(Uri.parse(url),
-            headers: {"Authorization": "Token $authToken"},
-            body: data);
+            headers: {"Authorization": "Token $authToken"}, body: data);
       }
     } else {
       // Unauthenticated request without header
