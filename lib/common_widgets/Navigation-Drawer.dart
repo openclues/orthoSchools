@@ -1,4 +1,3 @@
-
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/features/blog/bloc/cubit/blog_cupit_cubit.dart';
@@ -120,6 +119,7 @@ class NavigationDrawer extends StatelessWidget {
                             create: (context) => BlogCupitCubit(),
                             child: BlogScreen(
                               blog: BlogsModel(
+                                categories: user.profileModel.blog!.categories,
                                 cover: user.profileModel.blog!.cover,
                                 user: user.profileModel.blog!.user,
                                 description:
@@ -598,7 +598,8 @@ class NavigationTextBar extends StatelessWidget {
   final String? text;
   final Function()? onTap;
 
-  const NavigationTextBar({super.key, 
+  const NavigationTextBar({
+    super.key,
     this.text,
     this.onTap,
   });

@@ -4,10 +4,6 @@ import 'package:http/http.dart';
 
 class AuthRepo {
   Future<Response> loginUser(String password, String email) async {
-    print('====================================');
-    print(password);
-    print(email);
-    print('====================================');
     var response = await RequestHelper.post(
       ApiEndpoints.login,
       signup: true,
@@ -16,7 +12,6 @@ class AuthRepo {
         'email': email,
       },
     );
-    print(response);
     return response;
   }
 

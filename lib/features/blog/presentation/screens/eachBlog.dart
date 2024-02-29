@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:azsoon/Core/colors.dart';
 import 'package:azsoon/Core/common-methods.dart';
 import 'package:azsoon/features/blog/bloc/cubit/blog_comments_cubit.dart';
+import 'package:azsoon/features/blog/data/models/article_comments_model.dart';
 import 'package:azsoon/features/blog/presentation/screens/blog_screen.dart';
+import 'package:azsoon/features/home_screen/data/models/latest_updated_posts_model.dart';
 import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
+import 'package:azsoon/features/space/presentation/comments_screen.dart';
 import 'package:azsoon/screens/ProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
+import '../../../../Core/network/request_helper.dart';
 import '../../../space/bloc/add_post_bloc.dart';
 import '../../../space/presentation/add_post.dart';
 import '../../data/models/articles_model.dart';
@@ -45,6 +51,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   bool? showCommentField = false;
+  // final FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -75,25 +82,179 @@ class _DetailPageState extends State<DetailPage> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              setState(() {
-                                showCommentField = true;
-                              });
                               await showModalBottomSheet(
+                                  isScrollControlled: true,
                                   transitionAnimationController:
                                       AnimationController(
                                           vsync: Navigator.of(context),
                                           duration: const Duration(
                                               milliseconds: 500)),
                                   context: context,
-                                  builder: (context) {
-                                    return SingleChildScrollView(
-                                      child: Container(
-                                        height: 800,
-                                        padding: EdgeInsets.only(
-                                            bottom: viewInsets.bottom),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
+                                  builder: (_) {
+                                    TextEditingController commentController =
+                                        TextEditingController();
+                                    return BlocProvider.value(
+                                      value: context.read<BlogCommentsCubit>(),
+                                      child: Scaffold(
+                                        floatingActionButton: Container(
+                                          // height: 800,
+                                          // padding: EdgeInsets.only(
+                                          //     bottom: viewInsets.bottom),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Spacer(),
+                                              Row(
+                                                children: [
+                                                  const SizedBox(
+                                                    // height: 30,
+                                                    width: 30,
+                                                    // child:
+                                                    //     CircularProgressIndicator(),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        border: Border.all(
+                                                            color:
+                                                                primaryColor),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          // Comment input field
+                                                          Expanded(
+                                                            child:
+                                                                TextFormField(
+                                                              // focusNode:
+                                                              //     focusNode,
+                                                              controller:
+                                                                  commentController,
+                                                              maxLines: 5,
+                                                              minLines: 1,
+                                                              decoration:
+                                                                  const InputDecoration(
+                                                                contentPadding:
+                                                                    EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            10),
+                                                                border:
+                                                                    InputBorder
+                                                                        .none,
+                                                                hintText:
+                                                                    'Write a comment...',
+                                                                hintStyle:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+
+                                                          // Submit icon
+                                                          IconButton(
+                                                            icon: const Icon(
+                                                                Icons.send),
+                                                            onPressed:
+                                                                () async {
+                                                              if (commentController
+                                                                  .text
+                                                                  .isNotEmpty) {
+                                                                var response =
+                                                                    await RequestHelper
+                                                                        .post(
+                                                                            'article/comment/',
+                                                                            {
+                                                                      "post_id":
+                                                                          widget
+                                                                              .article
+                                                                              .id,
+                                                                      "content":
+                                                                          commentController
+                                                                              .text
+                                                                    });
+                                                                if (response
+                                                                        .statusCode ==
+                                                                    200) {
+                                                                  state.blogComments.insert(
+                                                                      0,
+                                                                      ArticleCommentModel
+                                                                          .fromJson(
+                                                                              jsonDecode(utf8.decode(response.bodyBytes))['comment']));
+                                                                  setState(() {
+                                                                    // focusNode
+                                                                    SystemChannels
+                                                                        .textInput
+                                                                        .invokeMethod(
+                                                                            'TextInput.hide');
+                                                                  });
+
+                                                                  // state.blogComments.add(
+                                                                  //     NewPostComment(
+                                                                  //         content: commentController.text,
+                                                                  //         user: state.blogComments[0].user,
+                                                                  //         createdAt: DateTime.now().toString()));
+                                                                  if (context
+                                                                      .mounted) {
+                                                                    context
+                                                                        .read<
+                                                                            BlogCommentsCubit>()
+                                                                        .loadComments(widget
+                                                                            .article
+                                                                            .id);
+                                                                  }
+
+                                                                  // setState(
+                                                                  //     () {});
+                                                                }
+                                                              }
+                                                              // print()
+
+                                                              // Perform your action on comment submission
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        body: ListView(
                                           children: [
+                                            //back
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
+                                              },
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(16.0),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.arrow_back,
+                                                      color: primaryColor,
+                                                    ),
+                                                    SizedBox(width: 5),
+                                                    Text("Comments"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                             ListView.builder(
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
@@ -101,41 +262,19 @@ class _DetailPageState extends State<DetailPage> {
                                               itemCount:
                                                   state.blogComments.length,
                                               itemBuilder: (context, index) {
-                                                return ListTile(
-                                                  title: Text(state
-                                                      .blogComments[index]
-                                                      .text),
-                                                );
+                                                return CommentWidget(
+                                                    onOptionsChanged: (v) {},
+                                                    isAricleComment: true,
+                                                    onTap: (v) {},
+                                                    comment: NewPostComment
+                                                        .fromBlogComment(
+                                                            state.blogComments[
+                                                                index]));
                                               },
                                             ),
-                                            // Spacer(),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
-                                                  // Comment input field
-                                                  const Expanded(
-                                                    child: TextField(
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText:
-                                                            'Add a comment...',
-                                                      ),
-                                                    ),
-                                                  ),
-
-                                                  // Submit icon
-                                                  IconButton(
-                                                    icon:
-                                                        const Icon(Icons.send),
-                                                    onPressed: () {
-                                                      // Perform your action on comment submission
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                            const SizedBox(
+                                              height: 100,
+                                            )
                                           ],
                                         ),
                                       ),
@@ -262,39 +401,13 @@ class _DetailPageState extends State<DetailPage> {
                                                 title: const Text(
                                                     "Share to Space"),
                                               ),
-                                              const ListTile(
-                                                leading: Icon(
-                                                  FontAwesomeIcons.facebook,
-                                                  color: primaryColor,
-                                                ),
-                                                title:
-                                                    Text("Share to Facebook"),
-                                              ),
-                                              const ListTile(
-                                                leading: Icon(
-                                                  FontAwesomeIcons.twitter,
-                                                  color: primaryColor,
-                                                ),
-                                                title: Text("Share to Twitter"),
-                                              ),
-                                              const ListTile(
-                                                leading: Icon(
-                                                  FontAwesomeIcons.whatsapp,
-                                                  color: primaryColor,
-                                                ),
-                                                title:
-                                                    Text("Share to Whatsapp"),
-                                              ),
-                                              const ListTile(
-                                                leading: Icon(
-                                                  FontAwesomeIcons.telegram,
-                                                  color: primaryColor,
-                                                ),
-                                                title:
-                                                    Text("Share to Telegram"),
-                                              ),
                                               ListTile(
                                                 onTap: () {
+                                                  Clipboard.setData(
+                                                      ClipboardData(
+                                                          text: widget.article
+                                                              .plainText!));
+
                                                   //convert post delta to plain text
                                                   // COPY
                                                   // Clipboard.setData(
@@ -458,16 +571,16 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.timelapse_rounded,
                         size: 15,
                         color: primaryColor,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                         CommonMethods.timeAgo(DateTime.parse(
                             widget.article.createdAt!.toString())),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: primaryColor,
                         ),
                       ),

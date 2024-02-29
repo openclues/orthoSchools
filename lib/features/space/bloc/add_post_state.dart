@@ -10,8 +10,8 @@ sealed class AddPostState extends Equatable {
 final class AddPostInitial extends AddPostState {}
 
 class AddPostLoaded extends AddPostState {
-  // final SpacePost post;
-  const AddPostLoaded();
+  final int post;
+  const AddPostLoaded(this.post);
   @override
   List<Object> get props => [];
 }

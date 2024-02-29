@@ -1,9 +1,10 @@
 import 'package:azsoon/Core/network/endpoints.dart';
-import 'package:azsoon/Core/notifications_service.dart';
+import 'package:azsoon/Core/notifications/notifications_service.dart';
 import 'package:azsoon/features/space/presentation/comment_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
@@ -16,6 +17,7 @@ import 'package:azsoon/features/space/bloc/space_bloc.dart';
 import 'package:azsoon/features/space/presentation/add_post.dart';
 
 import '../../../Core/network/request_helper.dart';
+import '../../../common_widgets/Post.dart';
 import '../../blog/bloc/cubit/single_comment_cubit.dart';
 import '../../home_screen/data/models/recommended_spaces_model.dart';
 import '../../home_screen/presentation/widgets/post_widget.dart';
@@ -31,7 +33,7 @@ class SpaceScreen extends StatefulWidget {
   final int id;
   RecommendedSpace? space;
 
-  SpaceScreen({super.key, required this.id, required this.space});
+  SpaceScreen({super.key, required this.id, this.space});
 
   @override
   State<SpaceScreen> createState() => _SpaceScreenState();
@@ -40,56 +42,16 @@ class SpaceScreen extends StatefulWidget {
 class _SpaceScreenState extends State<SpaceScreen> {
   @override
   void initState() {
-    // if (widget.space!.isAllowedToJoin != null &&
-    //     widget.space!.isAllowedToJoin! == false) {
-    //   Future.delayed(
-    //     const Duration(seconds: 1),
-    //     () {
-    //       showDialog(
-    //         barrierDismissible: false,
-    //         barrierColor: Colors.black.withOpacity(0.5),
-    //         context: context,
-    //         builder: (context) => PopScope(
-    //           canPop: false,
-    //           child: AlertDialog(
-    //             title: const Text('Join Space'),
-    //             content: const Text(
-    //                 'You are not allowed to join this space, please contact the space admin to join this space'),
-    //             actions: [
-    //               TextButton(
-    //                   style: ButtonStyle(
-    //                     backgroundColor:
-    //                         MaterialStateProperty.all<Color>(primaryColor),
-    //                   ),
-    //                   onPressed: () {
-    //                     Navigator.of(context).push(MaterialPageRoute(
-    //                         builder: (context) => PartnerForm()));
-    //                   },
-    //                   child: const Text('Request premium access',
-    //                       style: TextStyle(color: Colors.white))),
-    //               TextButton(
-    //                 onPressed: () {
-    //                   Navigator.of(context).pop();
-    //                   Navigator.of(context).pop();
-    //                 },
-    //                 child: const Text('Cancel'),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       );
-    //     },
-    //   );
-    // }
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.space!.isAllowedToJoin == true) {
-      context.read<SpaceBloc>().add(LoadSpace(id: widget.id));
-    }
+    // if (widget.space!.isAllowedToJoin == true) {
+
+    context.read<SpaceBloc>().add(LoadSpace(id: widget.id));
+    // }
   }
 
   bool? leavingSpace = false;
@@ -98,355 +60,402 @@ class _SpaceScreenState extends State<SpaceScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<SpaceBloc, SpaceState>(
       builder: (context, state) {
-        return Scaffold(
-          floatingActionButton: widget.space!.isJoined == false
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: primaryColor,
-                        ),
-                        onPressed: () {
-                          context
-                              .read<JoinSpaceBloc>()
-                              .add(JoinSpace(spaceId: widget.space!.id!));
-                        },
-                        child: const Text(
-                          "Join space",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        )),
-                  ),
-                )
-              : const SizedBox(),
-          extendBody: true,
-          // appBar: AppBar(
-          //   actions: [
-          //     BlocBuilder<LoadPostsCubit, LoadPostsState>(
-          //       builder: (context, state) {
-          //         if (state is LoadSpacePostsLoaded) {
-          //           return Hero(
-          //             tag: "search",
-          //             child: IconButton(
-          //                 onPressed: () {
-          //                   Navigator.of(context).push(MaterialPageRoute(
-          //                       builder: (context) => SearchSpaceScreen(
-          //                             posts: state.posts.results,
-          //                           )));
-          //                 },
-          //                 icon: const Icon(
-          //                   IconlyLight.search,
-          //                   color: primaryColor,
-          //                 )),
-          //           );
-          //         } else {
-          //           return const SizedBox();
-          //         }
-          //       },
-          //     ),
-          //   ],
-          //   centerTitle: true,
-          //   leading: IconButton(
-          //     icon: const Icon(
-          //       Icons.arrow_back_ios,
-          //       color: primaryColor,
-          //     ),
-          //     onPressed: () {
-          //       Navigator.pop(context);
-          //     },
-          //   ),
-          //   elevation: 0,
-          //   backgroundColor: Colors.white,
-          //   title: Text(
-          //     widget.space!.name!,
-          //     style: const TextStyle(color: primaryColor, fontSize: 15),
-          //   ),
-          // ),
-          body: BlocListener<AddPostBloc, AddPostState>(
-            listener: (context, state) {
-              if (state is AddPostLoading) {
-                PushNotificationService.showProgressNotification();
-                //show local notification loading
-              } else if (state is AddPostLoaded) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Post added successfully'),
-                  ),
-                );
-                context.read<LoadPostsCubit>().loadPosts(widget.space!.id!);
-              } else if (state is AddPostError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                  ),
-                );
-              }
-            },
-            child: RefreshIndicator(
-              onRefresh: () async {
-                context.read<LoadPostsCubit>().loadPosts(widget.space!.id!);
-                // setState(() {});
-              },
-              child: BlocListener<JoinSpaceBloc, JoinSpaceState>(
-                listener: (context, state) {
-                  if (state is JoinSpaceLoading) {
-                  } else if (state is JoinSpaceSuccess) {
-                    setState(() {
-                      widget.space!.isJoined = true;
-                    });
+        if (state is SpaceLoaded) {
+          // widget.space = state.space;
 
-                    context.read<LoadPostsCubit>().loadPosts(widget.space!.id!);
-                  }
+          return Scaffold(
+            floatingActionButton: state.space.isJoined == false
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: JoinButton(
+                        isAllowedToJoin: state.space.isAllowedToJoin!,
+                        spaceId: state.space.id!,
+                        isJoined: state.space.isJoined!,
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
+            extendBody: true,
+            // appBar: AppBar(
+            //   actions: [
+            //     BlocBuilder<LoadPostsCubit, LoadPostsState>(
+            //       builder: (context, state) {
+            //         if (state is LoadSpacePostsLoaded) {
+            //           return Hero(
+            //             tag: "search",
+            //             child: IconButton(
+            //                 onPressed: () {
+            //                   Navigator.of(context).push(MaterialPageRoute(
+            //                       builder: (context) => SearchSpaceScreen(
+            //                             posts: state.posts.results,
+            //                           )));
+            //                 },
+            //                 icon: const Icon(
+            //                   IconlyLight.search,
+            //                   color: primaryColor,
+            //                 )),
+            //           );
+            //         } else {
+            //           return const SizedBox();
+            //         }
+            //       },
+            //     ),
+            //   ],
+            //   centerTitle: true,
+            //   leading: IconButton(
+            //     icon: const Icon(
+            //       Icons.arrow_back_ios,
+            //       color: primaryColor,
+            //     ),
+            //     onPressed: () {
+            //       Navigator.pop(context);
+            //     },
+            //   ),
+            //   elevation: 0,
+            //   backgroundColor: Colors.white,
+            //   title: Text(
+            //     widget.space!.name!,
+            //     style: const TextStyle(color: primaryColor, fontSize: 15),
+            //   ),
+            // ),
+            body: BlocListener<AddPostBloc, AddPostState>(
+              listener: (context, state) {
+                if (state is AddPostLoading) {
+                  PushNotificationService.showProgressNotification();
+                  //show local notification loading
+                } else if (state is AddPostLoaded) {
+                  PushNotificationService.hideProgressNotification();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text('Post was added successfully',
+                          textAlign: TextAlign.center),
+                    ),
+                  );
+                  // context.read<LoadPostsCubit>().loadPosts(widget.space!.id!);
+                } else if (state is AddPostError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
+                }
+              },
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<LoadPostsCubit>().loadPosts(state.space.id!);
+                  // setState(() {});
                 },
-                child: ListView(
-                  children: [
-                    Stack(
+                child: BlocListener<JoinSpaceBloc, JoinSpaceState>(
+                  listener: (context, joinState) {
+                    if (joinState is JoinSpaceLoading) {
+                    } else if (joinState is JoinSpaceSuccess) {
+                      context.read<SpaceBloc>().add(UpdateSpace(
+                          space: state.space.copyWith(isJoined: true)));
+
+                      // Fluttertoast.showToast(
+                      //     msg: 'Joined successfully',
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: primaryColor,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0);
+                      // setState(() {
+                      //   widget.space!.isJoined = true;
+                      // });
+
+                      // context
+                      //     .read<LoadPostsCubit>()
+                      //     .loadPosts(widget.space!.id!);
+                    }
+                  },
+                  child: NotificationListener<UserScrollNotification>(
+                    onNotification: (notification) {
+                      LoadPostsState state =
+                          context.read<LoadPostsCubit>().state;
+
+                      if (notification.metrics.pixels ==
+                              notification.metrics.maxScrollExtent &&
+                          state is LoadSpacePostsLoaded &&
+                          state.posts.next != null) {
+                        context.read<LoadPostsCubit>().loadMorePosts(state);
+                        return false;
+                      }
+                      return true;
+                    },
+                    child: ListView(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.1),
                       children: [
-                        Container(
-                          child: const Row(
+                        Stack(
+                          children: [
+                            Container(
+                              child: const Row(
+                                children: [
+                                  // const Spacer(),
+                                  // leave space button
+                                  // if (widget.space!.isJoined == true)
+                                  //   ElevatedButton(
+                                  //       style: ElevatedButton.styleFrom(
+                                  //         shape: RoundedRectangleBorder(
+                                  //           side: const BorderSide(
+                                  //             color: Colors.red,
+                                  //           ),
+                                  //           borderRadius: BorderRadius.circular(20),
+                                  //         ),
+                                  //         backgroundColor: Colors.white,
+                                  //       ),
+                                  //       onPressed: () async {
+                                  //         setState(() {
+                                  //           leavingSpace = true;
+                                  //         });
+                                  //         var response = await RequestHelper.post(
+                                  //             "leavespace/?space_id=${widget.space!.id}",
+                                  //             {});
+                                  //         setState(() {
+                                  //           leavingSpace = false;
+                                  //         });
+                                  //         if (response.statusCode == 200) {
+                                  //           if (mounted) {
+                                  //             Navigator.of(context).pop();
+                                  //           }
+                                  //         }
+
+                                  //         // context
+                                  //         //     .read<SpaceBloc>()
+                                  //         //     .add(LeaveSpace(id: state.space.id!));
+                                  //       },
+                                  //       child: leavingSpace == false
+                                  //           ? const Text(
+                                  //               'Leave Space',
+                                  //               style: TextStyle(
+                                  //                 color: Colors.red,
+                                  //               ),
+                                  //             )
+                                  //           : const CircularProgressIndicator(
+                                  //               color: primaryColor,
+                                  //             )),
+                                  // if (widget.space!.isJoined == false)
+                                  // JoinButton(
+                                  //   isAllowedToJoin:
+                                  //       widget.space!.isAllowedToJoin!,
+                                  //   spaceId: widget.space!.id!,
+                                  //   isJoined: widget.space!.isJoined!,
+                                  // )
+                                ],
+                              ),
+                            ),
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 250,
+
+                                  // width: double.infinity,
+
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(40),
+                                      bottomRight: Radius.circular(40),
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                    ),
+                                    child: Image.network(
+                                      colorBlendMode: BlendMode.darken,
+                                      color: Colors.black.withOpacity(0.3),
+                                      state.space.cover!,
+                                      // widget.space!.cover!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Positioned(
+                              top: 50,
+                              left: 10,
+                              child: BackButtonWhiteBackground(),
+                            ),
+                          ],
+                        ),
+                        //space name
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
                             children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        state.space.name!,
+                                        style: const TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    if (state.space.type == "premium")
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Image.asset(
+                                          'assets/images/premium.png',
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+
                               // const Spacer(),
                               // leave space button
-                              // if (widget.space!.isJoined == true)
-                              //   ElevatedButton(
-                              //       style: ElevatedButton.styleFrom(
-                              //         shape: RoundedRectangleBorder(
-                              //           side: const BorderSide(
-                              //             color: Colors.red,
-                              //           ),
-                              //           borderRadius: BorderRadius.circular(20),
-                              //         ),
-                              //         backgroundColor: Colors.white,
-                              //       ),
-                              //       onPressed: () async {
-                              //         setState(() {
-                              //           leavingSpace = true;
-                              //         });
-                              //         var response = await RequestHelper.post(
-                              //             "leavespace/?space_id=${widget.space!.id}",
-                              //             {});
-                              //         setState(() {
-                              //           leavingSpace = false;
-                              //         });
-                              //         if (response.statusCode == 200) {
-                              //           if (mounted) {
-                              //             Navigator.of(context).pop();
-                              //           }
-                              //         }
+                              if (state.space.isJoined == true)
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      setState(() {
+                                        leavingSpace = true;
+                                      });
+                                      var response = await RequestHelper.post(
+                                          "leavespace/?space_id=${state.space!.id}",
+                                          {});
+                                      setState(() {
+                                        leavingSpace = false;
+                                      });
+                                      if (response.statusCode == 200) {
+                                        if (mounted) {
+                                          Navigator.of(context).pop();
+                                        }
+                                      }
 
-                              //         // context
-                              //         //     .read<SpaceBloc>()
-                              //         //     .add(LeaveSpace(id: state.space.id!));
-                              //       },
-                              //       child: leavingSpace == false
-                              //           ? const Text(
-                              //               'Leave Space',
-                              //               style: TextStyle(
-                              //                 color: Colors.red,
-                              //               ),
-                              //             )
-                              //           : const CircularProgressIndicator(
-                              //               color: primaryColor,
-                              //             )),
+                                      // context
+                                      //     .read<SpaceBloc>()
+                                      //     .add(LeaveSpace(id: state.space.id!));
+                                    },
+                                    child: leavingSpace == false
+                                        ? const Text(
+                                            'Leave Space',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          )
+                                        : const CircularProgressIndicator(
+                                            color: primaryColor,
+                                          )),
                               // if (widget.space!.isJoined == false)
                               //   JoinButton(
-                              //     isAllowedToJoin:
-                              //         widget.space!.isAllowedToJoin!,
+                              //     isAllowedToJoin: widget.space!.isAllowedToJoin!,
                               //     spaceId: widget.space!.id!,
                               //     isJoined: widget.space!.isJoined!,
                               //   )
                             ],
                           ),
                         ),
-                        Stack(
-                          children: [
-                            Container(
-                              height: 250,
 
-                              // width: double.infinity,
-
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(40),
-                                  bottomRight: Radius.circular(40),
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                                child: Image.network(
-                                  colorBlendMode: BlendMode.darken,
-                                  color: Colors.black.withOpacity(0.3),
-                                  widget.space!.cover!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(state.space.description!,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              )),
                         ),
-                        const Positioned(
-                          top: 30,
-                          left: 10,
-                          child: BackButtonWhiteBackground(),
-                        ),
-                        Positioned(
-                            top: 30,
-                            right: 10,
-                            child: Row(
-                              children: [
-                                GetNotificationsIcon(
-                                  isBeingNotified: notifiyMe,
-                                  notifyMe: () {
-                                    setState(() {
-                                      notifiyMe = !notifiyMe!;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                  ),
-                                  // ignore: prefer_const_constructors
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: const Icon(
-                                      FontAwesomeIcons.ellipsisV,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )),
+                        if (state.space.isJoined == true)
+                          SpaceJoinedScreen(id: widget.id, space: state.space),
+                        if (state.space.isJoined == false)
+                          NotJoinedSpaceScreen(
+                            space: state.space,
+                          ),
+                        // if (widget.space!.isJoined == true)
+                        // ListView.builder(
+                        //   shrinkWrap: true,
+                        //   physics: const NeverScrollableScrollPhysics(),
+                        //   itemCount: state.space.posts!.length,
+                        //   itemBuilder: (BuildContext context, int index) {
+                        //     List<LatestUpdatedPost> posts =
+                        //         state.space.posts!.reversed.toList();
+                        //     posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                        //     return SpacePostWidget(
+                        //       post: posts[index],
+                        //     );
+                        //   },
+                        // ),
+                        // space description
                       ],
                     ),
-                    //space name
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    widget.space!.name!,
-                                    style: const TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // const Spacer(),
-                          // leave space button
-                          if (widget.space!.isJoined == true)
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      color: Colors.red,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                ),
-                                onPressed: () async {
-                                  setState(() {
-                                    leavingSpace = true;
-                                  });
-                                  var response = await RequestHelper.post(
-                                      "leavespace/?space_id=${widget.space!.id}",
-                                      {});
-                                  setState(() {
-                                    leavingSpace = false;
-                                  });
-                                  if (response.statusCode == 200) {
-                                    if (mounted) {
-                                      Navigator.of(context).pop();
-                                    }
-                                  }
-
-                                  // context
-                                  //     .read<SpaceBloc>()
-                                  //     .add(LeaveSpace(id: state.space.id!));
-                                },
-                                child: leavingSpace == false
-                                    ? const Text(
-                                        'Leave Space',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                        ),
-                                      )
-                                    : const CircularProgressIndicator(
-                                        color: primaryColor,
-                                      )),
-                          // if (widget.space!.isJoined == false)
-                          //   JoinButton(
-                          //     isAllowedToJoin: widget.space!.isAllowedToJoin!,
-                          //     spaceId: widget.space!.id!,
-                          //     isJoined: widget.space!.isJoined!,
-                          //   )
-                        ],
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(widget.space!.description!,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          )),
-                    ),
-                    if (widget.space!.isJoined == true)
-                      SpaceJoinedScreen(id: widget.id, space: widget.space!),
-                    if (widget.space!.isJoined == false)
-                      NotJoinedSpaceScreen(
-                        space: widget.space!,
-                      ),
-                    // if (widget.space!.isJoined == true)
-                    // ListView.builder(
-                    //   shrinkWrap: true,
-                    //   physics: const NeverScrollableScrollPhysics(),
-                    //   itemCount: state.space.posts!.length,
-                    //   itemBuilder: (BuildContext context, int index) {
-                    //     List<LatestUpdatedPost> posts =
-                    //         state.space.posts!.reversed.toList();
-                    //     posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-                    //     return SpacePostWidget(
-                    //       post: posts[index],
-                    //     );
-                    //   },
-                    // ),
-                    // space description
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
+        } else {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                children: [
+                  Container(
+                    height: 250,
+
+                    // width: double.infinity,
+
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40),
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      child: widget.space != null
+                          ? Image.network(
+                              colorBlendMode: BlendMode.darken,
+                              color: Colors.black.withOpacity(0.3),
+                              widget.space!.cover!,
+                              fit: BoxFit.cover,
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+
+                  //image from space widget
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  CircularProgressIndicator(),
+                ],
+              ),
+            ),
+          );
+        }
       },
     );
   }
@@ -875,10 +884,12 @@ class CommentsScreen extends StatefulWidget {
   LatestUpdatedPost post;
   void Function(NewPostComment comment)? onTap;
   final int? postId;
+  Function(String?, NewPostComment?)? onOptionsChanged;
   static const String routeName = "/comments";
   CommentsScreen(
       {Key? key,
       required this.onTap,
+      required this.onOptionsChanged,
       this.postId,
       // required this.showRepy,
       required this.post})
@@ -937,26 +948,32 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 itemCount: state.comments.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
-                    onTap: () {
-                      Navigator.of(context)
+                    onTap: () async {
+                      await Navigator.of(context)
                           .push(MaterialPageRoute(builder: (ctx) {
                         return BlocProvider(
                           create: (context) => SingleCommentCubit(),
                           child: CommentScreen(
-                            latestUpdatedPost: widget.post,
+                            // latestUpdatedPost: widget.post,
                             commentId: state.comments[index].id!,
                             // postId: state.comments[index].id,
                             // showRepy: true,
                           ),
                         );
                       }));
+                      if (context.mounted) {
+                        context
+                            .read<SpacePostCommentsCubit>()
+                            .loadSpacePostComments(widget.postId);
+                      }
                     },
-                    child: Container(
-                      child: CommentWidget(
-                        // showReply: widget.showRepy ?? false,
-                        comment: state.comments[index],
-                        onTap: (v) => widget.onTap!(v),
-                      ),
+                    child: CommentWidget(
+                      onOptionsChanged: (v) {
+                        widget.onOptionsChanged!(v, state.comments[index]);
+                      },
+                      // showReply: widget.showRepy ?? false,
+                      comment: state.comments[index],
+                      onTap: (v) => widget.onTap!(v),
                     ),
                   );
                 },
@@ -1002,7 +1019,7 @@ class NotJoinedSpaceScreen extends StatelessWidget {
                     left: space.members!.indexOf(e) *
                         30.0, // Adjust the spacing between avatars
                     child: e.profileImage == null || e.profileImage!.isEmpty
-                        ? CircleAvatar(
+                        ? const CircleAvatar(
                             // radius: 20.0,
                             child: Text(""),
                           )
@@ -1028,9 +1045,13 @@ class NotJoinedSpaceScreen extends StatelessWidget {
             "Categories (${space.category!.length})",
           ),
         ),
+
+        const SizedBox(
+          height: 10,
+        ),
         Container(
           child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.end,
             verticalDirection: VerticalDirection.down,
             alignment: WrapAlignment.start,
             runAlignment: WrapAlignment.start,
@@ -1038,44 +1059,39 @@ class NotJoinedSpaceScreen extends StatelessWidget {
             runSpacing: 10, // Set the runSpacing to the desired value
             children: space.category!
                 .map(
-                  (e) => Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: primaryColor,
-                      ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize
-                              .min, // Added to make the row take minimum width
-                          children: [
-                            Text(
-                              e.name!,
-                              style: const TextStyle(color: Colors.grey),
+                  (e) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: primaryColor,
+                          ),
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize
+                                  .min, // Added to make the row take minimum width
+                              children: [
+                                Text(
+                                  e.name!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: '${e.image}',
-                                height: 40,
-                                width: 40,
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 )
                 .toList(),

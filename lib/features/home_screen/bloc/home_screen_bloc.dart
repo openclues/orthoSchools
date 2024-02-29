@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../data/models/latest_updated_posts_model.dart';
@@ -39,13 +40,14 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
             emit(HomeScreenLoaded(
                 recommendedSpaces: recommendedSpaces, posts: pageModel));
           }
-
-          // var homeScreenModel = HomeScreenModel.fromJson(decodedResponse);
-          // emit(HomeScreenLoaded(homeScreenModel: homeScreenModel));
         } else if (response.statusCode == 401) {
+          //remove token
+          await LocalStorage.removeAuthToken();
           emit(const HomeScreenNotAuthenticated(
               message: 'Your session has expired'));
         } else if (response.statusCode == 403 || response.statusCode == 401) {
+          await LocalStorage.removeAuthToken();
+
           emit(const HomeScreenNotAuthenticated(
               message: 'Your session has expired'));
         } else {
@@ -84,17 +86,23 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       }
     });
     on<UpdatePostLocally>((event, emit) {
+      emit(event.homeLoaded.copyWith(isLoading: true));
       List<LatestUpdatedPost> posts = event.homeLoaded.posts.results;
 
       if (posts.any((element) => element.id == event.post.id)) {
-        var index = posts.indexWhere((element) => element.id == event.post.id);
-        posts[index] = event.post;
+        int index = posts.indexWhere((element) => element.id == event.post.id);
+        posts.removeAt(index);
+        posts.insert(index, event.post);
       }
-      // posts[index] =
-      //     event.post.copyWith(commentsCount: event.post.commentsCount);
-      print("new comment was added");
-      emit(event.homeLoaded
-          .copyWith(posts: event.homeLoaded.posts.copyWith(results: posts)));
+
+      emit(HomeScreenLoaded(
+          isLoading: false,
+          recommendedSpaces: event.homeLoaded.recommendedSpaces,
+          posts: event.homeLoaded.posts.copyWith(
+              results: posts,
+              next: event.homeLoaded.posts.next,
+              previous: event.homeLoaded.posts.previous,
+              count: event.homeLoaded.posts.count)));
     });
   }
 }

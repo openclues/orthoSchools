@@ -10,6 +10,7 @@ class HomeScreenHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProfileState state = context.read<ProfileBloc>().state as ProfileLoaded;
     return Column(
       children: [
         Row(

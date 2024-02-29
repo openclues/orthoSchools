@@ -184,20 +184,20 @@ class _PartnerFormState extends State<PartnerForm> {
   }
 
   bool _validateStep(int step) {
-    // if (_fullNameController.text.isEmpty ||
-    //     _professionalTitleController.text.isEmpty ||
-    //     _licenseNumberController.text.isEmpty ||
-    //     _phoneController.text.isEmpty ||
-    //     _emailController.text.isEmpty ||
-    //     _clinicNameController.text.isEmpty ||
-    //     _clinicAddressController.text.isEmpty) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Please fill all the fields'),
-    //     ),
-    //   );
-    //   return false;
-    // }
+    if (_fullNameController.text.isEmpty ||
+        _professionalTitleController.text.isEmpty ||
+        _licenseNumberController.text.isEmpty ||
+        _phoneController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _clinicNameController.text.isEmpty ||
+        _clinicAddressController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all the fields'),
+        ),
+      );
+      return false;
+    }
     switch (step) {
       case 0:
         return true;
@@ -210,15 +210,6 @@ class _PartnerFormState extends State<PartnerForm> {
   }
 
   void _printFormFields() async {
-    //     full_name = request.data.get('full_name', None)
-    // phone = request.data.get('phone', None)
-    // email = request.data.get('email', None)
-    // clinic_name = request.data.get('clinic_name', None)
-    // clinic_address = request.data.get('clinic_address', None)
-    // education = request.data.get('education', None)
-    // graduation_year = request.data.get('graduation_year', None)
-    // certifications = request.data.get('certifications', None)
-    // experience = request.data.get('experience', None)
     showDialog(
       barrierDismissible: false,
       context: context,

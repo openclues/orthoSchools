@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final Color? textfiledColor;
   final TextEditingController? controller;
   final Color borderColor;
+  // final bool? readOnly;
   final bool obscureText;
   final String? Function(String?)? validator;
   String? initialValue;
@@ -50,6 +51,7 @@ class CustomTextField extends StatelessWidget {
             onSaved: onSaved,
             initialValue: initialValue,
             //was TextField
+
             maxLines: maxLines,
             controller: controller,
             obscureText: obscureText,

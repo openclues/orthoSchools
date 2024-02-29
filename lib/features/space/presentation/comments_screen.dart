@@ -1,28 +1,42 @@
+import 'dart:convert';
+
 import 'package:azsoon/Core/network/endpoints.dart';
+import 'package:azsoon/features/home_screen/presentation/widgets/post_widget.dart';
+import 'package:azsoon/features/space/bloc/cubit/space_post_comments_cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../../Core/colors.dart';
 import '../../../Core/common-methods.dart';
+import '../../../Core/network/request_helper.dart';
 import '../../home_screen/data/models/latest_updated_posts_model.dart';
 
 class CommentWidget extends StatefulWidget {
   final NewPostComment? comment;
+  final bool? isAricleComment;
   // bool? showReply;
+  Function(String?)? onOptionsChanged;
   final PostReply? reply;
+  final int? postId;
   final isFullScreen;
   final bool isReply;
 
   void Function(NewPostComment comment)? onTap;
 
-  CommentWidget(
-      {super.key,
-      this.comment,
-      this.isFullScreen = false,
-      this.isReply = false,
-      required this.onTap,
-      this.reply,
-});
+  CommentWidget({
+    super.key,
+    this.postId,
+    this.comment,
+    this.isAricleComment,
+    this.isFullScreen = false,
+    this.isReply = false,
+    required this.onTap,
+    required this.onOptionsChanged,
+    this.reply,
+  });
 
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
@@ -36,11 +50,17 @@ class _CommentWidgetState extends State<CommentWidget> {
     super.initState();
   }
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool? editing = false;
+  bool? updating = false;
+  final FocusNode? _focusNode = FocusNode();
+  String? newComment;
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        // Text(widget.comment!.user!.firstName!),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -61,42 +81,106 @@ class _CommentWidgetState extends State<CommentWidget> {
                     //first name and last name
                     Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Text(
                             widget.reply == null
-                                ? "${widget.comment!.user!.firstName!} ${widget.comment!.user!.lastName!}"
-                                : "${widget.reply!.user!.firstName!} ${widget.reply!.user!.lastName!}",
+                                ? "${widget.comment!.user!.firstName ?? ""} ${widget.comment!.user!.lastName ?? ""}"
+                                : "${widget.reply!.user!.firstName ?? ""} ${widget.reply!.user!.lastName ?? ""}",
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                            ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: primaryColor
+                                // height: 1.5,
+                                ),
+                          ),
+                        ),
+                        Container(
+                          child: BagesRow(
+                            isPremium: widget.comment!.user!.isPremium,
+                            isVeriedPro: widget.comment!.user!.isVeriedPro,
                           ),
                         ),
                         //time
                         // const SizedBox(width: 8.0),
-                        Text(
-                          CommonMethods.timeAgo(widget.reply == null
-                              ? DateTime.parse(widget.comment!.createdAt!)
-                              : DateTime.parse(widget.reply!.createdAt!)),
-                          style: const TextStyle(
-                              color: Colors.grey, fontSize: 10.0),
-                        ),
-                        const Spacer()
+
+                        // const Spacer(),
+                        // DropdownButtonHideUnderline(
+                        //   child: DropdownButton<String>(
+                        //     icon: const Icon(Icons.more_vert),
+                        //     onChanged: (String? newValue) {
+                        //       // widget.onOptionsChanged!(newValue);
+                        //       if (newValue == 'Edit') {
+                        //         setState(() {
+                        //           editing = true;
+                        //         });
+                        //         _focusNode!.requestFocus();
+                        //       }
+                        //     },
+                        //     // value: _selectedOption,
+                        //     // onChanged: (String newValue) {
+                        //     //   setState(() {
+                        //     //     _selectedOption = newValue;
+                        //     //     // Perform action based on selected option
+                        //     //     if (_selectedOption == 'Report') {
+                        //     //       // Handle report action
+                        //     //     } else if (_selectedOption == 'Edit') {
+                        //     //       // Handle edit action
+                        //     //     }
+                        //     //   });
+                        //     // },
+                        //     items:
+                        //         <String>['Remove', 'Edit'].map((String option) {
+                        //       return DropdownMenuItem<String>(
+                        //         value: option,
+                        //         child: Text(option),
+                        //       );
+                        //     }).toList(),
+                        //   ),
+                        // )
                       ],
+                    ),
+                    Text(
+                      CommonMethods.timeAgo(widget.reply == null
+                          ? DateTime.parse(widget.comment!.createdAt!)
+                          : DateTime.parse(widget.reply!.createdAt!)),
+                      style:
+                          const TextStyle(color: Colors.grey, fontSize: 10.0),
                     ),
                     const SizedBox(height: 4.0),
                     //comment content
-                    Text(
-                      widget.reply == null
-                          ? widget.comment!.content ?? ""
-                          : widget.reply!.content ?? "",
-                      style: const TextStyle(fontSize: 12.0),
-                      // maxLines: 3,
-                      // overflow: TextOverflow.ellipsis,
-                    ),
+                    if (editing == false)
+                      Text(
+                        widget.reply == null
+                            ? widget.comment!.content ?? ""
+                            : widget.reply!.content ?? "",
+                        style: const TextStyle(fontSize: 12.0),
+                        // maxLines: 3,
+                        // overflow: TextOverflow.ellipsis,
+                      ),
+                    if (editing == true)
+                      Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          onSaved: (c) {
+                            setState(() {
+                              newComment = c;
+                            });
+                          },
+                          focusNode: _focusNode,
+                          initialValue: widget.reply == null
+                              ? widget.comment!.content ?? ""
+                              : widget.reply!.content ?? "",
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+
+                            // labelText: 'Edit comment',
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 15.0),
                     //reply and like
-                    if (widget.isReply == false)
+                    if (widget.isReply == false &&
+                        widget.isAricleComment != true)
                       Padding(
                         padding: const EdgeInsets.all(0),
                         child: Row(
@@ -111,8 +195,22 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   color: primaryColor, fontSize: 14.0),
                             ),
                             const SizedBox(width: 20.0),
-                            GestureDetector(
-                              onTap: () async {},
+                            InkWell(
+                              onTap: () async {
+                                var response = await RequestHelper.get(
+                                    'comment/interact/?comment_id=${widget.comment!.id}');
+                                // print(response.body);
+                                if (response.statusCode == 200) {
+                                  var decodedResponse = jsonDecode(
+                                      utf8.decode(response.bodyBytes));
+                                  setState(() {
+                                    widget.comment!.isLiked =
+                                        decodedResponse['isLiked'];
+                                    widget.comment!.likes =
+                                        decodedResponse['parent_likes_count'];
+                                  });
+                                }
+                              },
                               child: widget.comment!.isLiked == true
                                   ? const Icon(
                                       IconlyBold.heart,
@@ -129,13 +227,70 @@ class _CommentWidgetState extends State<CommentWidget> {
                               width: 4,
                             ),
                             GestureDetector(
-                              onTap: () => widget.onTap!(widget.comment!),
-                              child: const Text('19',
-                                  style: TextStyle(
+                              // onTap: () => widget.onTap!(widget.comment!),
+                              child: Text(widget.comment!.likes.toString(),
+                                  style: const TextStyle(
                                       color: primaryColor, fontSize: 14.0)),
                             ),
+                            const SizedBox(width: 20.0),
+                            if (editing == true)
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          editing = false;
+                                        });
+                                      },
+                                      child: const Text("Cancel",
+                                          style:
+                                              TextStyle(color: Colors.white))),
+                                  const SizedBox(width: 8.0),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor,
+                                      ),
+                                      onPressed: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          _formKey.currentState!.save();
+                                          if (newComment != null &&
+                                              newComment!.isNotEmpty) {
+                                            setState(() {
+                                              updating = true;
+                                            });
+                                            var response =
+                                                await RequestHelper.post(
+                                                    'comment/update/', {
+                                              'comment_id':
+                                                  widget.comment!.id.toString(),
+                                              'content': newComment
+                                            });
+
+                                            setState(() {
+                                              updating = false;
+                                            });
+                                            if (response.statusCode == 200) {
+                                              // context.read<SpacePostCommentsCubit>().loadSpacePostComments(
+                                              //     widget.comment!);
+                                            }
+                                          }
+                                        }
+                                      },
+                                      child: const Text("Update",
+                                          style:
+                                              TextStyle(color: Colors.white)))
+                                ],
+                              )
                           ],
                         ),
+                      ),
+                    if (widget.isReply == false)
+                      Divider(
+                        color: Colors.grey[300],
+                        thickness: 1,
                       )
                   ],
                 ),

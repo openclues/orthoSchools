@@ -18,6 +18,14 @@ class LoadSpacePostsLoaded extends LoadPostsState {
 
   @override
   List<Object> get props => [posts];
+
+  LoadSpacePostsLoaded copyWith({
+    PageModel<LatestUpdatedPost>? posts,
+  }) {
+    return LoadSpacePostsLoaded(
+      posts: posts ?? this.posts,
+    );
+  }
 }
 
 class LoadSpacePostsError extends LoadPostsState {
@@ -28,3 +36,5 @@ class LoadSpacePostsError extends LoadPostsState {
   @override
   List<Object> get props => [message];
 }
+
+class LoadMorePostsLoading extends LoadPostsState {}

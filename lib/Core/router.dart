@@ -1,9 +1,12 @@
+import 'package:azsoon/features/blog/bloc/cubit/blog_comments_cubit.dart';
 import 'package:azsoon/features/blog/bloc/cubit/blog_cupit_cubit.dart';
 import 'package:azsoon/features/blog/data/models/blog_model.dart';
+import 'package:azsoon/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:azsoon/features/home_screen/data/models/latest_updated_posts_model.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
 import 'package:azsoon/features/interests/presentation/pages/choose_interests_screen.dart';
 import 'package:azsoon/features/loading/presentation/data/screens/loading_screen.dart';
+import 'package:azsoon/features/profile/bloc/another_user_bloc.dart';
 import 'package:azsoon/features/profile/cubit/user_profile_cubit_cubit.dart';
 import 'package:azsoon/features/space/bloc/add_post_bloc.dart';
 import 'package:azsoon/features/space/bloc/cubit/load_posts_cubit.dart';
@@ -27,6 +30,7 @@ import '../features/Auth/presentaiton/screens/reset_Password.dart';
 import '../features/become_premium/presentation/be_premium_screen.dart';
 import '../features/blog/data/models/articles_model.dart';
 import '../features/blog/presentation/screens/blog_post_screen.dart';
+import '../features/blog/presentation/screens/eachBlog.dart';
 import '../features/home_screen/data/models/recommended_spaces_model.dart';
 import '../features/notifications/cubit/notifications_cubit.dart';
 import '../features/notifications/persentation/notifications_screen.dart';
@@ -38,7 +42,9 @@ import '../screens/NewProfile_page.dart';
 import 'page_router_animation.dart';
 
 class AppRouter {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic> generateRoute(
+    RouteSettings settings,
+  ) {
     JoinSpaceBloc joinSpaceBloc = JoinSpaceBloc();
     // HomeScreenBloc homeScreenBloc = HomeScreenBloc();
     switch (settings.name) {
@@ -91,8 +97,15 @@ class AppRouter {
         Map<String, dynamic> arguments =
             settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => UserProfileCubitCubit(),
+            builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => UserProfileCubitCubit(),
+                    ),
+                    BlocProvider(
+                      create: (context) => AnotherUserBloc(),
+                    ),
+                  ],
                   child: ProfilePage(
                     isNav: arguments['isNav'],
                     userId: arguments['userId'],
@@ -104,7 +117,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const PartnerForm());
       case SpaceScreen.routeName:
         // int spaceId = settings.arguments as int;
-        RecommendedSpace spaceId = settings.arguments as RecommendedSpace;
+        RecommendedSpace? space;
+        int? spaceId;
+
+        try {
+          space = settings.arguments as RecommendedSpace;
+          // spaceId = settings.arguments as int;
+        } catch (e) {
+          spaceId = settings.arguments as int;
+          // int spaceId = settings.arguments as int;
+        }
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
                   providers: [
@@ -119,8 +141,8 @@ class AppRouter {
                     ),
                   ],
                   child: SpaceScreen(
-                    id: spaceId.id!,
-                    space: spaceId,
+                    id: space != null ? space.id! : spaceId!,
+                    space: space,
                   ),
                 ));
       // case ProfileScreen.routeName:
@@ -159,6 +181,15 @@ class AppRouter {
       //               isNav: isNav,
       //             ),
       //           ));
+      case 'DetailsScreen':
+        ArticlesModel article = settings.arguments as ArticlesModel;
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => BlogCommentsCubit(),
+                  child: DetailPage(
+                    article: article,
+                  ),
+                ));
       case SignInScreen.routeName:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
@@ -187,18 +218,17 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => Container());
 
       case PostScreen.routeName:
-        LatestUpdatedPost post = settings.arguments as LatestUpdatedPost;
+        var post = settings.arguments as LatestUpdatedPost;
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => LoadPostsCubit(),
-                    ),
-                  ],
-                  child: PostScreen(
-                    post: post,
-                  ),
-                ));
+                    providers: [
+                      BlocProvider(
+                        create: (context) => LoadPostsCubit(),
+                      ),
+                    ],
+                    child: PostScreen(
+                      post: post,
+                    )));
       // case CommentsScreen.routeName:
       //   int postId = settings.arguments as int;
       //   return MaterialPageRoute(
@@ -211,6 +241,11 @@ class AppRouter {
       //               postId: postId,
       //             ),
       //           ));
+
+      case UsersScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const UsersScreen());
+      case DashBoardScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const DashBoardScreen());
       case BlogPostScreen.routeName:
         PostModel? blogPostModel = settings.arguments as PostModel?;
         return MaterialPageRoute(

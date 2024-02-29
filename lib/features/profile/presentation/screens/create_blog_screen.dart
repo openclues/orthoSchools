@@ -74,7 +74,8 @@ class Blog {
 }
 
 class BlogCreationScreen extends StatefulWidget {
-  const BlogCreationScreen({super.key});
+  final BlogsModel? blogModel;
+  const BlogCreationScreen({super.key, this.blogModel});
 
   @override
   _BlogCreationScreenState createState() => _BlogCreationScreenState();
@@ -88,16 +89,22 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
   void initState() {
     super.initState();
     _blogData = Blog(
-      title: '',
-      description: '',
-      cover: '',
+      title: widget.blogModel != null ? widget.blogModel!.title! : '',
+      description:
+          widget.blogModel != null ? widget.blogModel!.description! : '',
+      cover: widget.blogModel != null ? widget.blogModel!.cover! : '',
       createdAt: DateTime.now(),
       color: '#000000',
       updatedAt: DateTime.now(),
-      isPublished: false,
+      isPublished: true,
       slug: '',
-      category: [],
-      // followers: [],
+      category: widget.blogModel != null
+          ? widget.blogModel!.categories!
+              .map((e) => e.name!)
+              .toList()
+              .cast<String>()
+          : [],
+      // followers: [],true
     );
   }
 
@@ -105,9 +112,9 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Create Your Blog',
-            style: TextStyle(color: primaryColor),
+          title: Text(
+            widget.blogModel == null ? 'Create Your Blog' : 'Edit Blog',
+            style: const TextStyle(color: primaryColor),
           ),
           centerTitle: true,
         ),
@@ -123,6 +130,8 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: TextFormField(
+                  initialValue:
+                      widget.blogModel == null ? null : widget.blogModel!.title,
                   textAlign: TextAlign.center,
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(0),
@@ -148,87 +157,100 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
             //description text area
             Builder(builder: (context) {
               return InkWell(
-                onTap: () {
-                  showBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        var categoreState =
-                            context.read<CategoriesBloc>().state;
-                        if (categoreState is CategoriesLoaded) {
-                          return ListView.builder(
-                            itemCount: categoreState.categories!.length,
-                            itemBuilder: (context, index) {
-                              var value = _blogData.category.contains(
-                                  categoreState.categories![index].name!);
-                              return ListTile(
-                                onTap: () {
-                                  if (_blogData.category.contains(
-                                      categoreState.categories![index].name!)) {
-                                    setState(() {
-                                      _blogData.category.remove(categoreState
-                                          .categories![index].name!);
-                                    });
-                                  } else {
-                                    setState(() {
-                                      var categoies = _blogData.category;
-                                      categoies.add(categoreState
-                                          .categories![index].name!);
-                                      _blogData.copyWith(category: categoies);
-                                    });
-                                  }
-                                },
-                                subtitle: Text(_blogData.category.contains(
-                                        categoreState.categories![index].name!)
-                                    ? 'Selected'
-                                    : 'Not Selected'),
-                                leading: Checkbox(
-                                  value: value,
-                                  onChanged: (value) {
-                                    print(value);
-                                    if (_blogData.category.contains(
-                                        categoreState
-                                            .categories![index].name!)) {
-                                      setState(() {
-                                        _blogData.category.remove(categoreState
-                                            .categories![index].name!);
-                                      });
-                                      setState(() {});
-                                    } else {
-                                      setState(() {
-                                        _blogData.category.add(categoreState
-                                            .categories![index].name!);
-                                      });
-                                      setState(() {});
-                                    }
-                                  },
-                                ),
-                                title: Text(
-                                    categoreState.categories![index].name!),
-                                // onTap: () {
-                                //   if (_blogData.category.contains(
-                                //       categoreState.categories![index].name!)) {
-                                //     setState(() {
-                                //       _blogData.category.remove(categoreState
-                                //           .categories![index].name!);
-                                //     });
-                                //   } else {
-                                //     setState(() {
-                                //       _blogData.category.add(categoreState
-                                //           .categories![index].name!);
-                                //     });
-                                //   }
-
-                                //   // Navigator.pop(context);
-                                // },
-                              );
-                            },
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+                onTap: () async {
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return SelectCategories(
+                      initialCategories: _blogData.category,
+                    );
+                  })).then((value) {
+                    if (value != null) {
+                      setState(() {
+                        _blogData = _blogData.copyWith(category: value);
                       });
+                    }
+                  });
+
+                  // showBottomSheet(
+                  //     context: context,
+                  //     builder: (context) {
+                  //       var categoreState =
+                  //           context.read<CategoriesBloc>().state;
+                  //       if (categoreState is CategoriesLoaded) {
+                  //         return ListView.builder(
+                  //           itemCount: categoreState.categories!.length,
+                  //           itemBuilder: (context, index) {
+                  //             var value = _blogData.category.contains(
+                  //                 categoreState.categories![index].name!);
+                  //             return ListTile(
+                  //               onTap: () {
+                  //                 if (_blogData.category.contains(
+                  //                     categoreState.categories![index].name!)) {
+                  //                   setState(() {
+                  //                     _blogData.category.remove(categoreState
+                  //                         .categories![index].name!);
+                  //                   });
+                  //                 } else {
+                  //                   setState(() {
+                  //                     var categoies = _blogData.category;
+                  //                     categoies.add(categoreState
+                  //                         .categories![index].name!);
+                  //                     _blogData.copyWith(category: categoies);
+                  //                   });
+                  //                 }
+                  //               },
+                  //               subtitle: Text(_blogData.category.contains(
+                  //                       categoreState.categories![index].name!)
+                  //                   ? 'Selected'
+                  //                   : 'Not Selected'),
+                  //               leading: Checkbox(
+                  //                 value: value,
+                  //                 onChanged: (value) {
+                  //                   print(value);
+                  //                   if (_blogData.category.contains(
+                  //                       categoreState
+                  //                           .categories![index].name!)) {
+                  //                     setState(() {
+                  //                       _blogData.category.remove(categoreState
+                  //                           .categories![index].name!);
+                  //                     });
+                  //                     setState(() {});
+                  //                   } else {
+                  //                     setState(() {
+                  //                       _blogData.category.add(categoreState
+                  //                           .categories![index].name!);
+                  //                     });
+                  //                     setState(() {});
+                  //                   }
+                  //                 },
+                  //               ),
+                  //               title: Text(
+                  //                   categoreState.categories![index].name!),
+                  //               // onTap: () {
+                  //               //   if (_blogData.category.contains(
+                  //               //       categoreState.categories![index].name!)) {
+                  //               //     setState(() {
+                  //               //       _blogData.category.remove(categoreState
+                  //               //           .categories![index].name!);
+                  //               //     });
+                  //               //   } else {
+                  //               //     setState(() {
+                  //               //       _blogData.category.add(categoreState
+                  //               //           .categories![index].name!);
+                  //               //     });
+                  //               //   }
+
+                  //               //   // Navigator.pop(context);
+                  //               // },
+                  //             );
+                  //           },
+                  //         );
+                  //       } else {
+                  //         return const Center(
+                  //           child: CircularProgressIndicator(),
+                  //         );
+                  //       }
+                  //     });
                 },
                 child: Container(
                   margin: const EdgeInsets.all(16),
@@ -263,6 +285,9 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: TextFormField(
+                  initialValue: widget.blogModel != null
+                      ? widget.blogModel!.description
+                      : null,
                   keyboardType: TextInputType.multiline,
                   maxLines: 10,
                   textAlign: TextAlign.center,
@@ -298,7 +323,12 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: BlogCoverImageForm(
-                    blogData: _blogData, onChanged: _updateBlogData),
+                  blogData: _blogData,
+                  onChanged: _updateBlogData,
+                  initialValue: widget.blogModel == null
+                      ? null
+                      : widget.blogModel!.cover!,
+                ),
               ),
             ),
             //publish
@@ -332,9 +362,13 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
                               .firstWhere((element) => element.name == item)
                               .id!);
                         }
+
                         var response = await RequestHelper.post(
-                            'blog/create',
+                            widget.blogModel != null
+                                ? 'blog/edit/'
+                                : 'blog/create',
                             {
+                              'blog_id': widget.blogModel?.id.toString(),
                               'title': _blogData.title,
                               'description': _blogData.description,
                               'cover': _blogData.cover,
@@ -343,10 +377,17 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
                               'slug': _blogData.slug,
                               'category': jsonEncode(categories),
                             },
-                            files: [XFile(_blogData.cover)],
-                            filesKey: 'cover');
-
-                        if (response.statusCode == 201) {
+                            files: widget.blogModel == null &&
+                                    !_blogData.cover.startsWith("http")
+                                ? [XFile(_blogData.cover)]
+                                : null,
+                            filesKey: widget.blogModel == null &&
+                                    !_blogData.cover.startsWith("http")
+                                ? 'cover'
+                                : null);
+                        // print(response.statusCode);
+                        if (response.statusCode == 201 ||
+                            response.statusCode == 200) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -367,25 +408,16 @@ class _BlogCreationScreenState extends State<BlogCreationScreen> {
                                               utf8.decode(response.bodyBytes))),
                                         )));
                           }
+                          
 
-                          print(response.body);
                           BlogsModel blog = BlogsModel.fromJson(
                               jsonDecode(utf8.decode(response.bodyBytes)));
                           if (mounted) {
                             // context.read<ProfileBloc>().add(const LoadMyProfile());
 
-                            Navigator.of(context).pushNamed(
+                            Navigator.of(context).pushReplacementNamed(
                                 BlogScreen.routeName,
                                 arguments: blog);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => BlocProvider(
-                            //       create: (context) => BlogCupitCubit(),
-                            //       child: BlogScreen(blog: blog),
-                            //     ),
-                            //   ),
-                            // );
                           }
 
                           // Navigator.of(context).pushNamed(BlogScreen.routeName);
@@ -614,10 +646,14 @@ class BlogBasicInfoForm extends StatelessWidget {
 
 class BlogCoverImageForm extends StatefulWidget {
   final Blog blogData;
+  final String? initialValue;
   final ValueChanged<Blog> onChanged;
 
   const BlogCoverImageForm(
-      {super.key, required this.blogData, required this.onChanged});
+      {super.key,
+      required this.blogData,
+      required this.onChanged,
+      this.initialValue});
 
   @override
   _BlogCoverImageFormState createState() => _BlogCoverImageFormState();
@@ -654,29 +690,30 @@ class _BlogCoverImageFormState extends State<BlogCoverImageForm> {
           GestureDetector(
             onTap: _pickImage,
             child: Container(
-              width: double.infinity,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: _selectedImage != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        _selectedImage!,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : const Icon(
-                      Icons.add_photo_alternate,
-                      size: 40,
-                      color: Colors.grey,
-                    ),
-            ),
+                width: double.infinity,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: _selectedImage != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          _selectedImage!,
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : widget.initialValue == null
+                        ? const Icon(
+                            Icons.add_photo_alternate,
+                            size: 40,
+                            color: Colors.grey,
+                          )
+                        : Image.network(widget.initialValue!)),
           ),
         ],
       ),
@@ -713,5 +750,106 @@ class BlogPublishForm extends StatelessWidget {
     return Container(
         // Your form fields go here
         );
+  }
+}
+
+class SelectCategories extends StatefulWidget {
+  List<String>? initialCategories = [];
+  SelectCategories({super.key, required this.initialCategories});
+
+  @override
+  State<SelectCategories> createState() => _SelectCategoriesState();
+}
+
+class _SelectCategoriesState extends State<SelectCategories> {
+  @override
+  @override
+  void initState() {
+    super.initState();
+    selected = widget.initialCategories!;
+  }
+
+  List<String> selected = [];
+  bool isPoped = false;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+        ),
+        onPressed: () {
+          Navigator.pop(context, selected);
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'Apply',
+            style:
+                TextStyle(color: Colors.white, fontSize: 18, letterSpacing: 1),
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, selected);
+          },
+        ),
+        title: const Text('Select Categories'),
+      ),
+      body: ListView(
+        children: [
+          BlocBuilder<CategoriesBloc, CategoriesState>(
+            builder: (context, state) {
+              if (state is CategoriesLoaded) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: state.categories!.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color:
+                              selected.contains(state.categories![index].name!)
+                                  ? primaryColor
+                                  : Colors.grey,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Icon(
+                          selected.contains(state.categories![index].name!)
+                              ? Icons.check
+                              : null,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(state.categories![index].name!),
+                      onTap: () {
+                        if (selected.contains(state.categories![index].name!)) {
+                          setState(() {
+                            selected.remove(state.categories![index].name!);
+                          });
+                        } else {
+                          setState(() {
+                            selected.add(state.categories![index].name!);
+                          });
+                        }
+                      },
+                    );
+                  },
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

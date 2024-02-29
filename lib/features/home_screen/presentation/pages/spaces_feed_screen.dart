@@ -33,6 +33,7 @@ class SpacesFeedScreen extends StatelessWidget {
                 backgroundColor: primaryColor,
                 textColor: Colors.white,
                 fontSize: 16.0);
+            
           } else if (state is JoinSpaceError) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -56,6 +57,7 @@ class SpacesFeedScreen extends StatelessWidget {
             return true;
           },
           child: ListView(
+            padding: const EdgeInsets.only(bottom: 50),
             children: const [
               HomeScreenHeader(),
               SpacesList(),

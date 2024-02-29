@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 
+import 'package:azsoon/Core/local_storage.dart';
+import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,12 +54,27 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     // });
 
     on<LoadMyProfile>((event, emit) async {
-      var response = await profileRepo.getMyProfile();
-      try {
-        var profile =
-            Profile.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
-        emit(ProfileLoaded(profileModel: profile));
-      } catch (e) {}
+      //token
+      // if (event.withputLoading) {
+      // } else {
+      emit(ProfileLoading());
+      // }
+      String? token = await RequestHelper.getAuthToken();
+      if (token == null) {
+        emit(const ProfileIsNotSignedIn());
+      } else {
+        var response = await profileRepo.getMyProfile();
+        if (response.statusCode == 200) {
+          var profile =
+              Profile.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+          emit(ProfileLoaded(profileModel: profile));
+        } else {
+          emit(const ProfileIsNotSignedIn());
+        }
+        try {} catch (e) {
+          emit(const ProfileIsNotSignedIn());
+        }
+      }
     });
 
     on<UpdateProfileLocally>((event, emit) {

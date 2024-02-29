@@ -51,19 +51,19 @@ class EditProfileEvent extends ProfileEvent {
 }
 
 class LoadMyProfile extends ProfileEvent {
-  const LoadMyProfile();
+  final bool withputLoading;
+  const LoadMyProfile({this.withputLoading = true});
 
   @override
   List<Object> get props => [];
 }
 
-
-
 class UpdateProfileLocally extends ProfileEvent {
   final Profile newProfile;
   final ProfileLoaded profileLoaded;
 
-  const UpdateProfileLocally({required this.profileLoaded, required this.newProfile});
+  const UpdateProfileLocally(
+      {required this.profileLoaded, required this.newProfile});
 
   @override
   List<Object> get props => [profileLoaded];

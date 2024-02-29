@@ -1,7 +1,9 @@
 //abstract spacepost class
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/features/blog/data/models/articles_model.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../blog/data/models/article_comments_model.dart';
 import '../../../blog/data/models/blog_model.dart';
 import 'recommended_spaces_model.dart';
 
@@ -12,13 +14,14 @@ class LatestUpdatedPost extends Equatable {
   final String? content;
   final String? spacenName;
   final RecommendedSpace? space;
+  final String? lanugaue;
   final bool? isJoined;
   // final List<NewPostComment>? newComments;
-  int? likesCount;
+  final int? likesCount;
   final PostCommentUser? user;
   final ArticlesModel? blogPost;
   final int? commentsCount;
-  bool? isLiked;
+  final bool? isLiked;
   final String? video;
   final List<dynamic>?
       postFiles; // You might want to create a class for post files if needed
@@ -26,7 +29,7 @@ class LatestUpdatedPost extends Equatable {
       postImages; // You might want to create a class for post images if needed
   final String? createdAt;
 
-  LatestUpdatedPost({
+  const LatestUpdatedPost({
     required this.id,
     required this.title,
     required this.content,
@@ -35,6 +38,7 @@ class LatestUpdatedPost extends Equatable {
     required this.likesCount,
     required this.blogPost,
     required this.isLiked,
+    required this.lanugaue,
     required this.video,
     required this.space,
     required this.user,
@@ -52,6 +56,7 @@ class LatestUpdatedPost extends Equatable {
 
     return LatestUpdatedPost(
       id: json['id'],
+      lanugaue: LocalStorage.detectLanguage(json['content'].toString()[0]),
       likesCount: json['likes_count'],
       spacenName: json['space_name'],
       video: json['video'],
@@ -94,11 +99,13 @@ class LatestUpdatedPost extends Equatable {
     //? postFiles,
     //? postImages,
     String? createdAt,
+    String? lanugaue,
   }) {
     return LatestUpdatedPost(
       // newComments: newComments ?? this.newComments,
       id: id ?? this.id,
       title: title ?? this.title,
+      lanugaue: lanugaue ?? this.lanugaue,
       isAllowedToJoin: isAllowedToJoin ?? this.isAllowedToJoin,
       content: content ?? this.content,
       spacenName: spacenName ?? this.spacenName,
@@ -106,11 +113,12 @@ class LatestUpdatedPost extends Equatable {
       space: space ?? this.space,
       isJoined: isJoined ?? this.isJoined,
       likesCount: likesCount ?? this.likesCount,
+
       user: user ?? this.user,
       blogPost: blogPost ?? this.blogPost,
       commentsCount: commentsCount ?? this.commentsCount,
       isLiked: isLiked ?? this.isLiked,
-      postFiles: postFiles ?? this.postFiles,
+      postFiles: postFiles ?? postFiles,
       postImages: postImages ?? this.postImages,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -159,6 +167,7 @@ class PostCommentUser {
 
   factory PostCommentUser.fromJson(Map<String, dynamic> json) {
     // print(json['userRole'] + "userRole" + json['last_name'] + "last_name");
+    print(json.toString() + "user json");
 
     return PostCommentUser(
       id: json['id'],
@@ -238,9 +247,10 @@ class NewPostComment extends Equatable {
   PostCommentUser? user;
   List<PostReply>? replies;
   int? commentId;
-  PostCommentUser? commetUser;
+  // PostCommentUser? commetUser;
   String? commentText;
   String? content;
+  int? likes;
   String? createdAt;
   bool? isLiked;
   String? updatedAt;
@@ -251,8 +261,9 @@ class NewPostComment extends Equatable {
     required this.user,
     required this.replies,
     required this.commentId,
-    required this.commetUser,
+    // required this.commetUser,
     required this.commentText,
+    required this.likes,
     required this.content,
     required this.createdAt,
     required this.isLiked,
@@ -260,8 +271,26 @@ class NewPostComment extends Equatable {
     required this.comment,
   });
 
+  factory NewPostComment.fromBlogComment(ArticleCommentModel articleComment) {
+    return NewPostComment(
+      id: articleComment.id,
+      user: articleComment.user,
+      likes: 0,
+      replies: [],
+      commentId: articleComment.id,
+      // commetUser: articleComment.user,
+      commentText: articleComment.content,
+      content: articleComment.content,
+      createdAt: articleComment.createdAt,
+      isLiked: articleComment.isArticleLiked,
+      updatedAt: articleComment.updatedAt,
+      comment: articleComment.id,
+    );
+  }
+
   factory NewPostComment.fromJson(Map<String, dynamic> json) {
     return NewPostComment(
+      likes: json['likes'],
       id: json['id'],
       user: PostCommentUser.fromJson(json['user']),
       replies: json['replies'] == null
@@ -269,7 +298,7 @@ class NewPostComment extends Equatable {
           : List<PostReply>.from(
               json['replies'].map((x) => PostReply.fromJson(x))),
       commentId: json['comment_id'],
-      commetUser: PostCommentUser.fromJson(json['user']),
+      // commetUser: PostCommentUser.fromJson(json['user']),
       commentText: json['comment_text'],
       content: json['content'],
       createdAt: json['created_at'],
@@ -285,7 +314,7 @@ class NewPostComment extends Equatable {
         user,
         // // replies,
         commentId,
-        commetUser,
+        // commetUser,
         commentText,
         content,
         createdAt,

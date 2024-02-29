@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 import 'home_screen_model.dart';
 import 'member_model.dart';
 
-class RecommendedSpace {
+class RecommendedSpace extends Equatable {
   final int? id;
   final String? name;
   final String? description;
@@ -10,9 +12,9 @@ class RecommendedSpace {
   final int? postsCount;
   final bool? isAllowedToJoin;
   final int? membersCount;
-  bool? isJoined;
-  List<MemberModel>? members;
-  List<Category>? category;
+  final bool? isJoined;
+  final List<MemberModel>? members;
+  final List<Category>? category;
 
   RecommendedSpace({
     required this.id,
@@ -50,4 +52,48 @@ class RecommendedSpace {
       category: categoryList,
     );
   }
+  //copy with method
+  RecommendedSpace copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? type,
+    String? cover,
+    int? postsCount,
+    bool? isAllowedToJoin,
+    int? membersCount,
+    bool? isJoined,
+    List<MemberModel>? members,
+    List<Category>? category,
+  }) {
+    return RecommendedSpace(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      type: type ?? this.type,
+      cover: cover ?? this.cover,
+      postsCount: postsCount ?? this.postsCount,
+      isAllowedToJoin: isAllowedToJoin ?? this.isAllowedToJoin,
+      membersCount: membersCount ?? this.membersCount,
+      isJoined: isJoined ?? this.isJoined,
+      members: members ?? this.members,
+      category: category ?? this.category,
+    );
+  }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        type,
+        cover,
+        postsCount,
+        isAllowedToJoin,
+        membersCount,
+        isJoined,
+        members,
+        category
+      ];
 }

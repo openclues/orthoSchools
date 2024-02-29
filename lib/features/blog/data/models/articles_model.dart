@@ -63,6 +63,7 @@ class BlogsModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   UserModel? user;
+  List<CategoryModel> categories;
 
   BlogsModel({
     this.color,
@@ -72,16 +73,19 @@ class BlogsModel {
     this.cover,
     this.createdAt,
     this.updatedAt,
+    required this.categories,
     this.user,
   });
 
   factory BlogsModel.fromJson(Map<String, dynamic> json) {
-    // print(json['articles_count'] + "[dsf[s]ldf[]sdlf[]Psdl[]");
-    // print(json['color'] + "[dsf[s]ldf[]sdlf[]Psdl[]]");
-    print(json['is_my_blog']);
     return BlogsModel(
       id: json['id'],
       // color: json['color'] ?? primaryColor,
+      categories: json['categories'] != null
+          ? (json['categories'] as List<dynamic>)
+              .map((e) => CategoryModel.fromJson(e))
+              .toList()
+          : [],
       title: json['title'],
       description: json['description'],
       cover: json['cover'].toString().contains('http')

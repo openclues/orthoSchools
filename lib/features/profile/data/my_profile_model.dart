@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:azsoon/features/profile/presentation/screens/create_blog_screen.dart';
 import 'package:equatable/equatable.dart';
 
-
 import '../../blog/data/models/articles_model.dart';
 import 'user_profile_model.dart';
 
@@ -23,6 +22,8 @@ class Profile extends Equatable {
     this.certificates,
     this.verifiedProRequest,
     this.user,
+    this.isCompleted,
+    this.notificationsCount,
     this.cardId,
     this.daysLeft,
     this.city,
@@ -41,6 +42,8 @@ class Profile extends Equatable {
   final String? cardId;
   final String? country;
   final String? state;
+  final bool? isCompleted;
+  final int? notificationsCount;
   final String? city;
   final String? profileImage;
   final DateTime? birthDate;
@@ -60,6 +63,7 @@ class Profile extends Equatable {
         isme: json["is_me"],
         city: json["city"],
         country: json["country"],
+        notificationsCount: json["unread_notifications"],
         state: json["state"],
         verifiedProRequest: json["verified_pro_request"] == null
             ? null
@@ -80,6 +84,18 @@ class Profile extends Equatable {
             : DateTime.parse(json["birth_date"]),
         placeOfWork: json["place_of_work"],
         speciality: json["speciality"],
+        isCompleted: isCompletedprofile(
+          title: json["title"],
+          bio: json["bio"],
+          studyIn: json["study_in"],
+          cover: json["cover"],
+          profileImage: json["profileImage"],
+          birthDate: json["birth_date"] == null
+              ? null
+              : DateTime.parse(json["birth_date"]),
+          placeOfWork: json["place_of_work"],
+          speciality: json["speciality"],
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -117,8 +133,8 @@ class Profile extends Equatable {
     String? bio,
     String? studyIn,
     String? cover,
-    
     bool? isme,
+    int? notificationsCount,
     String? cardId,
     String? profileImage,
     DateTime? birthDate,
@@ -133,6 +149,7 @@ class Profile extends Equatable {
       studyIn: studyIn ?? this.studyIn,
       cover: cover ?? this.cover,
       blog: blog ?? this.blog,
+      notificationsCount: notificationsCount ?? this.notificationsCount,
       isme: isme ?? this.isme,
       cardId: cardId ?? this.cardId,
       profileImage: profileImage ?? this.profileImage,
@@ -142,6 +159,35 @@ class Profile extends Equatable {
       speciality: speciality ?? this.speciality,
     );
   }
+}
+
+bool isCompletedprofile(
+    {String? title,
+    String? bio,
+    String? studyIn,
+    String? cover,
+    String? profileImage,
+    DateTime? birthDate,
+    String? placeOfWork,
+    String? speciality}) {
+  if (title == null ||
+      bio == null ||
+      studyIn == null ||
+      cover == null ||
+      profileImage == null ||
+      birthDate == null ||
+      placeOfWork == null ||
+      speciality == null ||
+      title.isEmpty ||
+      bio.isEmpty ||
+      studyIn.isEmpty ||
+      cover.isEmpty ||
+      profileImage.isEmpty ||
+      placeOfWork.isEmpty ||
+      speciality.isEmpty) {
+    return false;
+  }
+  return true;
 }
 
 // I/flutter ( 8185): {"title":null,"bio":null,"study_in":null,"cover":null,"profileImage":null,"birth_date":null,"place_of_work":null,"speciality":null,"user":{"id":3,"email":"basicdentist@test.com","first_name":"string","last_name":"string","userRole":1,"phone":"","address":"","is_banned":false,"is_suspend":false,"is_verified":false,"is_verified_pro":false}}
@@ -166,8 +212,9 @@ class Certifcate {
 class VerifiedProRequest {
   final int? id;
   final String? status;
+  final Profile? profile;
 
-  VerifiedProRequest({required this.id, required this.status});
+  VerifiedProRequest({required this.id, required this.status, this.profile});
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -178,5 +225,7 @@ class VerifiedProRequest {
       VerifiedProRequest(
         id: json["id"],
         status: json["requestStatus"],
+        profile:
+            json["profile"] == null ? null : Profile.fromJson(json["profile"]),
       );
 }

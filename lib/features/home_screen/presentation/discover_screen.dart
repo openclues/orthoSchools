@@ -14,6 +14,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 
 import '../../blog/data/models/articles_model.dart';
+import '../../profile/bloc/profile_bloc.dart';
+import '../../profile/data/my_profile_model.dart';
 import '../../space/presentation/space_screen.dart';
 import 'widgets/spacesWidget.dart';
 
@@ -42,9 +44,11 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
   @override
   void didChangeDependencies() async {
+    await getPopularSpaces();
+
+    setState(() {});
+
     super.didChangeDependencies();
-    // await getPopularSpaces();
-    // setState(() {});
   }
 
   Future<Response> getPopularSpaces() async {
@@ -57,6 +61,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     return Scaffold(
         backgroundColor: bodyColor,
         body: ListView(
+          padding: const EdgeInsets.only(
+              left: 8.0, right: 8.0, top: 8.0, bottom: 50),
           shrinkWrap: true,
           // physics: const NeverScrollableScrollPhysics(),
           children: [
@@ -92,80 +98,94 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: state.categories!.length,
+                          itemCount: state.categories!.length + 1,
                           itemBuilder: (BuildContext context, int index) {
-                            return Stack(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                   
-                                    if (selectedCategory ==
-                                        state.categories![index]) {
-                                      setState(() {
-                                        selectedCategory = null;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        selectedCategory =
-                                            state.categories![index];
-                                      });
-                                    }
-                                    // setState(() {
-                                    //   selectedCategory = state.categories![index];
-                                    // });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Column(children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: selectedCategory ==
-                                                    state.categories![index]
-                                                ? primaryColor
-                                                : primaryColor.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Text(
-                                              state.categories![index].name!,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: selectedCategory ==
-                                                        state.categories![index]
-                                                    ? Colors.white
-                                                    : primaryColor,
-                                                fontSize: 12,
-                                                // fontWeight: FontWeight.bold,
-                                              ),
+                            if (index == 0) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedCategory = null;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    child: Column(children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: selectedCategory == null
+                                              ? primaryColor
+                                              : primaryColor.withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Text(
+                                            "All",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: selectedCategory == null
+                                                  ? Colors.white
+                                                  : primaryColor,
+                                              fontSize: 12,
+                                              // fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
-                                      ]),
-                                    ),
+                                      ),
+                                    ]),
                                   ),
                                 ),
-                                Positioned(
-                                  top: -20,
-                                  right: 0,
-                                  child: Visibility(
-                                    visible: selectedCategory != null &&
-                                        selectedCategory ==
-                                            state.categories![index],
-                                    child: IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: primaryColor),
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedCategory = null;
-                                        });
-                                      },
+                              );
+                            }
+                            return GestureDetector(
+                              onTap: () {
+                                if (selectedCategory ==
+                                    state.categories![index]) {
+                                  setState(() {
+                                    selectedCategory = null;
+                                  });
+                                } else {
+                                  setState(() {
+                                    selectedCategory = state.categories![index];
+                                  });
+                                }
+                                // setState(() {
+                                //   selectedCategory = state.categories![index];
+                                // });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  child: Column(children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: selectedCategory ==
+                                                state.categories![index]
+                                            ? primaryColor
+                                            : primaryColor.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text(
+                                          state.categories![index].name!,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: selectedCategory ==
+                                                    state.categories![index]
+                                                ? Colors.white
+                                                : primaryColor,
+                                            fontSize: 12,
+                                            // fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ]),
                                 ),
-                              ],
+                              ),
                             );
                           },
                         ),
@@ -576,16 +596,19 @@ class BlogDiscoveryItem extends StatelessWidget {
   const BlogDiscoveryItem({Key? key, required this.blog}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Profile profile =
+        (context.read<ProfileBloc>().state as ProfileLoaded).profileModel;
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, BlogScreen.routeName,
             arguments: BlogsModel(
-              cover: blog.cover,
-              title: blog.title,
-              description: blog.description,
-              id: blog.id,
-              user: blog.user,
-            ));
+                cover: blog.cover,
+                title: blog.title,
+                description: blog.description,
+                id: blog.id,
+                user: blog.user,
+                categories: blog.category!));
       },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -672,18 +695,7 @@ class BlogDiscoveryItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          "Follow",
-                          style: TextStyle(color: primaryColor),
-                        )),
+                    Spacer(),
                     const SizedBox(
                       width: 10,
                     ),
@@ -778,88 +790,98 @@ class _ExploreMenuContentState extends State<ExploreMenuContent> {
             shrinkWrap: true,
             itemCount: widget.spaces.length,
             itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 200,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      widget.spaces[index].cover!,
+              return GestureDetector(
+                onTap: () async {
+                  await Navigator.pushNamed(context, SpaceScreen.routeName,
+                      arguments: widget.spaces[index]);
+                  setState(() {});
+                },
+                child: Container(
+                  height: 200,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        widget.spaces[index].cover!,
+                      ),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.6),
+                        BlendMode.darken,
+                      ),
                     ),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
-                      BlendMode.darken,
-                    ),
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  color: primaryColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.spaces[index].name!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 19,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.spaces[index].name!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 19,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        widget.spaces[index].description!,
-                        textAlign: TextAlign.start,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      Spacer(),
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                        Text(
+                          widget.spaces[index].description!,
+                          textAlign: TextAlign.start,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            // fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            widget.spaces[index]!.isJoined == true
+                                ? const Spacer()
+                                : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      await Navigator.pushNamed(
+                                          context, SpaceScreen.routeName,
+                                          arguments: widget.spaces[index]);
+                                      setState(() {});
+                                    },
+                                    child: const Text(
+                                      "Join Now",
+                                      style: TextStyle(color: primaryColor),
+                                    )),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            // const Spacer(),
+                            Expanded(
+                              child: Text(
+                                "${widget.spaces[index].membersCount} Participants",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
                                 ),
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, SpaceScreen.routeName,
-                                    arguments: widget.spaces[index]);
-                              },
-                              child: const Text(
-                                "Join Now",
-                                style: TextStyle(color: primaryColor),
-                              )),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          // const Spacer(),
-                          Expanded(
-                            child: Text(
-                              "${widget.spaces[index].membersCount} Participants",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               );

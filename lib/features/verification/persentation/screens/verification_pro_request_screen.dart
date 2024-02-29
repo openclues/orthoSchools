@@ -76,11 +76,12 @@ class _VerificationProRequestScreenState
                           'send/verification/request', {});
 
                       if (response.statusCode == 200) {
-                        context.read<ProfileBloc>().add(const LoadMyProfile());
+                        // context.read<ProfileBloc>().add(const LoadMyProfile());
                         SnackBarWidget.buildSnacBarSuccess(
                             'Verification Request Was Sent', context);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/');
+                        // Navigator.pop(context);
+                        // Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Error')));
@@ -191,18 +192,18 @@ class _VerificationProRequestScreenState
                   const SizedBox(
                     height: 8.0,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 8.0,
                         ),
-                        Text('Speciality: ',
+                        const Text('Speciality: ',
                             style: TextStyle(fontWeight: FontWeight.w500)),
-                        Text('Dentist'),
-                        Spacer(),
-                        Icon(Icons.check_circle_outline,
+                        Text('${state.profileModel.speciality}'),
+                        const Spacer(),
+                        const Icon(Icons.check_circle_outline,
                             color: primaryColor, size: 28),
                       ],
                     ),
@@ -310,9 +311,9 @@ class _VerificationProRequestScreenState
 
                                           // print(response.body);
                                           if (response.statusCode == 200) {
-                                            context
-                                                .read<ProfileBloc>()
-                                                .add(const LoadMyProfile());
+                                            // context
+                                            //     .read<ProfileBloc>()
+                                            //     .add(const LoadMyProfile());
                                           }
                                         }
                                       }
@@ -399,9 +400,9 @@ class _VerificationProRequestScreenState
 
                                           // print(response.body);
                                           if (response.statusCode == 200) {
-                                            context
-                                                .read<ProfileBloc>()
-                                                .add(const LoadMyProfile());
+                                            // context
+                                            //     .read<ProfileBloc>()
+                                            //     .add(const LoadMyProfile());
                                           }
                                         }
                                       }
@@ -465,9 +466,9 @@ class _VerificationProRequestScreenState
 
                                             // print(response.body);
                                             if (response.statusCode == 200) {
-                                              context
-                                                  .read<ProfileBloc>()
-                                                  .add(const LoadMyProfile());
+                                              // context
+                                              //     .read<ProfileBloc>()
+                                              //     .add(const LoadMyProfile());
                                             }
                                           },
                                           child: const Icon(IconlyLight.delete,
@@ -538,8 +539,8 @@ class _VerificationProRequestScreenState
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
-                                              color: Colors.green,
-                                              fontStyle: FontStyle.italic),
+                                            color: Colors.green,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -592,9 +593,9 @@ class _VerificationProRequestScreenState
                                         loadingSelfie = false;
                                       });
                                       if (response.statusCode == 200) {
-                                        context
-                                            .read<ProfileBloc>()
-                                            .add(const LoadMyProfile());
+                                        // context
+                                        //     .read<ProfileBloc>()
+                                        //     .add(const LoadMyProfile());
                                       }
                                     },
                                     icon: const Icon(IconlyBold.delete,
@@ -617,8 +618,10 @@ class _VerificationProRequestScreenState
                 ],
               ));
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
       },

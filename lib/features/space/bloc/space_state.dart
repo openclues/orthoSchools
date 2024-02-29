@@ -24,4 +24,12 @@ class SpaceLoaded extends SpaceState {
   );
   @override
   List<Object> get props => [space];
+  //copy  with
+  SpaceLoaded copyWith({
+    RecommendedSpace? space,
+  }) {
+    return SpaceLoaded(
+      space ?? this.space,
+    );
+  }
 }

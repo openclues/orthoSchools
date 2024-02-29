@@ -23,5 +23,10 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         ));
       }
     });
+    on<UpdateSpace>((event, emit) {
+      if(state is SpaceLoaded){
+        emit((state as SpaceLoaded).copyWith(space: event.space));
+      }
+    });
   }
 }

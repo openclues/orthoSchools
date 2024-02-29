@@ -1,13 +1,39 @@
 import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/Core/network/endpoints.dart';
+import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:azsoon/features/notifications/cubit/notifications_cubit.dart';
+import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
   static const String routeName = '/notifications';
 
   const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
+  initState() {
+    super.initState();
+    // context.read<NotificationsCubit>().loadNotifications();
+    markAllAsRead();
+  }
+
+  markAllAsRead() async {
+    await RequestHelper.post('read/notifications/', {});
+    if (context.mounted) {
+      try {
+        context.read<ProfileBloc>().add(const LoadMyProfile());
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +57,9 @@ class NotificationsScreen extends StatelessWidget {
                 itemCount: state.notifications.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                    ),
                     decoration: BoxDecoration(
                         color: state.notifications[index].isRead!
                             ? Colors.white
@@ -40,18 +67,34 @@ class NotificationsScreen extends StatelessWidget {
                         border: Border(
                             bottom: BorderSide(
                                 color: Colors.grey.withOpacity(0.2)))),
-                    child: ListTile(
-                      leading: Icon(
-                        IconlyBold.notification,
-                        color: state.notifications[index].isRead!
-                            ? Colors.grey
-                            : Colors.blue,
-                      ),
-                      title: Text(state.notifications[index].title!),
-                      subtitle: Text(
-                        state.notifications[index].message!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          state.notifications[index].onTap!();
+                        },
+                        child: ListTile(
+                          leading: state.notifications[index].trialing == null
+                              ? Icon(
+                                  IconlyBold.notification,
+                                  color: state.notifications[index].isRead!
+                                      ? Colors.grey
+                                      : Colors.blue,
+                                )
+                              : CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(
+                                    '${ApiEndpoints.baseUrl}/${state.notifications[index].trialing}',
+                                    scale: 1.0,
+                                  ),
+                                ),
+                          title: Text(state.notifications[index].title!),
+                          subtitle: Text(
+                            state.notifications[index].message!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
                     ),
                   );

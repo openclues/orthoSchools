@@ -16,7 +16,7 @@ class BlogCommentsLoading extends BlogCommentsState {
 }
 
 class BlogCommentsLoaded extends BlogCommentsState {
-  final List<Comment> blogComments;
+  final List<ArticleCommentModel> blogComments;
   final bool isLiked;
   final int articleLikes;
   const BlogCommentsLoaded(

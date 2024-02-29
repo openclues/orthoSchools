@@ -15,7 +15,7 @@ class ArticlesRepo {
   }
 
   Future<Response> getArticleComments(String id) async {
-    var responses = await RequestHelper.get('api/article/comments/?id=$id');
+    var responses = await RequestHelper.get('article/comments/?post_id=$id');
     return responses;
   }
 

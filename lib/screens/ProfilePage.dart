@@ -1,18 +1,31 @@
+import 'dart:io';
+
 import 'package:azsoon/Core/colors.dart';
+import 'package:azsoon/Core/common-methods.dart';
+import 'package:azsoon/Core/local_storage.dart';
+import 'package:azsoon/Core/network/request_helper.dart';
+import 'package:azsoon/features/blog/presentation/screens/blog_screen.dart';
 import 'package:azsoon/features/home_screen/presentation/pages/home_screen.dart';
+import 'package:azsoon/features/home_screen/presentation/widgets/post_widget.dart';
 import 'package:azsoon/features/home_screen/presentation/widgets/spacesWidget.dart';
 import 'package:azsoon/features/profile/bloc/activities_bloc.dart';
+import 'package:azsoon/features/profile/bloc/another_user_bloc.dart';
 import 'package:azsoon/features/profile/data/my_profile_model.dart';
 import 'package:azsoon/features/space/bloc/my_spaces_bloc.dart';
 import 'package:azsoon/screens/NewProfile_page.dart';
 import 'package:azsoon/common_widgets/Button.dart';
 import 'package:azsoon/common_widgets/IndicatorShape.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconly/iconly.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../features/profile/bloc/profile_bloc.dart';
+import '../features/profile/presentation/screens/another_user_screen.dart';
 import '../features/profile/presentation/screens/create_blog_screen.dart';
 import '../features/verification/persentation/screens/verification_pro_request_screen.dart';
 
@@ -44,265 +57,15 @@ class _ProfilePageState extends State<ProfilePage>
 
     // buildListners(profilestate);
 
-
     if (profilestate is ProfileLoaded) {
       if (profilestate.profileModel.user!.id == widget.userId ||
           widget.userId == null) {
         // _tabController = TabController(length: 3, vsync: this);}
 
-        return PopScope(
-          onPopInvoked: (didPop) {
-            if (didPop) {
-              if (widget.isNav == true) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    HomeScreenPage.routeName, (route) => false);
-              }
-            }
-          },
-          child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.white,
-            body: Padding(
-              padding: const EdgeInsets.only(bottom: 0),
-              child: ListView(children: [
-                ProfileImageAndCover(
-                  speciality: profilestate.profileModel.speciality,
-                  name:
-                      "${profilestate.profileModel.user!.firstName!} ${profilestate.profileModel.user!.lastName!}",
-                  profileImage: profilestate.profileModel.profileImage,
-                  coverImage: profilestate.profileModel.cover,
-                  isMe: profilestate.profileModel.isme,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(right: 10, left: 10, top: 55),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        if (profilestate.profileModel.blog != null)
-                          Text(
-                            '@${profilestate.profileModel.blog!.title}',
-                            style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: primaryColor),
-                          ),
-                        if (profilestate.profileModel.bio != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: Text(profilestate.profileModel.bio ?? "",
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.grey)),
-                          ),
-
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-                        // if (profilestate.profileModel.bio == null)
-                        //   Row(
-                        //     mainAxisAlignment: MainAxisAlignment.start,
-                        //     children: [
-                        //       TextButton.icon(
-                        //           onPressed: () {},
-                        //           icon: const Icon(Icons.add),
-                        //           label: const Text("Add Bio")),
-                        //     ],
-                        //   ),
-
-                        if (profilestate.profileModel.studyIn != null)
-                          Row(
-                            children: [
-                              const Icon(
-                                FontAwesomeIcons.graduationCap,
-                                size: 15,
-                                color: primaryColor,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text("${profilestate.profileModel.studyIn}",
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.grey)),
-                            ],
-                          ),
-
-                        //place of work
-                        if (profilestate.profileModel.placeOfWork != null)
-                          Row(
-                            children: [
-                              const Icon(
-                                FontAwesomeIcons.building,
-                                size: 15,
-                                color: primaryColor,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                  "Works at ${profilestate.profileModel.placeOfWork}",
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.grey)),
-                            ],
-                          ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        // CustomButton(
-                        //   buttonText: 'Edit Profile',
-                        //   buttonColor: const Color(0XFFF4F4F4),
-                        //   borderColor: const Color(0XFFF4F4F4),
-                        //   textColor: Colors.black,
-                        //   height: 43,
-                        //   onpress: () async {
-                        //     await Navigator.pushNamed(
-                        //         context, NewProfile_Page.routeName);
-                        //     if (context.mounted) {
-                        //       context
-                        //           .read<ProfileBloc>()
-                        //           .add(const LoadMyProfile());
-                        //     }
-                        //   },
-                        // ),
-                        if (profilestate.profileModel.user!.isVerifiedPro ==
-                                false &&
-                            profilestate.profileModel.isme == true)
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider.value(
-                                    value: context.read<ProfileBloc>(),
-                                    child: const VerificationProRequestScreen(),
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0XFFF4F4F4),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(
-                                    FontAwesomeIcons.userCheck,
-                                    size: 15,
-                                    color: primaryColor,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'Verify your account and get a verified badge',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.grey),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        //verified
-                        Row(
-                          children: [
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            if (profilestate.profileModel.user!.userRole == 2)
-                              Image.asset(
-                                'assets/images/verified-account.png',
-                                width: 35,
-                                height: 35,
-                              ),
-                            if (profilestate.profileModel.user!.isVerifiedPro ==
-                                true)
-                              Image.asset(
-                                'assets/images/premium.png',
-                                width: 35,
-                                height: 35,
-                              )
-                          ],
-                        ),
-
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-                        BlogProfileWidget(profile: profilestate.profileModel),
-
-                        //bio
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        //study in
-                        const Divider(),
-
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          color: Color(0XFFF4F4F4),
-                        ),
-
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-                        // CustomButton(
-                        //   buttonText: 'Edit Profile',
-                        //   buttonColor: const Color(0XFFF4F4F4),
-                        //   borderColor: const Color(0XFFF4F4F4),
-                        //   textColor: Colors.black,
-                        //   height: 43,
-                        //   onpress: () {
-                        //     // Navigator.push(
-                        //     //   context,
-                        //     //   MaterialPageRoute(
-                        //     //       builder: (_) => BlocProvider.value(
-                        //     //             value: context.read<ProfileBloc>(),
-                        //     //             child: const EditProfilePage(),
-                        //     //           )),
-                        //     // );
-                        //   },
-                        // ),
-                        // const SizedBox(
-                        //   height: 15,
-                        // ),
-                        // const Divider(
-                        //   thickness: 1,
-                        //   color: Color(0XFFF4F4F4),
-                        // ),
-                        // if (profilestate.profileModel!.isme == true) tab_bar_tabs(),
-                        // //view of the tabs
-                        // if (profilestate.profileModel!.isme == true)
-                        //   tab_sections_view(),
-                      ]),
-                ),
-              ]),
-            ),
-          ),
-        );
+        return MyProfileScreen(widget: widget, profilestate: profilestate);
       } else {
-        return const Center(
-          child: Text("This is for another user"),
+        return AnotherUserScreen(
+          userId: widget.userId!,
         );
       }
     } else {
@@ -310,28 +73,6 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  // Container tab_sections_view() {
-  //   return SizedBox(
-  //     width: double.maxFinite,
-  //     height: 300,
-  //     child: TabBarView(
-  //       controller: _tabController,
-  //       children: [
-  //         //content of spaces
-  //         BlocProvider(
-  //           create: (context) => MySpacesBloc(),
-  //           child: spaces(),
-  //         ),
-  //         //content of basic info
-  //         BlocProvider(
-  //           create: (context) => ActivitiesBloc(),
-  //           child: activites(),
-  //         ),
-  //         //content of certificates
-  //         courses(),
-  //       ],
-  //     ),
-  //   );
   // }
 
   Padding tab_bar_tabs() {
@@ -483,6 +224,356 @@ class _ProfilePageState extends State<ProfilePage>
   }
 }
 
+class MyProfileScreen extends StatefulWidget {
+  const MyProfileScreen({
+    super.key,
+    required this.widget,
+    required this.profilestate,
+  });
+
+  final ProfilePage widget;
+  final ProfileState profilestate;
+
+  @override
+  State<MyProfileScreen> createState() => _MyProfileScreenState();
+}
+
+class _MyProfileScreenState extends State<MyProfileScreen> {
+  bool? addingBio = false;
+  TextEditingController bioController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    var profilestate = context.watch<ProfileBloc>().state;
+    if (profilestate is ProfileLoaded) {
+      return PopScope(
+        onPopInvoked: (didPop) {
+          if (didPop) {
+            if (widget.widget.isNav == true) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  HomeScreenPage.routeName, (route) => false);
+            }
+          }
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: profilestate.profileModel.user!.userRole == 2
+              ? Colors.amberAccent
+              : Colors.white,
+          body: Padding(
+            padding: const EdgeInsets.only(bottom: 0),
+            child: ListView(children: [
+              Container(
+                color: primaryColor,
+                child: ProfileImageAndCover(
+                  profile: profilestate.profileModel,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(right: 10, left: 10, top: 55),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      if (profilestate.profileModel.bio != null &&
+                          profilestate.profileModel.bio != "")
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              addingBio = true;
+                            });
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(profilestate.profileModel.bio ?? "",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.grey[500])),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (addingBio == true)
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: bioController,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 4,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        profilestate.profileModel.bio == null ||
+                                                profilestate
+                                                    .profileModel.bio!.isEmpty
+                                            ? "Add bio"
+                                            : profilestate.profileModel.bio,
+                                    border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      backgroundColor: primaryColor,
+                                    ),
+                                    onPressed: () async {
+                                      if (bioController.text.isNotEmpty) {
+                                        var response = await RequestHelper.post(
+                                            'update/bio/', {
+                                          "bio": bioController.text,
+                                        });
+                                        if (response.statusCode == 200) {
+                                          context
+                                              .read<ProfileBloc>()
+                                              .add(LoadMyProfile());
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Error adding bio"),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+
+                                        setState(() {
+                                          addingBio = false;
+                                        });
+                                        print(response.body);
+                                      }
+                                      // var response = await RequestHelper.post(
+                                      //     'update/profile/', {
+                                      //   "bio": "bio",
+                                      // });
+
+                                      setState(() {
+                                        addingBio = false;
+                                      });
+                                    },
+                                    child: Text(
+                                        profilestate.profileModel.bio != null &&
+                                                profilestate.profileModel.bio!
+                                                    .isNotEmpty
+                                            ? "Update"
+                                            : "Save",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      backgroundColor: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        addingBio = false;
+                                      });
+                                    },
+                                    child: const Text("Cancel",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      if ((profilestate.profileModel.bio == null ||
+                              profilestate.profileModel.bio == "") &&
+                          addingBio == false)
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              addingBio = true;
+                            });
+                            // Navigator.pushNamed(
+                            //     context, NewProfile_Page.routeName);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey[200]),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RichText(
+                                    text: TextSpan(
+                                  text:
+                                      "Add bio to your profile to let people know you better",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.grey[500]),
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                if (profilestate.profileModel.blog != null)
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, BlogScreen.routeName,
+                                          arguments:
+                                              profilestate.profileModel.blog);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            FontAwesomeIcons.blog,
+                                            size: 15,
+                                            color: primaryColor,
+                                          ),
+                                          Text(
+                                            ' ${profilestate.profileModel.blog!.title}',
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w300,
+                                                color: primaryColor),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                if (profilestate.profileModel.studyIn != null &&
+                                    profilestate.profileModel.studyIn != "")
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          FontAwesomeIcons.graduationCap,
+                                          size: 15,
+                                          color: primaryColor,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                            "${profilestate.profileModel.studyIn}",
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w300,
+                                                color: primaryColor)),
+                                      ],
+                                    ),
+                                  ),
+
+                                //place of work
+                                if (profilestate.profileModel.placeOfWork !=
+                                        null &&
+                                    profilestate.profileModel.placeOfWork != "")
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          FontAwesomeIcons.building,
+                                          size: 15,
+                                          color: primaryColor,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                              "${profilestate.profileModel.placeOfWork}",
+                                              style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w300,
+                                                  color: primaryColor)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      BlogProfileWidget(profile: profilestate.profileModel),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                backgroundColor: primaryColor,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, NewProfile_Page.routeName);
+                              },
+                              child: const Text(
+                                "Edit profile",
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        ],
+                      )
+                    ]),
+              ),
+            ]),
+          ),
+        ),
+      );
+    } else {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+  }
+}
+
 class VerificationStatus extends StatelessWidget {
   final Profile profile;
   const VerificationStatus({
@@ -589,45 +680,89 @@ Widget buildCoverImage(String? profileImage) {
               profileImage,
               fit: BoxFit.fill,
             )
-          : Image.network(
-              'https://trusteid.mioa.gov.mk/wp-content/plugins/uix-page-builder/uixpb_templates/images/UixPageBuilderTmpl/default-cover-2.jpg',
-              fit: BoxFit.fill,
-            ));
+          : Image.asset('assets/images/default_cover.jpeg', fit: BoxFit.cover));
 }
 
 class ProfileImageAndCover extends StatelessWidget {
-  final String? profileImage;
-  final String? coverImage;
-  final String? speciality;
-  final bool? isMe;
-  final String? name;
+  final Profile? profile;
+  // final String? profileImage;
+  // final String? coverImage;
+  // final String? speciality;
+  // final bool? isMe;
+  // final String? name;
 
-  const ProfileImageAndCover(
-      {Key? key,
-      this.speciality,
-      this.profileImage,
-      this.coverImage,
-      this.isMe,
-      required this.name})
-      : super(key: key);
+  const ProfileImageAndCover({
+    Key? key,
+    this.profile,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      color: primaryColor,
       // height: 80, // Adjust the overall height of the container
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           Container(
-            child: buildCoverImage(coverImage),
+            child: buildCoverImage(profile!.cover),
           ),
-          if (isMe == true)
+          if (profile!.isme == true)
             Positioned(
               top: 10,
               right: 10,
               child: InkWell(
-                onTap: () async {},
+                onTap: () async {
+                  //pick image
+                  XFile? cover = await CommonMethods.pickImage();
+                  if (cover != null) {
+                    //show preview and dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Preview"),
+                          content: Image.file(File(cover.path)),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                var response = await RequestHelper.post(
+                                    'upload/cover/image',
+                                    {
+                                      "cover": cover.path,
+                                    },
+                                    files: [cover],
+                                    filesKey: 'coverImage');
+                                if (response.statusCode == 200) {
+                                  Navigator.pop(context);
+
+                                  context.read<ProfileBloc>().add(
+                                      const LoadMyProfile(
+                                          withputLoading: true));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Error adding cover"),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text("Save"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -644,39 +779,65 @@ class ProfileImageAndCover extends StatelessWidget {
               ),
             ),
           Positioned(
-            bottom: -50,
-            left: 10, // Adjust the bottom position of the profile picture
-            child: buildProfilePicture(profileImage, isMe, name!),
-          ),
-
-          // Positioned(bottom: ,)
-          Positioned(
-            bottom: -60, // Adjust the bottom position of the profile picture
-            // left: 24,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 90, top: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            bottom: -57,
+            left: 20, // Adjust the bottom position of the profile picture
+            child: Container(
+              width: MediaQuery.of(context)
+                  .size
+                  .width, // Set width according to your requirement
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    // ),
-                    margin: const EdgeInsets.symmetric(
-                        // horizontal: 19,
+                  buildProfilePicture(profile!.profileImage, profile!.isme,
+                      "${profile!.user!.firstName!} ${profile!.user!.lastName!}",
+                      context: context),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(),
+                                child: Text(
+                                  "${profile!.user!.firstName!} ${profile!.user!.lastName!}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            BagesRow(
+                                isVeriedPro: profile!.user!.isVerifiedPro,
+                                isPremium: profile!.user!.userRole == 2),
+                            const SizedBox(
+                              width: 30,
+                            )
+                          ],
                         ),
-                    child: Text(
-                      name!,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+                        SpecialityWidget(speciality: profile!.speciality),
+                      ],
                     ),
                   ),
-                  SpecialityWidget(speciality: speciality)
+                  // const SizedBox(
+                  //   width: 5,
+                  // ),
+                  // if (profilestate.profileModel.user!.userRole == 2)
                 ],
               ),
             ),
-          )
+          ),
+
+          // Positioned(bottom: ,)
         ],
       ),
     );
@@ -704,7 +865,8 @@ class SpecialityWidget extends StatelessWidget {
   }
 }
 
-Widget buildProfilePicture(String? profileImage, bool? isMe, String name) {
+Widget buildProfilePicture(String? profileImage, bool? isMe, String name,
+    {BuildContext? context}) {
   return Stack(
     children: [
       Row(
@@ -757,28 +919,74 @@ Widget buildProfilePicture(String? profileImage, bool? isMe, String name) {
       //         : NetworkImage(profileImage) as ImageProvider,
       //   ),
       // ),
-      // if (isMe == true)
-      Align(
-        alignment: Alignment.bottomRight,
-        child: InkWell(
-          onTap: () async {
-            // ... (unchanged)
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(
-                IconlyBold.camera,
-                color: primaryColor,
+      if (isMe == true)
+        Align(
+          alignment: Alignment.bottomRight,
+          child: InkWell(
+            onTap: () async {
+              // ... (unchanged)
+              XFile? image = await CommonMethods.pickImage();
+              if (image != null) {
+                //show preview and dialog
+                showDialog(
+                  context: context!,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Preview"),
+                      content: Image.file(File(image.path)),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            var response = await RequestHelper.post(
+                                'upload/profile/image',
+                                {
+                                  "profile": image.path,
+                                },
+                                files: [image],
+                                filesKey: 'profileImage');
+                            if (response.statusCode == 200) {
+                              Navigator.pop(context);
+
+                              context.read<ProfileBloc>().add(
+                                  const LoadMyProfile(withputLoading: true));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Error adding profile image"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text("Save"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  IconlyBold.camera,
+                  color: primaryColor,
+                ),
               ),
             ),
           ),
         ),
-      ),
     ],
   );
 }

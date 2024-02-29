@@ -20,7 +20,6 @@ class _SpacesListState extends State<SpacesList> {
 
   @override
   Widget build(BuildContext context) {
-    print(context.read<LoadingBlocBloc>().state);
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
         if (state is HomeScreenLoaded && state.recommendedSpaces.isNotEmpty) {
@@ -102,14 +101,17 @@ class RecommendedSpaceCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Image.network(
-              recommendedSpace.cover ?? "",
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.25,
-              // height: double.infinity,
-              colorBlendMode: BlendMode.multiply,
-              color: primaryColor.withOpacity(1),
-              fit: BoxFit.cover,
+            Container(
+              color: primaryColor,
+              child: Image.network(
+                recommendedSpace.cover ?? "",
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.25,
+                // height: double.infinity,
+                colorBlendMode: BlendMode.multiply,
+                color: primaryColor.withOpacity(1),
+                fit: BoxFit.cover,
+              ),
             ),
             // Container(
             //   color:
@@ -185,8 +187,9 @@ class RecommendedSpaceCard extends StatelessWidget {
                       children: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              onPrimary: primaryColor,
+                          
+                              backgroundColor: Colors.white,
+                              
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(7),
                               ),

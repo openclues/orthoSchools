@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:azsoon/model/user-info.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -153,4 +154,10 @@ class CommonMethods {
 //     }
 //   }
 // }
+  static Future<XFile?> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    return pickedFile;
+  }
 }

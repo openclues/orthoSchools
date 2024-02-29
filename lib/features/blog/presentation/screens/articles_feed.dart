@@ -28,24 +28,35 @@ class _ArticlesFeedScreenState extends State<ArticlesFeedScreen> {
         builder: (context, state) {
           if (state is ArticlesFeedInitial) {
             context.read<ArticlesFeedBloc>().add(const FetchArticlesFeed());
-          }
-          Profile profile =
-              (context.read<ProfileBloc>().state as ProfileLoaded).profileModel;
+          } else if (state is ArticlesFeedError) {
+            return Center(
+              child: Text(state.message),
+            );
+          } else if (state is ArticlesFeedLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            Profile profile =
+                (context.read<ProfileBloc>().state as ProfileLoaded)
+                    .profileModel;
 
-          return ListView(
-            children: [
-              const SizedBox(
-                height: 16,
-              ),
-              if (profile.user!.isVerifiedPro == true && profile.blog == null)
-                const CreateYourBlogIncourgement(),
-              const SearchAndFilterWidget(),
-              const RecommendedBlogsWidget(),
-              const SizedBox(
-                height: 16,
-              ),
-            ],
-          );
+            return ListView(
+              children: [
+                const SizedBox(
+                  height: 16,
+                ),
+                if (profile.user!.isVerifiedPro == true && profile.blog == null)
+                  const CreateYourBlogIncourgement(),
+                const SearchAndFilterWidget(),
+                const RecommendedBlogsWidget(),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            );
+          }
+          return const SizedBox();
         },
       ),
     );

@@ -2,12 +2,14 @@ import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:azsoon/common_widgets/Button.dart';
 import 'package:azsoon/common_widgets/TextField.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../../Core/colors.dart';
+import '../../../profile/bloc/profile_bloc.dart';
+import '../../../space/bloc/cubit/verify_email_cubit.dart';
 import 'SignIn.dart';
-
 
 class ResetPassword extends StatefulWidget {
   static const String routeName = '/resetPassword';
@@ -135,9 +137,13 @@ class _firstStepState extends State<firstStep> {
 
 class SecondStep extends StatelessWidget {
   static const String routeName = '/secondStepReset';
+  final bool? verifyEmail;
   final String email;
+  final String? code;
   const SecondStep({
     super.key,
+    this.code,
+    this.verifyEmail,
     required this.email,
   });
 
@@ -180,6 +186,11 @@ class SecondStep extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   onClipboardFound: (b) {},
                   onCompleted: (v) {
+                    if (verifyEmail == true) {
+                      context.read<VerifyEmailCubit>().verifyEmail(v);
+                      // Navigator.of(context).pop();
+                      return;
+                    }
                     Navigator.of(context).pushNamed('/thirdStep', arguments: {
                       'code': v,
                       'email': email,

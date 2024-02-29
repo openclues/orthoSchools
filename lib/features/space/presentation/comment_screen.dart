@@ -16,9 +16,11 @@ import '../bloc/cubit/space_post_comments_cubit.dart';
 
 class CommentScreen extends StatefulWidget {
   final int commentId;
-  final LatestUpdatedPost latestUpdatedPost;
-  const CommentScreen(
-      {super.key, required this.commentId, required this.latestUpdatedPost});
+  // final LatestUpdatedPost latestUpdatedPost;
+  const CommentScreen({
+    super.key,
+    required this.commentId,
+  });
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
@@ -168,67 +170,7 @@ class _SingleCommentLoadedWidgetState extends State<SingleCommentLoadedWidget> {
                       setState(() {
                         commenting = true;
                       });
-                      // if (replyComment == null) {
-                      //   var response = await RequestHelper.post(
-                      //       "api/post/comment", {
-                      //     "post": widget.post.id.toString(),
-                      //     "content": _commentController.text
-                      //   });
-                      //   setState(() {
-                      //     commenting = false;
-                      //   });
-                      //   // _focusNode!.unfocus();
 
-                      //   if (response.statusCode == 200) {
-                      //     if (context.mounted) {
-                      //       context
-                      //           .read<SpacePostCommentsCubit>()
-                      //           .loadSpacePostComments(widget.post.id,
-                      //               loading: false);
-                      //     }
-
-                      //     NewPostComment comment = NewPostComment.fromJson(
-                      //         jsonDecode(utf8.decode(response.bodyBytes)));
-
-                      //     if (context.mounted) {
-                      //       // context
-                      //       //     .read<SpacePostCommentsCubit>()
-                      //       //     .addSpacePostCommentLocally(
-                      //       //         context
-                      //       //                 .read<SpacePostCommentsCubit>()
-                      //       //                 .state
-                      //       //             as SpacePostCommentsLoaded,
-                      //       //         comment);
-                      //       setState(() {});
-                      //     }
-                      //   }
-                      //   if (response.statusCode == 200) {
-                      //     _commentController.clear();
-                      //     _focusNode.unfocus();
-                      //     replyComment = null;
-
-                      //     if (context.mounted) {
-                      //       context.read<HomeScreenBloc>().add(
-                      //           UpdatePostLocally(
-                      //               post: widget.post.copyWith(
-                      //                   commentsCount:
-                      //                       widget.post.commentsCount! + 1),
-                      //               homeLoaded: context
-                      //                   .read<HomeScreenBloc>()
-                      //                   .state as HomeScreenLoaded));
-                      //       // context
-                      //       //     .read<SpacePostCommentsCubit>()
-                      //       //     .addSpacePostCommentLocally(
-                      //       //         context
-                      //       //                 .read<
-                      //       //                     SpacePostCommentsCubit>()
-                      //       //                 .state
-                      //       //             as SpacePostCommentsLoaded,
-                      //       //         comment);
-                      //       setState(() {});
-                      //     }
-                      //   }
-                      // } else {
                       setState(() {
                         commenting = true;
                       });
@@ -288,6 +230,7 @@ class _SingleCommentLoadedWidgetState extends State<SingleCommentLoadedWidget> {
         children: [
           CommentWidget(
             // showReply: false,
+            onOptionsChanged: (v) {},
             comment: widget.comment,
             onTap: (v) {},
           ),
@@ -298,8 +241,9 @@ class _SingleCommentLoadedWidgetState extends State<SingleCommentLoadedWidget> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-                "${context.read<SpacePostCommentsCubit>().getComment(widget.comment.id!).replies!.length} Replies"),
+            child: Text("${context.read<SpacePostCommentsCubit>().getComment(
+                  widget.comment.id!,
+                ).replies!.length} Replies"),
           ),
           ListView.builder(
             shrinkWrap: true,
@@ -329,7 +273,12 @@ class _SingleCommentLoadedWidgetState extends State<SingleCommentLoadedWidget> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                NameWithBadges(user: widget.comment.user!),
+                                NameWithBadges(
+                                    user: context
+                                        .read<SpacePostCommentsCubit>()
+                                        .getComment(widget.comment.id!)
+                                        .replies![index]
+                                        .user!),
                                 const SizedBox(
                                   height: 5,
                                 ),

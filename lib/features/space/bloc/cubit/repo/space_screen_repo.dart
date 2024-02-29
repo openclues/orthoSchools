@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 
+import '../../../../../Core/network/endpoints.dart';
 import '../../../../../Core/network/request_helper.dart';
 
 class SpaceScreenRepo {
@@ -19,4 +20,11 @@ class SpaceScreenRepo {
     var response = await RequestHelper.get("api/comment/$commentId");
     return response;
   }
+
+    Future<Response> getMorePosts(String next) async {
+    var response =
+        await RequestHelper.get(next.replaceAll(ApiEndpoints.baseUrl, ''));
+    return response;
+  }
+
 }

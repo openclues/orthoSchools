@@ -35,7 +35,6 @@ class RequestHelper {
     String endpoint,
   ) async {
     String url = _baseUrl + endpoint;
-    print(url);
     String? authToken = await getAuthToken();
 
     if (authToken != null) {
@@ -116,6 +115,67 @@ class RequestHelper {
         return http.post(Uri.parse(url), body: data);
       }
     }
+  }
+
+  static Future<http.Response> postDataWithFiles({
+    required String apiUrl,
+    required Map<String, String> data,
+    List<XFile>? imageFiles,
+    XFile? videoFile,
+  }) async {
+    var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+
+    // Add data fields to the request
+    request.fields.addAll(data);
+
+    // Add image files if available
+    if (imageFiles != null) {
+      for (var i = 0; i < imageFiles.length; i++) {
+        var image = imageFiles[i];
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+
+        var multipartFile = http.MultipartFile(
+          'post_images', // The name of the attribute in the request
+          stream,
+          length,
+          filename: 'image$i.jpg', // Customize the filename if needed
+        );
+
+        request.files.add(multipartFile);
+      }
+    }
+
+    // Add video file if available
+    if (videoFile != null) {
+      var videoStream = http.ByteStream(videoFile.openRead());
+      var videoLength = await videoFile.length();
+
+      var videoMultipartFile = http.MultipartFile(
+        'video', // The name of the attribute in the request
+        videoStream,
+        videoLength,
+        filename: 'video.mp4', // Customize the filename if needed
+      );
+
+      request.files.add(videoMultipartFile);
+    }
+    String? authToken = await getAuthToken();
+    if (authToken != null) {
+      // Add authorization header
+      request.headers['Authorization'] = 'Token $authToken';
+    }
+
+    // Send the request
+    var response = await request.send();
+
+    // Handle response
+    if (response.statusCode == 200) {
+      print('Data posted successfully');
+    } else {
+      print('Failed to post data. Status code: ${response.statusCode}');
+    }
+    return Response.fromStream(response);
   }
 
   static Future<Response> put(

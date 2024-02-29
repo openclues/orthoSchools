@@ -16,8 +16,9 @@ import '../join_space/bloc/join_space_bloc.dart';
 
 class PostScreen extends StatefulWidget {
   static const routeName = '/post';
-  final LatestUpdatedPost post;
-  const PostScreen({super.key, required this.post});
+  LatestUpdatedPost? post;
+  // int? postId;
+  PostScreen({super.key, this.post});
 
   @override
   State<PostScreen> createState() => _PostScreenState();
@@ -26,214 +27,238 @@ class PostScreen extends StatefulWidget {
 TextEditingController _commentController = TextEditingController();
 
 class _PostScreenState extends State<PostScreen> {
+  // _getUpdatedPost() async {
+  //   var response = await RequestHelper.get('post/${widget.postId!}');
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       widget.post = LatestUpdatedPost.fromJson(
+  //           jsonDecode(utf8.decode(response.bodyBytes)));
+  //     });
+  //   }
+  // }
+
   final FocusNode _focusNode = FocusNode();
   bool? isReply;
   NewPostComment? replyComment;
 
   bool? commenting = false;
   @override
+  void initState() {
+    if (widget.post == null) {
+      // _getUpdatedPost();
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<JoinSpaceBloc, JoinSpaceState>(
       listener: (context, state) {
         if (state is JoinSpaceSuccess) {
           Navigator.pushReplacementNamed(context, PostScreen.routeName,
-              arguments: widget.post.copyWith(isJoined: true));
+              arguments: widget.post!.copyWith(isJoined: true));
         }
       },
       child: Scaffold(
           floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: widget.post.isJoined!
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 0, bottom: 0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(bottom: 5),
-                    // height: 100,
-                    color: Colors.white,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (replyComment != null)
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Replying to ${replyComment!.user!.firstName} ${replyComment!.user!.lastName}",
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        Row(
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: primaryColor),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: TextFormField(
-                                        focusNode: _focusNode,
-                                        controller: _commentController,
-                                        maxLines: 5,
-                                        minLines: 1,
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          border: InputBorder.none,
-                                          hintText: 'Write a comment...',
-                                          hintStyle: TextStyle(
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      )),
-                                      // const Spacer(),
-                                      const Icon(
-                                        IconlyLight.paper,
-                                        color: primaryColor,
-                                      ),
-                                    ],
+          floatingActionButton: widget.post!.isJoined!
+              ? Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0, bottom: 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      // height: 100,
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (replyComment != null)
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Replying to ${replyComment!.user!.firstName} ${replyComment!.user!.lastName}",
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                setState(() {
-                                  commenting = true;
-                                });
-                                if (replyComment == null) {
-                                  var response = await RequestHelper.post(
-                                      "api/post/comment", {
-                                    "post": widget.post.id.toString(),
-                                    "content": _commentController.text
-                                  });
-                                  setState(() {
-                                    commenting = false;
-                                  });
-                                  // _focusNode!.unfocus();
-
-                                  if (response.statusCode == 200) {
-                                    if (context.mounted) {
-                                      context.read<HomeScreenBloc>().add(
-                                          UpdatePostLocally(
-                                              post: widget.post.copyWith(
-                                                  commentsCount: widget
-                                                          .post.commentsCount! +
-                                                      1),
-                                              homeLoaded: context
-                                                  .read<HomeScreenBloc>()
-                                                  .state as HomeScreenLoaded));
-                                      context
-                                          .read<SpacePostCommentsCubit>()
-                                          .addSpacePostCommentLocally(
-                                              context
-                                                      .read<
-                                                          SpacePostCommentsCubit>()
-                                                      .state
-                                                  as SpacePostCommentsLoaded,
-                                              NewPostComment.fromJson(
-                                                  jsonDecode(utf8.decode(
-                                                      response.bodyBytes))));
-                                    }
-
-                                    if (context.mounted) {
-                                      // context
-                                      //     .read<SpacePostCommentsCubit>()
-                                      //     .addSpacePostCommentLocally(
-                                      //         context
-                                      //                 .read<SpacePostCommentsCubit>()
-                                      //                 .state
-                                      //             as SpacePostCommentsLoaded,
-                                      //         comment);
-                                      setState(() {});
-                                    }
-                                  }
-                                  if (response.statusCode == 200) {
-                                    _commentController.clear();
-                                    _focusNode.unfocus();
-                                    replyComment = null;
-
-                                    if (context.mounted) {
-                                      context.read<HomeScreenBloc>().add(
-                                          UpdatePostLocally(
-                                              post: widget.post.copyWith(
-                                                  commentsCount: widget
-                                                          .post.commentsCount! +
-                                                      1),
-                                              homeLoaded: context
-                                                  .read<HomeScreenBloc>()
-                                                  .state as HomeScreenLoaded));
-                                      // context
-                                      //     .read<SpacePostCommentsCubit>()
-                                      //     .addSpacePostCommentLocally(
-                                      //         context
-                                      //                 .read<
-                                      //                     SpacePostCommentsCubit>()
-                                      //                 .state
-                                      //             as SpacePostCommentsLoaded,
-                                      //         comment);
-                                      setState(() {});
-                                    }
-                                  }
-                                } else {
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: primaryColor),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            child: TextFormField(
+                                          focusNode: _focusNode,
+                                          controller: _commentController,
+                                          maxLines: 5,
+                                          minLines: 1,
+                                          decoration: const InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            border: InputBorder.none,
+                                            hintText: 'Write a comment...',
+                                            hintStyle: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        )),
+                                        // const Spacer(),
+                                        const Icon(
+                                          IconlyLight.paper,
+                                          color: primaryColor,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
                                   setState(() {
                                     commenting = true;
                                   });
-                                  var response = await RequestHelper.post(
-                                      "api/post/replay", {
-                                    "comment": replyComment!.id.toString(),
-                                    "content": _commentController.text,
-                                  });
-                                  setState(() {
-                                    commenting = false;
-                                  });
-                                  if (response.statusCode == 201 ||
-                                      response.statusCode == 200) {
-                                    _commentController.clear();
+                                  if (replyComment == null) {
+                                    var response = await RequestHelper.post(
+                                        "api/post/comment", {
+                                      "post": widget.post!.id.toString(),
+                                      "content": _commentController.text
+                                    });
+                                    setState(() {
+                                      commenting = false;
+                                    });
+                                    // _focusNode!.unfocus();
 
-                                    if (context.mounted) {
-                                      context
-                                          .read<SpacePostCommentsCubit>()
-                                          .loadSpacePostComments(widget.post.id,
-                                              loading: false);
-                                      setState(() {});
-                                      replyComment = null;
+                                    if (response.statusCode == 200) {
+                                      if (context.mounted) {
+                                        context.read<HomeScreenBloc>().add(
+                                            UpdatePostLocally(
+                                                post: widget.post!.copyWith(
+                                                    commentsCount: widget.post!
+                                                            .commentsCount! +
+                                                        1),
+                                                homeLoaded: context
+                                                        .read<HomeScreenBloc>()
+                                                        .state
+                                                    as HomeScreenLoaded));
+                                        context
+                                            .read<SpacePostCommentsCubit>()
+                                            .addSpacePostCommentLocally(
+                                                context
+                                                        .read<
+                                                            SpacePostCommentsCubit>()
+                                                        .state
+                                                    as SpacePostCommentsLoaded,
+                                                NewPostComment.fromJson(
+                                                    jsonDecode(utf8.decode(
+                                                        response.bodyBytes))));
+                                      }
+
+                                      if (context.mounted) {
+                                        // context
+                                        //     .read<SpacePostCommentsCubit>()
+                                        //     .addSpacePostCommentLocally(
+                                        //         context
+                                        //                 .read<SpacePostCommentsCubit>()
+                                        //                 .state
+                                        //             as SpacePostCommentsLoaded,
+                                        //         comment);
+                                        setState(() {});
+                                      }
                                     }
+                                    if (response.statusCode == 200) {
+                                      _commentController.clear();
+                                      _focusNode.unfocus();
+                                      replyComment = null;
 
-                                    _focusNode.unfocus();
+                                      if (context.mounted) {
+                                        context.read<HomeScreenBloc>().add(
+                                            UpdatePostLocally(
+                                                post: widget.post!.copyWith(
+                                                    commentsCount: widget.post!
+                                                            .commentsCount! +
+                                                        1),
+                                                homeLoaded: context
+                                                        .read<HomeScreenBloc>()
+                                                        .state
+                                                    as HomeScreenLoaded));
+                                        // context
+                                        //     .read<SpacePostCommentsCubit>()
+                                        //     .addSpacePostCommentLocally(
+                                        //         context
+                                        //                 .read<
+                                        //                     SpacePostCommentsCubit>()
+                                        //                 .state
+                                        //             as SpacePostCommentsLoaded,
+                                        //         comment);
+                                        setState(() {});
+                                      }
+                                    }
+                                  } else {
+                                    setState(() {
+                                      commenting = true;
+                                    });
+                                    var response = await RequestHelper.post(
+                                        "api/post/replay", {
+                                      "comment": replyComment!.id.toString(),
+                                      "content": _commentController.text,
+                                    });
+                                    setState(() {
+                                      commenting = false;
+                                    });
+                                    if (response.statusCode == 201 ||
+                                        response.statusCode == 200) {
+                                      _commentController.clear();
+
+                                      if (context.mounted) {
+                                        context
+                                            .read<SpacePostCommentsCubit>()
+                                            .loadSpacePostComments(
+                                                widget.post!.id,
+                                                loading: false);
+                                        setState(() {});
+                                        replyComment = null;
+                                      }
+
+                                      _focusNode.unfocus();
+                                    }
                                   }
-                                }
-                              },
-                              child: commenting == true
-                                  ? const CircularProgressIndicator()
-                                  : const Icon(
-                                      FontAwesomeIcons.paperPlane,
-                                      color: primaryColor,
-                                    ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                          ],
-                        ),
-                      ],
+                                },
+                                child: commenting == true
+                                    ? const CircularProgressIndicator()
+                                    : const Icon(
+                                        FontAwesomeIcons.paperPlane,
+                                        color: primaryColor,
+                                      ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -260,14 +285,20 @@ class _PostScreenState extends State<PostScreen> {
           body: ListView(
             children: [
               SpacePostWidget(
-                post: widget.post,
+                post: widget.post!,
                 isExpanded: true,
               ),
-              if (widget.post.isJoined!)
+              if (widget.post!.isJoined!)
                 CommentsScreen(
-                  post: widget.post,
+                  post: widget.post!,
+                  onOptionsChanged: (v, comment) {
+                    // if (v == "Edit") {
+                    //   _focusNode.requestFocus();
+                    //   _commentController.text = comment!.content!;
+                    // }
+                  },
                   // showRepy: true,
-                  postId: widget.post.id!,
+                  postId: widget.post!.id!,
                   onTap: (v) {
                     _focusNode.requestFocus();
                     isReply = true;
@@ -276,7 +307,7 @@ class _PostScreenState extends State<PostScreen> {
                     });
                   },
                 ),
-              if (!widget.post.isJoined!)
+              if (!widget.post!.isJoined!)
                 const Padding(
                   padding: EdgeInsets.only(top: 100, left: 20, right: 20),
                   child: Center(
@@ -294,11 +325,11 @@ class _PostScreenState extends State<PostScreen> {
               ),
 
               // PostLoadedWidget(
-              //   post: widget.post,
+              //   post: widget.post!,
               // ),
 
               // CommentsWidget(
-              //   postId: widget.post.id!,
+              //   postId: widget.post!.id!,
               // ),
             ],
           )),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:azsoon/Core/colors.dart';
@@ -12,10 +13,13 @@ import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quds_popup_menu/quds_popup_menu.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../../Core/network/request_helper.dart';
 import '../../home_screen/data/models/recommended_spaces_model.dart';
 import '../bloc/add_post_bloc.dart';
 import '../bloc/my_spaces_bloc.dart';
+import 'post_screen.dart';
 
 class AddPostScreen extends StatefulWidget {
   final RecommendedSpace? space;
@@ -34,22 +38,37 @@ class _AddPostScreenState extends State<AddPostScreen> {
   List<XFile> images = [];
   XFile? video;
   String? content;
+  _getUpdatedPost(int? postId) async {
+    var response = await RequestHelper.get('post/${postId!}');
+    if (response.statusCode == 200) {
+      return LatestUpdatedPost.fromJson(jsonDecode(response.body));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<MySpacesBloc>().add(const LoadMySpaces());
+  }
 
   @override
   Widget build(BuildContext context) {
     widget.space != null ? selectedSpace = widget.space!.name : null;
     widget.space != null ? selectedSpaceId = widget.space!.id : null;
     return BlocListener<AddPostBloc, AddPostState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is AddPostLoaded) {
-          try {
-            Navigator.of(context).pushReplacementNamed(
-              SpaceScreen.routeName,
-              arguments: widget.space,
-            );
-          } catch (e) {
-            Navigator.of(context).pop();
-          }
+          _getUpdatedPost(state.post).then(
+            (value) {
+              Navigator.of(context).pop();
+              Navigator.of(context)
+                  .pushNamed(PostScreen.routeName, arguments: value);
+            },
+          );
+          // try {
+          // } catch (e) {
+          //   Navigator.of(context).pop();
+          // }
         }
       },
       child: Scaffold(
@@ -61,161 +80,138 @@ class _AddPostScreenState extends State<AddPostScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               //list of images
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: BlocListener<MySpacesBloc, MySpacesState>(
-                  listener: (context, state) {
-                    if (widget.space != null) {
-                      setState(() {
-                        selectedSpace = widget.space!.name!;
-                        selectedSpaceId = widget.space!.id!;
-                      });
-                      return;
-                    }
-                    if (state is MySpacesLoaded) {
-                      showQudsPopupMenu(
-                          context: context,
-                          items: state.spaces
-                              .map((e) => QudsPopupMenuItem(
-                                  title: Text(
-                                    e.name!,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedSpace = e.name;
-                                      selectedSpaceId = e.id;
-                                    });
-                                  }))
-                              .toList());
-                    }
-                  },
-                  child: BlocBuilder<MySpacesBloc, MySpacesState>(
-                    builder: (context, state) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              if (state is! MySpacesLoaded) {
-                                context
-                                    .read<MySpacesBloc>()
-                                    .add(const LoadMySpaces());
-                              }
-                              if (state is MySpacesLoaded) {
-                                showQudsPopupMenu(
-                                    context: context,
-                                    items: state.spaces
-                                        .map((e) => QudsPopupMenuItem(
-                                            title: Text(
-                                              e.name!,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                selectedSpace = e.name;
-                                                selectedSpaceId = e.id;
-                                              });
-                                            }))
-                                        .toList());
-                              }
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: primaryColor),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 5),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      state is! MySpacesLoading
-                                          ? selectedSpace == null
-                                              ? const Icon(IconlyBold.plus,
-                                                  color: primaryColor)
-                                              : const Icon(
-                                                  Icons.check_circle_outline,
-                                                )
-                                          : const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                color: primaryColor,
-                                              ),
-                                            ),
-                                      const SizedBox(width: 5),
-                                      Text(selectedSpace == null
-                                          ? "Post in which space"
-                                          : selectedSpace!)
-                                    ],
-                                  ),
-                                )),
-                          ),
-                          //upload image
-                          IconButton(
-                            onPressed: () {
-                              //select multiple images
-                              ImagePicker().pickMultiImage().then((value) {
-                                setState(() {
-                                  images = value;
-                                });
-                              });
-                            },
-                            icon: const Icon(
-                              IconlyBold.image_2,
-                              color: primaryColor,
-                              size: 30,
-                            ),
-                          ),
-                          //upload video
-                          IconButton(
-                            onPressed: () {
-                              //select multiple images
-                              ImagePicker()
-                                  .pickVideo(source: ImageSource.gallery)
-                                  .then((value) {
-                                setState(() {
-                                  video = value;
-                                });
-                              });
-                            },
-                            icon: const Icon(
-                              IconlyBold.video,
-                              color: primaryColor,
-                              size: 30,
-                            ),
-                          ),
-                        ],
-                      );
+              if (widget.article == null)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: BlocListener<MySpacesBloc, MySpacesState>(
+                    listener: (context, state) {
+                      if (widget.space != null) {
+                        setState(() {
+                          selectedSpace = widget.space!.name!;
+                          selectedSpaceId = widget.space!.id!;
+                        });
+                        return;
+                      }
+                      if (state is MySpacesLoaded) {
+                        if (state.spaces.isEmpty) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => const AlertDialog(
+                                  title: Text('No spaces found'),
+                                  content: Text(
+                                      'You need to join a space to post in it')));
+                          return;
+                        }
+                        showQudsPopupMenu(
+                            context: context,
+                            items: state.spaces
+                                .map((e) => QudsPopupMenuItem(
+                                    title: Text(
+                                      e.name!,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedSpace = e.name;
+                                        selectedSpaceId = e.id;
+                                      });
+                                    }))
+                                .toList());
+                      }
                     },
+                    child: BlocBuilder<MySpacesBloc, MySpacesState>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            //upload image
+                            IconButton(
+                              onPressed: () {
+                                //select multiple images
+                                ImagePicker().pickMultiImage().then((value) {
+                                  setState(() {
+                                    images = value;
+                                  });
+                                });
+                              },
+                              icon: const Icon(
+                                IconlyBold.image_2,
+                                color: primaryColor,
+                                size: 30,
+                              ),
+                            ),
+                            //upload video
+                            if (widget.article == null)
+                              IconButton(
+                                onPressed: () {
+                                  //select multiple images
+                                  ImagePicker()
+                                      .pickVideo(source: ImageSource.gallery)
+                                      .then((value) {
+                                    setState(() {
+                                      video = value;
+                                    });
+                                  });
+                                },
+                                icon: const Icon(
+                                  IconlyBold.video,
+                                  color: primaryColor,
+                                  size: 30,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
 
               SizedBox(
                 width: MediaQuery.of(context).size.width / 1.1,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.read<AddPostBloc>().add(AddPostToSpace(
-                          spaceId: selectedSpaceId.toString(),
-                          video: video,
-                          content: content!,
-                          images: images,
-                          blogpost: widget.article?.id));
-                    },
-                    child: const Text('Post',
-                        style: TextStyle(fontSize: 20, color: Colors.white))),
+                child: BlocBuilder<AddPostBloc, AddPostState>(
+                  builder: (context, state) {
+                    if (state is AddPostLoading) {
+                      return const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        ],
+                      );
+                    }
+
+                    return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (selectedSpace == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => const AlertDialog(
+                                    title: Text('No space selected'),
+                                    content: Text(
+                                        'You need to select a space to post in it')));
+                            return;
+                          }
+                          context.read<AddPostBloc>().add(AddPostToSpace(
+                              spaceId: selectedSpaceId.toString(),
+                              video: video,
+                              content: content!,
+                              images: images,
+                              blogpost: widget.article?.id));
+                        },
+                        child: const Text('Post',
+                            style:
+                                TextStyle(fontSize: 20, color: Colors.white)));
+                  },
+                ),
               )
             ],
           ),
@@ -266,6 +262,67 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       },
                     ),
                   ),
+            BlocBuilder<MySpacesBloc, MySpacesState>(
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () async {
+                    if (state is! MySpacesLoaded) {
+                      context.read<MySpacesBloc>().add(const LoadMySpaces());
+                    }
+                    if (state is MySpacesLoaded) {
+                      showQudsPopupMenu(
+                          context: context,
+                          items: state.spaces
+                              .map((e) => QudsPopupMenuItem(
+                                  title: Text(
+                                    e.name!,
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedSpace = e.name;
+                                      selectedSpaceId = e.id;
+                                    });
+                                  }))
+                              .toList());
+                    }
+                  },
+                  child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(color: primaryColor),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 5),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            state is! MySpacesLoading
+                                ? selectedSpace == null
+                                    ? const Icon(IconlyBold.plus,
+                                        color: primaryColor)
+                                    : const Icon(
+                                        Icons.check_circle_outline,
+                                      )
+                                : const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                            const SizedBox(width: 5),
+                            Text(selectedSpace == null
+                                ? "Choose a space"
+                                : selectedSpace!)
+                          ],
+                        ),
+                      )),
+                );
+              },
+            ),
             Container(
               height: widget.article == null && video == null
                   ? MediaQuery.of(context).size.height / 2
@@ -366,7 +423,8 @@ class _BlogPostPreviewState extends State<BlogPostPreview> {
 class YourVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
-  const YourVideoPlayerWidget({super.key, required this.videoUrl});
+  const YourVideoPlayerWidget({Key? key, required this.videoUrl})
+      : super(key: key);
 
   @override
   _YourVideoPlayerWidgetState createState() => _YourVideoPlayerWidgetState();
@@ -375,41 +433,52 @@ class YourVideoPlayerWidget extends StatefulWidget {
 class _YourVideoPlayerWidgetState extends State<YourVideoPlayerWidget> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-    Uri? videoUrl = Uri.tryParse(widget.videoUrl);
-    if (videoUrl != null) {
-      print(videoUrl);
-      //replace http with https
-      videoUrl = Uri.parse(widget.videoUrl.replaceFirst('http', 'https'));
-      _videoPlayerController = VideoPlayerController.networkUrl(videoUrl);
-    } else {
-      _videoPlayerController =
-          VideoPlayerController.file(File(widget.videoUrl));
-    }
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      // aspectRatio: 16 / 9, // Adjust to your video's aspect ratio
-      autoPlay:
-          false, // Set to true if you want the video to play automatically
-      looping: false, // Set to true if you want the video to loop
-      placeholder: Container(
-        color: Colors.grey, // Placeholder color while loading
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Chewie(controller: _chewieController);
+    _initializePlayer();
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    try {
+      _videoPlayerController.dispose();
+    } catch (e) {
+      print(e);
+    }
+    try {
+      _chewieController.dispose();
+    } catch (e) {
+      print(e);
+    }
     super.dispose();
+  }
+
+  Future<void> _initializePlayer() async {
+    _videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+    await _videoPlayerController.initialize();
+    setState(() {
+      _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController,
+          autoInitialize: true,
+          looping: true,
+          autoPlay: false);
+      _initialized = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_initialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Chewie(
+      controller: _chewieController,
+    );
   }
 }

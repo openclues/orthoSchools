@@ -31,8 +31,8 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
         final databody = jsonDecode(utf8.decode(response.bodyBytes));
         String token = databody['auth_token'] as String;
 
-        LocalStorage.saveAuthToken(token);
-
+        await LocalStorage.saveAuthToken(token);
+        print("token was saved");
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
         String deviceId = '';
@@ -47,7 +47,7 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
         FirebaseMessaging messaging = FirebaseMessaging.instance;
         String? fcmToken = await messaging.getToken();
 
-        var responses = await RequestHelper.post(
+        RequestHelper.post(
             'register-device/', {"device_id": deviceId, "fcm_token": fcmToken});
 
         emit(AuthLoggedIn(token));
@@ -88,25 +88,25 @@ class AuthCubitCubit extends Cubit<AuthCubitState> {
         Map<String, dynamic> responseData = json.decode(response.body);
 
         if (responseData.containsKey('email')) {
-          Fluttertoast.showToast(
-              msg: 'user with this email already exists',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color.fromARGB(255, 166, 221, 247),
-              textColor: Colors.black,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: 'user with this email already exists',
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+          //     textColor: Colors.black,
+          //     fontSize: 16.0);
           emit(const AuthError('user with this email already exists'));
         } else if (responseData.containsKey('password')) {
-          Fluttertoast.showToast(
-              msg: 'password is too similar to the email',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color.fromARGB(255, 166, 221, 247),
-              textColor: Colors.black,
-              fontSize: 16.0);
-          emit(const AuthError('password is too similar to the email'));
+          // Fluttertoast.showToast(
+          //     msg: responseData['password'][0].toString(),
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: const Color.fromARGB(255, 166, 221, 247),
+          //     textColor: Colors.black,
+          //     fontSize: 16.0);
+          emit(AuthError(responseData['password'][0].toString()));
         }
       } else {
         emit(const AuthError('Invalid credentials'));

@@ -17,7 +17,9 @@ class HomeScreenLoaded extends HomeScreenState {
   final PageModel<LatestUpdatedPost> posts;
 
   const HomeScreenLoaded(
-      {required this.recommendedSpaces, required this.posts, this.isLoading = false});
+      {required this.recommendedSpaces,
+      required this.posts,
+      this.isLoading = false});
 
   @override
   List<Object> get props => [recommendedSpaces, posts, isLoading];

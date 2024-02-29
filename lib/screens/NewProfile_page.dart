@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:azsoon/Core/local_storage.dart';
 import 'package:azsoon/Core/network/request_helper.dart';
 import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
 import 'package:azsoon/features/profile/data/my_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../common_widgets/Button.dart';
 import '../common_widgets/TextField.dart';
@@ -75,7 +77,12 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
           );
         } else if (state is ProfileLoaded) {
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              title: const Text('Edit Profile',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              centerTitle: true,
+              backgroundColor: const Color(0XFF8174CC),
+            ),
             bottomNavigationBar: Padding(
                 padding: const EdgeInsets.only(right: 10.0, left: 10),
                 child: loading == false
@@ -87,7 +94,23 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
                         textColor: Colors.white,
                         height: 45,
                         onpress: () async {
-                          globalKey.currentState?.save();
+                          if (!globalKey.currentState!.validate()) {
+                            return;
+                          }
+                          globalKey.currentState!.save();
+                          print('firstName: $firstName');
+                          print('lastName: $lastName');
+                          print('phoneNumber: $phoneNumber');
+                          print('birthDay: $birthDay');
+                          print('workplace: $workplace');
+                          print('studyIn: $studyIn');
+                          print('selectedCountry: $selectedCountry');
+                          print('selectedState: $selectedState');
+                          print('selectedCity: $selectedCity');
+                          print('speciality: $speciality');
+                          print('titleSelectd: $titleSelectd');
+                          print('bio: $bio');
+                          print('bio: $bio');
 
                           setState(() {
                             loading = true;
@@ -95,7 +118,6 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
                           var response = await RequestHelper.post(
                             'update/profile/',
                             {
-                              'bio': bio,
                               'first_name': firstName,
                               'last_name': lastName,
                               'phone': phoneNumber,
@@ -112,7 +134,7 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
                           setState(() {
                             loading = false;
                           });
-                          // print(response);
+                          // // print(response);
                           if (response.statusCode == 200) {
                             if (context.mounted) {
                               context.read<ProfileBloc>().add(
@@ -145,442 +167,380 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
                               child: CircularProgressIndicator()),
                         ],
                       )),
-            body: Form(
-              key: globalKey,
-              child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  children: [
-                    // Stack(
-                    //   clipBehavior: Clip.none,
-                    //   alignment: Alignment.center,
-                    //   children: [
-                    //     Container(
-                    //       child: Container(
-                    //         // decoration: BoxDecoration(
-                    //         //   borderRadius: BorderRadius.only(
-                    //         //     bottomLeft: Radius.circular(15.0),
-                    //         //     bottomRight: Radius.circular(15.0),
-                    //         //   ),
-                    //         // ),
-                    //         child: Image.asset(
-                    //           'assets/images/postImage.png',
-                    //           width: double.infinity,
-                    //           height: coverHeight,
-                    //           fit: BoxFit.cover,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Positioned(
-                    //       top: top,
-                    //       child: CircleAvatar(
-                    //         radius: profilePictureHeight, // adjust the radius as needed
-                    //         backgroundColor: const Color.fromARGB(
-                    //             255, 223, 223, 223), // border color
-                    //         child: CircleAvatar(
-                    //           radius: profilePictureHeight -
-                    //               4, // adjust the inner radius to leave room for the border
-                    //           backgroundImage: AssetImage('assets/images/profile.jpeg'),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Positioned(
-                    //       top: top + top / 4,
-                    //       right: 0,
-                    //       child: IconButton(
-                    //         icon: Icon(Icons.edit),
-                    //         onPressed: () async {
-                    //           // await editDialog();
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    const Text("Edit Profile",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10, left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // TextButton.icon(
-                          //     onPressed: () {},
-                          //     icon: const Icon(
-                          //       Icons.co_present_outlined,
-                          //       color: Colors.black,
-                          //     ),
-                          //     label: const Text(
-                          //       '   Your are a...',
-                          //       style: TextStyle(
-                          //           fontSize: 17,
-                          //           fontWeight: FontWeight.bold,
-                          //           color: Colors.black),
-                          //     )),
-                          // Container(
-                          //   padding: const EdgeInsets.only(
-                          //       right: 10, left: 10, bottom: 10, top: 10),
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.white,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     border: Border.all(color: Colors.white),
-                          //     boxShadow: [
-                          //       BoxShadow(
-                          //         color: Colors.black.withOpacity(0.2),
-                          //         offset: const Offset(0, 2),
-                          //         blurRadius: 1,
-                          //         spreadRadius: 0.2,
-                          //       ),
-                          //     ],
-                          //   ),
-                          //   child: Column(
-                          //     crossAxisAlignment: CrossAxisAlignment.start,
-                          //     children: [
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.spaceEvenly,
-                          //         children: ['Dr', 'Prof', 'None']
-                          //             .map((e) => Expanded(
-                          //                   child: Padding(
-                          //                     padding:
-                          //                         const EdgeInsets.all(8.0),
-                          //                     child: GestureDetector(
-                          //                       onTap: () {
-                          //                         setState(() {
-                          //                           titleSelectd = e;
-                          //                         });
-                          //                       },
-                          //                       child: Container(
-                          //                         decoration: BoxDecoration(
-                          //                             borderRadius:
-                          //                                 BorderRadius.circular(
-                          //                                     20),
-                          //                             color: e == titleSelectd
-                          //                                 ? const Color(
-                          //                                     0XFF8174CC)
-                          //                                 : Colors.transparent,
-                          //                             border: Border.all(
-                          //                               color: const Color
-                          //                                   .fromARGB(
-                          //                                   255, 204, 204, 205),
-                          //                             )),
-                          //                         child: Padding(
-                          //                           padding:
-                          //                               const EdgeInsets.all(
-                          //                                   7.0),
-                          //                           child: Text(
-                          //                             e,
-                          //                             textAlign:
-                          //                                 TextAlign.center,
-                          //                             style: TextStyle(
-                          //                                 color: e ==
-                          //                                         titleSelectd
-                          //                                     ? Colors.white
-                          //                                     : Colors.black,
-                          //                                 fontSize: 17),
-                          //                           ),
-                          //                         ),
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 ))
-                          //             .toList(),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-
-                          TextButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.person,
-                                color: Colors.black,
-                              ),
-                              label: const Text(
-                                'Basic Information',
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: globalKey,
+                child: ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("First Name",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              )),
-                          Container(
-                            padding: const EdgeInsets.only(
-                                right: 10, left: 10, bottom: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.white),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 1,
-                                  spreadRadius: 0.2,
-                                ),
-                              ],
+                                  fontSize: 15,
+                                )),
+                            const SizedBox(
+                              height: 10,
                             ),
-                            child: Column(children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: CustomTextField(
-                                      initialValue:
-                                          state.profileModel.user!.firstName,
-                                      onSaved: (value) {
-                                        firstName = value;
-                                      },
-                                      obscureText: false,
-                                      labelText: 'First Name',
-                                      borderColor: const Color.fromARGB(
-                                          255, 204, 204, 205),
-                                      textfiledColor: Colors.white,
-                                      // controller: firstNameController,
-                                      hintText: "",
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextFormField(
+                                validator: (v) {
+                                  if (v!.isEmpty) {
+                                    return 'First Name is required';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'First Name',
+                                  hintStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 194, 193, 199),
+                                    fontSize: 14.0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
                                     ),
                                   ),
-                                  const SizedBox(
-                                      width:
-                                          16), // Adjust the spacing between fields
-                                  Expanded(
-                                    child: CustomTextField(
-                                      initialValue:
-                                          state.profileModel.user!.lastName,
-                                      onSaved: (value) {
-                                        lastName = value;
-                                      },
-                                      obscureText: false,
-                                      labelText: 'Last Name',
-                                      borderColor: const Color.fromARGB(
-                                          255, 204, 204, 205),
-                                      textfiledColor: Colors.white,
-                                      // controller: lastNameController,
-                                      hintText: "",
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical:
+                                          10), //symmetric(vertical: 17, horizontal: 10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                                initialValue:
+                                    state.profileModel.user!.firstName,
+                                onSaved: (value) {
+                                  firstName = value;
+                                },
+                                obscureText: false,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text("Last Name",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextFormField(
+                                validator: (v) {
+                                  if (v!.isEmpty) {
+                                    return 'Last Name is required';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Last Name',
+                                  hintStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 194, 193, 199),
+                                    fontSize: 14.0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
                                     ),
                                   ),
-                                ],
-                              ),
-                              CustomTextField(
-                                initialValue: state.profileModel.user!.phone,
-                                onSaved: (value) {
-                                  phoneNumber = value;
-                                },
-                                obscureText: false,
-                                labelText: 'Phone number',
-                                borderColor:
-                                    const Color.fromARGB(255, 204, 204, 205),
-                                textfiledColor: Colors.white,
-                                // controller: phoneController,
-                                hintText: "+90",
-                              ),
-                            ]),
-                          ),
-                          // TextButton.icon(
-                          //     onPressed: () {},
-                          //     icon: const Icon(
-                          //       Icons.location_city,
-                          //       color: Colors.black,
-                          //     ),
-                          //     label: const Text(
-                          //       'Lives In',
-                          //       style: TextStyle(
-                          //           fontSize: 17,
-                          //           fontWeight: FontWeight.bold,
-                          //           color: Colors.black),
-                          //     )),
-                          // Container(
-                          //   padding: const EdgeInsets.only(
-                          //       right: 10, left: 10, bottom: 15),
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.white,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     border: Border.all(color: Colors.white),
-                          //     boxShadow: [
-                          //       BoxShadow(
-                          //         color: Colors.black.withOpacity(0.2),
-                          //         offset: const Offset(0, 2),
-                          //         blurRadius: 1,
-                          //         spreadRadius: 0.2,
-                          //       ),
-                          //     ],
-                          //   ),
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                          //     child: CSCPicker(
-                          //       dropdownDecoration: BoxDecoration(
-                          //         border: Border.all(
-                          //           color: const Color.fromARGB(
-                          //               255, 204, 204, 205),
-                          //         ),
-                          //         borderRadius: BorderRadius.circular(10),
-                          //       ),
-                          //       disabledDropdownDecoration: BoxDecoration(
-                          //         color:
-                          //             const Color.fromARGB(255, 239, 238, 238),
-                          //         border: Border.all(
-                          //           color: const Color.fromARGB(
-                          //               255, 204, 204, 205),
-                          //         ),
-                          //         borderRadius: BorderRadius.circular(100),
-                          //       ),
-                          //       layout: Layout.vertical,
-                          //       // flagState: CountryFlag.DISABLE1,
-                          //       currentCity: state.profileModel!.city,
-                          //       currentCountry: state.profileModel!.country,
-                          //       currentState: state.profileModel!.state,
-                          //       onCountryChanged: (country) {
-                          //         setState(() {
-                          //           selectedCountry = country;
-                          //         });
-                          //       },
-                          //       onStateChanged: (state) {
-                          //         setState(() {
-                          //           selectedState = state;
-                          //         });
-                          //       },
-                          //       onCityChanged: (city) {
-                          //         setState(() {
-                          //           selectedCity = city;
-                          //         });
-                          //       },
-
-                          //       countryDropdownLabel: "Country",
-                          //       stateDropdownLabel: "State",
-                          //       cityDropdownLabel: "City",
-                          //       //dropdownDialogRadius: 30,
-                          //       //searchBarRadius: 30,
-                          //     ),
-                          //   ),
-                          // ),
-                          Container(
-                            child: Column(children: [
-                              CustomTextField(
-                                initialValue: state.profileModel.bio,
-                                maxLines: 3,
-                                onSaved: (value) {
-                                  bio = value;
-                                },
-                                obscureText: false,
-                                labelText: 'Bio',
-                                borderColor:
-                                    const Color.fromARGB(255, 204, 204, 205),
-                                textfiledColor: Colors.white,
-                                // controller: bioController,
-                                hintText: 'Bio',
-                              ),
-                            ]),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          TextButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.work,
-                                color: Colors.black,
-                              ),
-                              label: const Text(
-                                'Professional Life',
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              )),
-
-                          Container(
-                            padding: const EdgeInsets.only(
-                                right: 10, left: 10, bottom: 15, top: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.white),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 1,
-                                  spreadRadius: 0.2,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical:
+                                          10), //symmetric(vertical: 17, horizontal: 10),
+                                  filled: true,
+                                  fillColor: Colors.white,
                                 ),
-                              ],
+                                initialValue: state.profileModel.user!.lastName,
+                                onSaved: (value) {
+                                  lastName = value;
+                                },
+                                obscureText: false,
+                              ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Workplace",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                        )),
-                                    CustomTextField(
-                                      initialValue:
-                                          state.profileModel.placeOfWork,
-                                      onSaved: (value) {
-                                        workplace = value;
-                                      },
-                                      obscureText: false,
-                                      labelText: 'Works At',
-                                      borderColor: const Color.fromARGB(
-                                          255, 204, 204, 205),
-                                      textfiledColor: Colors.white,
-                                      // controller: workplaceController,
-                                      hintText: 'loyalty, merter',
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const Text("Study",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                        )),
-                                    CustomTextField(
-                                      initialValue: state.profileModel.studyIn,
-                                      onSaved: (value) {
-                                        studyIn = value;
-                                      },
-                                      obscureText: false,
-                                      labelText: 'Study In',
-                                      borderColor: const Color.fromARGB(
-                                          255, 204, 204, 205),
-                                      // controller: studyInController,
-                                      hintText: 'Uskudar university',
-                                      textfiledColor: Colors.white,
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const Text("Speciality",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                        )),
-                                    CustomTextField(
-                                      initialValue:
-                                          state.profileModel.speciality,
-                                      onSaved: (value) {
-                                        speciality = value;
-                                      },
-                                      obscureText: false,
-                                      labelText: 'Speciality',
-                                      borderColor: const Color.fromARGB(
-                                          255, 204, 204, 205),
-                                      // controller: studyInController,
-                                      hintText: 'Dentist',
-                                      textfiledColor: Colors.white,
-                                    ),
-                                  ]),
+                            // CustomTextField(
+
+                            //   readOnly:
+                            //       state.profileModel.user!.isVerifiedPro == true,
+                            //   initialValue: state.profileModel.user!.firstName,
+                            //   onSaved: (value) {
+                            //     firstName = value;
+                            //   },
+                            //   obscureText: false,
+                            //   labelText: 'First Name',
+                            //   borderColor:
+                            //       const Color.fromARGB(255, 204, 204, 205),
+                            //   textfiledColor: Colors.white,
+                            //   // controller: firstNameController,
+                            //   hintText: "",
+                            // ),
+                            // const SizedBox(
+                            //     width: 20), // Adjust the spacing between fields
+                            // CustomTextField(
+                            const SizedBox(
+                              height: 20,
                             ),
-                          ),
-                        ],
+                            // const Text(
+                            //   "Phone Number",
+                            //   textAlign: TextAlign.center,
+                            //   style: TextStyle(
+                            //     fontSize: 15,
+                            //   ),
+                            // ),
+                            PhoneNumberPicker(
+                              onInputChanged: (PhoneNumber number) {
+                                phoneNumber = number.phoneNumber;
+                              },
+                            ),
+                            // TextButton.icon(
+                            //     onPressed: () {},
+                            //     icon: const Icon(
+                            //       Icons.location_city,
+                            //       color: Colors.black,
+                            //     ),
+                            //     label: const Text(
+                            //       'Lives In',
+                            //       style: TextStyle(
+                            //           fontSize: 17,
+                            //           fontWeight: FontWeight.bold,
+                            //           color: Colors.black),
+                            //     )),
+                            // Container(
+                            //   padding: const EdgeInsets.only(
+                            //       right: 10, left: 10, bottom: 15),
+                            //   decoration: BoxDecoration(
+                            //     color: Colors.white,
+                            //     borderRadius: BorderRadius.circular(10),
+                            //     border: Border.all(color: Colors.white),
+                            //     boxShadow: [
+                            //       BoxShadow(
+                            //         color: Colors.black.withOpacity(0.2),
+                            //         offset: const Offset(0, 2),
+                            //         blurRadius: 1,
+                            //         spreadRadius: 0.2,
+                            //       ),
+                            //     ],
+                            //   ),
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                            //     child: CSCPicker(
+                            //       dropdownDecoration: BoxDecoration(
+                            //         border: Border.all(
+                            //           color: const Color.fromARGB(
+                            //               255, 204, 204, 205),
+                            //         ),
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //       disabledDropdownDecoration: BoxDecoration(
+                            //         color:
+                            //             const Color.fromARGB(255, 239, 238, 238),
+                            //         border: Border.all(
+                            //           color: const Color.fromARGB(
+                            //               255, 204, 204, 205),
+                            //         ),
+                            //         borderRadius: BorderRadius.circular(100),
+                            //       ),
+                            //       layout: Layout.vertical,
+                            //       // flagState: CountryFlag.DISABLE1,
+                            //       currentCity: state.profileModel!.city,
+                            //       currentCountry: state.profileModel!.country,
+                            //       currentState: state.profileModel!.state,
+                            //       onCountryChanged: (country) {
+                            //         setState(() {
+                            //           selectedCountry = country;
+                            //         });
+                            //       },
+                            //       onStateChanged: (state) {
+                            //         setState(() {
+                            //           selectedState = state;
+                            //         });
+                            //       },
+                            //       onCityChanged: (city) {
+                            //         setState(() {
+                            //           selectedCity = city;
+                            //         });
+                            //       },
+
+                            //       countryDropdownLabel: "Country",
+                            //       stateDropdownLabel: "State",
+                            //       cityDropdownLabel: "City",
+                            //       //dropdownDialogRadius: 30,
+                            //       //searchBarRadius: 30,
+                            //     ),
+                            //   ),
+                            // ),
+
+                            const SizedBox(
+                              height: 15,
+                            ),
+
+                            const Text("Workplace",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextFormField(
+                                initialValue: state.profileModel.placeOfWork,
+                                validator: (v) {
+                                  if (v!.isEmpty) {
+                                    return 'Workplace is required';
+                                  }
+                                },
+                                onSaved: (value) {
+                                  workplace = value;
+                                },
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  hintText: 'Works At',
+                                  hintStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 194, 193, 199),
+                                    fontSize: 14.0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical:
+                                          10), //symmetric(vertical: 17, horizontal: 10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text("Studied At",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextFormField(
+                                initialValue: state.profileModel.studyIn,
+                                validator: (v) {
+                                  if (v!.isEmpty) {
+                                    return 'Studied At is required';
+                                  }
+                                },
+                                onSaved: (value) {
+                                  studyIn = value;
+                                },
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  hintText: 'Studied At',
+                                  hintStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 194, 193, 199),
+                                    fontSize: 14.0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical:
+                                          10), //symmetric(vertical: 17, horizontal: 10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text("Speciality",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.white),
+                              ),
+                              child: TextFormField(
+                                initialValue: state.profileModel.speciality,
+                                validator: (v) {
+                                  if (v!.isEmpty) {
+                                    return 'Speciality is required';
+                                  }
+                                },
+                                onSaved: (value) {
+                                  speciality = value;
+                                },
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  hintText: 'Aesthetic dentistry',
+                                  hintStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 194, 193, 199),
+                                    fontSize: 14.0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical:
+                                          10), //symmetric(vertical: 17, horizontal: 10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ]),
+                    ]),
+              ),
             ),
           );
         } else {
@@ -589,6 +549,82 @@ class _NewProfile_PageState extends State<NewProfile_Page> {
           );
         }
       },
+    );
+  }
+}
+
+class PhoneNumberPicker extends StatefulWidget {
+  String? phoneNumber;
+  PhoneNumberPicker(
+      {super.key, required this.onInputChanged, this.phoneNumber});
+  final Function(PhoneNumber)? onInputChanged;
+
+  @override
+  _PhoneNumberPickerState createState() => _PhoneNumberPickerState();
+}
+
+class _PhoneNumberPickerState extends State<PhoneNumberPicker> {
+  PhoneNumber? phoneNumber;
+  @override
+  void initState() {
+    if (widget.phoneNumber != null) {
+      var ph = LocalStorage.extractCountryCode(widget.phoneNumber!);
+
+      phoneNumber = PhoneNumber(
+        phoneNumber:
+            widget.phoneNumber!.replaceAll(ph.keys.first.toString(), ""),
+        isoCode: ph.values.first.toString().toUpperCase(),
+      );
+    }
+    // var ph = LocalStorage.extractCountryCode("+905312255514");
+
+    // phoneNumber = PhoneNumber(
+    //   phoneNumber: "+905312255514".replaceAll(ph.keys.first.toString(), ""),
+    //   isoCode: ph.values.first.toString().toUpperCase(),
+    // );
+    // Map<String, String> phone =
+    //     LocalStorage.extractCountryCode("+905312255514");
+    // phoneNumber = PhoneNumber(
+    //   phoneNumber:
+    //       "+905312255514".replaceAll(phone['countryCode'].toString(), ""),
+    //   isoCode: phone['countryName'].toString(),
+    // );
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(right: 10, left: 10, bottom: 15),
+      // height: 60,
+      child: InternationalPhoneNumberInput(
+        initialValue: phoneNumber,
+        validator: (v) {
+          if (v!.isEmpty) {
+            return 'Phone Number is required';
+          }
+        },
+        onInputChanged: widget.onInputChanged,
+        onInputValidated: (bool value) {
+          print(value); // Print whether the phone number is valid or not
+        },
+        selectorConfig: const SelectorConfig(
+          selectorType: PhoneInputSelectorType.DIALOG,
+        ),
+        ignoreBlank: false,
+        // autoValidateMode: AutovalidateMode.onUserInteraction,
+        selectorTextStyle: const TextStyle(color: Colors.black),
+        textFieldController: TextEditingController(),
+        formatInput: true,
+        keyboardType:
+            const TextInputType.numberWithOptions(signed: true, decimal: true),
+        // inputBorder: const OutlineInputBorder(
+        //   borderRadius: BorderRadius.all(Radius.circular(10)),
+        //   borderSide: BorderSide(
+        //     color: Colors.transparent,
+        //   ),
+        // ),
+      ),
     );
   }
 }

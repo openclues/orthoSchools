@@ -8,6 +8,10 @@ class VerifyEmailCubit extends Cubit<VerifyEmailState> {
   VerifyEmailCubit() : super(VerifyEmailInitial());
   VerifyEmailRepo verifyEmailRepo = VerifyEmailRepo();
 
+  void resetEmailVerification() {
+    emit( VerifyEmailInitial());
+  }
+
   void sendCodeToEmail() async {
     emit(const EmailVerificationLoading());
     try {

@@ -8,14 +8,20 @@ import 'package:azsoon/features/blog/bloc/cubit/blog_cupit_cubit.dart';
 import 'package:azsoon/features/blog/data/models/articles_model.dart';
 import 'package:azsoon/features/blog/data/models/blog_model.dart';
 import 'package:azsoon/features/blog/presentation/screens/add_article.dart';
+import 'package:azsoon/features/blog/presentation/screens/articles_feed.dart';
 import 'package:azsoon/features/blog/presentation/screens/eachBlog.dart';
+import 'package:azsoon/features/home_screen/presentation/widgets/post_widget.dart';
 import 'package:azsoon/features/loading/bloc/bloc/loading_bloc_bloc.dart';
 import 'package:azsoon/features/profile/bloc/profile_bloc.dart';
 import 'package:azsoon/features/profile/data/my_profile_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../screens/ProfilePage.dart';
 import '../../../../screens/my_blog_screen.dart';
+import '../../../profile/presentation/screens/create_blog_screen.dart';
 
 class BlogScreen extends StatefulWidget {
   static const String routeName = '/blogScreen';
@@ -75,11 +81,14 @@ class _BlogScreenState extends State<BlogScreen>
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) => BlogCommentsCubit(),
-                            child: AddArticleScreen(blogId: widget.blog.id!),
+                            child: BlocProvider(
+                              create: (context) => BlogCommentsCubit(),
+                              child: AddArticleScreen(blogId: widget.blog.id!),
+                            ),
                           )));
-                  // context
-                  //     .read<BlogCupitCubit>()
-                  //     .loadBlogScreen(widget.blog.id!, filter);
+                  context
+                      .read<BlogCupitCubit>()
+                      .loadBlogScreen(widget.blog.id!, filter);
                 },
                 child: const Text('Add Article',
                     style: TextStyle(fontSize: 15, color: Colors.white)))
@@ -117,7 +126,7 @@ class _BlogScreenState extends State<BlogScreen>
                         return profile.user!.id != widget.blog.user!.id
                             ? ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: primaryColor,
+                                  backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -145,7 +154,16 @@ class _BlogScreenState extends State<BlogScreen>
                                           const TextStyle(color: Colors.white)),
                                 ))
                             : ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            BlogCreationScreen(
+                                              blogModel: widget.blog,
+                                            )),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
@@ -173,22 +191,33 @@ class _BlogScreenState extends State<BlogScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // const SizedBox(width: 10),
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: primaryColor,
-                          ),
-                          // color: Colors.grey,
-                        ),
-                        child: ClipRRect(
+                      InkWell(
+                        onTap: () {
+                          // print(widget.blog.user!.userAccount.id);
+                          Navigator.of(context).pushNamed(ProfilePage.routeName,
+                              arguments: {
+                                'userId': widget.blog.user!.id,
+                                'isNav': true
+                              });
+                        },
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            child: widget.blog.user!.profileImage != null
-                                ? Image.network(widget.blog.user!.profileImage!,
-                                    fit: BoxFit.cover)
-                                : Image.asset('assets/images/drimage.png')),
+                            border: Border.all(
+                              color: primaryColor,
+                            ),
+                            // color: Colors.grey,
+                          ),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: widget.blog.user!.profileImage != null
+                                  ? Image.network(
+                                      widget.blog.user!.profileImage!,
+                                      fit: BoxFit.cover)
+                                  : Image.asset('assets/images/drimage.png')),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Column(
@@ -202,12 +231,23 @@ class _BlogScreenState extends State<BlogScreen>
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18),
                           ),
-                          Text(
-                            "${widget.blog.user!.userAccount.firstName} ${widget.blog.user!.userAccount.lastName!}",
-                            style: const TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                color: primaryColor,
-                                fontSize: 15),
+                          Row(
+                            // mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "${widget.blog.user!.userAccount.firstName} ${widget.blog.user!.userAccount.lastName!}",
+                                style: const TextStyle(
+                                    // fontWeight: FontWeight.bold,
+                                    color: primaryColor,
+                                    fontSize: 15),
+                              ),
+                              BagesRow(
+                                  isVeriedPro: widget
+                                      .blog.user!.userAccount.isVerifiedPro,
+                                  isPremium:
+                                      widget.blog.user!.userAccount!.userRole ==
+                                          2),
+                            ],
                           ),
 
                           // : SizedBox()
@@ -232,7 +272,18 @@ class _BlogScreenState extends State<BlogScreen>
                   context
                       .read<BlogCupitCubit>()
                       .loadBlogScreen(widget.blog.id!, filter);
-                  return const Center(child: CircularProgressIndicator());
+                  return Padding(
+                      padding: EdgeInsets.only(top: 100.0),
+                      child: Container(
+                          height: 40,
+                          width: 40,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                            ],
+                          )));
                 } else if (state is BlogCupitLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is BlogCupitLoaded) {
@@ -420,7 +471,30 @@ class _BlogScreenState extends State<BlogScreen>
               itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                              create: (context) => BlogCommentsCubit(),
+                              child: DetailPage(
+                                article: posts[index],
+                              ),
+                            )));
+
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => DetailPage(
+                    //       image: posts[index].cover,
+                    //       authorImage: "",
+                    //       authorName:
+                    //           '${posts[index].blog!.user!.userAccount!.firstName!} ${posts[index].blog!.user!.userAccount!.lastName!}',
+                    //       topicTitle: posts[index].title,
+                    //       topicText: posts[index].content.toString(),
+                    //       publishTime: posts[index].createdAt.toString(),
+                    //     ),
+                    //   ),
+                    // );
+                  },
                   child: PostCard(
                     post: posts[index],
                   ),

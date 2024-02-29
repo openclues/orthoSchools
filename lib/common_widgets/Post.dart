@@ -55,15 +55,15 @@ class _PostWidgetState extends State<PostWidget> {
                       );
                     },
                   ),
-                  if (state.isLoading == true)
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: primaryColor,
-                        ),
-                      ),
-                    )
+                  // if (state.isLoading == true)
+                  //   const Padding(
+                  //     padding: EdgeInsets.all(8.0),
+                  //     child: Center(
+                  //       child: CircularProgressIndicator(
+                  //         color: primaryColor,
+                  //       ),
+                  //     ),
+                  //   )
                 ],
               ),
             ],
@@ -123,10 +123,10 @@ class JoinButton extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.warning,
-                                    color: Colors.red,
-                                  ),
+                                  // Icon(
+                                  //   Icons.warning,
+                                  //   color: Colors.red,
+                                  // ),
                                   Expanded(
                                     child: Text(
                                       'You are not allowed to join this space',
@@ -156,16 +156,6 @@ class JoinButton extends StatelessWidget {
                                       MaterialPageRoute(builder: (context) {
                                     return const PartnerForm();
                                   }));
-                                  // var response =
-                                  //     RequestHelper.post('send/premium/', {})
-                                  //         .then((value) {
-                                  //   ScaffoldMessenger.of(context).showSnackBar(
-                                  //       SnackBar(
-                                  //           content: Text(jsonDecode(
-                                  //                   value.body)['message']
-                                  //               .toString())));
-                                  // });
-                                  // Navigator.pop(context);
                                 },
                                 child: const Text('Become a premium user',
                                     style: TextStyle(color: Colors.white))),
@@ -176,58 +166,45 @@ class JoinButton extends StatelessWidget {
                                 child: const Text('Cancel')),
                           ],
                         ));
-                // showModalBottomSheet(
-                //     shape: const RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.only(
-                //           topLeft: Radius.circular(10),
-                //           topRight: Radius.circular(10)),
-                //     ),
-                //     context: context,
-                //     builder: (context) {
-                //       return SizedBox(
-                //         height: 300,
-                //         width: double.infinity,
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(8.0),
-                //           child: Column(
-                //             children: [
-                //               const Text(
-                //                 'You are not allowed to join this space',
-                //                 style: TextStyle(
-                //                     fontSize: 16, fontWeight: FontWeight.bold),
-                //               ),
-                //               const SizedBox(
-                //                 height: 10,
-                //               ),
-                //               ElevatedButton(
-                //                   onPressed: () {},
-                //                   child: const Text('Request to join'))
-                //             ],
-                //           ),
-                //         ),
-                //       );
-                //     });
-                // // }
               }
             },
             child: BlocBuilder<JoinSpaceBloc, JoinSpaceState>(
               builder: (context, state) {
                 return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 5),
-                    child: state is JoinSpaceLoading && state.spaceId == spaceId
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
+                  child: state is JoinSpaceLoading && state.spaceId == spaceId
+                      ? const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: primaryColor,
+                              ),
                             ),
-                          )
-                        : Text(". Join",
-                            style: TextStyle(
-                                color: color ?? primaryColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold)));
+                          ],
+                        )
+                      : Container(
+                          height: 40,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: color ?? primaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Join',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                );
               },
             ),
           )

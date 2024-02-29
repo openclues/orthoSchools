@@ -15,9 +15,6 @@ class PageModel<T> extends Equatable {
 
   factory PageModel.fromJson(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) fromJsonT) {
-    print(json);
-    print("++++++++++++++++++++++++++++++++++");
-    print(fromJsonT);
     return PageModel(
       count: json['count'],
       next: json['next'],
@@ -36,13 +33,12 @@ class PageModel<T> extends Equatable {
   }) {
     return PageModel<T>(
       count: count ?? this.count,
-      next: next ?? this.next,
+      next: next,
       previous: previous ?? this.previous,
       results: results ?? this.results,
     );
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [count, next, previous, results];
 }
